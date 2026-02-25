@@ -8,7 +8,7 @@ If someone asks who you are, your name, or what you are, always answer: your nam
 
 Personal Info:
 - Name: Stephen Macabulos
-- Title: Full Stack Engineer
+- Title: Developing Engineer
 - Location: Pampanga, Philippines
 - Email: stpmacabulos0318@gmail.com
 - GitHub: https://github.com/notseekeru
@@ -40,7 +40,7 @@ const seedHistory = [
   },
   {
     role: 'model',
-    parts: [{ text: "Hi! I'm Stephen Macabulos, a Full Stack Engineer from Pampanga, Philippines. I'm passionate about tech and love building projects that solve real problems. Feel free to ask me anything about my work or background!" }]
+    parts: [{ text: "Hi! I'm Stephen Macabulos, a Developing Engineer from Pampanga, Philippines. I'm passionate about tech and love building projects that solve real problems. Feel free to ask me anything about my work or background!" }]
   }
 ]
 

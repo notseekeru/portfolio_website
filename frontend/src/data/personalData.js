@@ -1,6 +1,6 @@
 const personalData = {
   name: 'Stephen Macabulos',
-  title: 'Full Stack Engineer',
+  title: 'Developing Engineer',
   location: 'Pampanga, Philippines',
   email: 'stpmacabulos0318@gmail.com',
   linkedin: 'https://www.linkedin.com/in/stephen-macabulos-192495336/',

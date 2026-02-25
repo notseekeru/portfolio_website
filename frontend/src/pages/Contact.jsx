@@ -1,20 +1,35 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import axios from 'axios'
 import personalData from '../data/personalData'
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    const mailtoLink = `mailto:${personalData.email}?subject=Portfolio Contact from ${encodeURIComponent(form.name)}&body=${encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`)}`
-    window.location.href = mailtoLink
-    setSubmitted(true)
+    setLoading(true)
+    setError('')
+    try {
+      await axios.post(import.meta.env.VITE_N8N_WEBHOOK_URL, {
+        name: form.name,
+        email: form.email,
+        message: form.message
+      })
+      setSubmitted(true)
+      setForm({ name: '', email: '', message: '' })
+    } catch (err) {
+      setError('Something went wrong. Please try again or email me directly.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const socialLinks = [
@@ -76,7 +91,7 @@ export default function Contact() {
               <div className="border border-accent/30 bg-accent/5 rounded-2xl p-8 text-center">
                 <div className="text-3xl mb-3">✓</div>
                 <p className="text-zinc-100 font-medium">Message sent!</p>
-                <p className="text-zinc-500 text-sm mt-1">Your email client should have opened.</p>
+                <p className="text-zinc-500 text-sm mt-1">I'll get back to you soon.</p>
                 <button
                   onClick={() => setSubmitted(false)}
                   className="mt-4 text-xs text-accent hover:underline"
@@ -116,11 +131,15 @@ export default function Contact() {
                     className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm text-zinc-200 placeholder-zinc-600 outline-none focus:border-accent/40 transition-colors resize-none"
                   />
                 </div>
+                {error && (
+                  <p className="text-red-400 text-xs">{error}</p>
+                )}
                 <button
                   type="submit"
-                  className="w-full py-3 bg-accent text-[#0d0d0d] font-semibold text-sm rounded-xl hover:bg-accent/90 glow-accent transition-all duration-200"
+                  disabled={loading}
+                  className="w-full py-3 bg-accent text-[#0d0d0d] font-semibold text-sm rounded-xl hover:bg-accent/90 glow-accent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Send Message
+                  {loading ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             )}
