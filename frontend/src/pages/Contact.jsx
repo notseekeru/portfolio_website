@@ -18,7 +18,7 @@ export default function Contact() {
     setLoading(true)
     setError('')
     try {
-      await axios.post(import.meta.env.VITE_N8N_WEBHOOK_URL, {
+      await axios.post('/api/contact', {
         name: form.name,
         email: form.email,
         message: form.message

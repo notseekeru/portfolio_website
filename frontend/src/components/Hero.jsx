@@ -112,8 +112,7 @@ export default function Hero() {
             </div>
             <div className="absolute -bottom-3 -right-3 w-24 h-24 rounded-xl border border-border bg-surface flex flex-col items-center justify-center">
               <span className="text-xl font-bold text-accent">
-                {new Date().getFullYear() -
-                  parseInt(personalData.experience[0]?.duration?.split(' ')[0] || '2020')}
+                {`${new Date().getFullYear() - 2026}`}
                 +
               </span>
               <span className="text-[10px] text-zinc-500 text-center leading-tight">yrs exp</span>
