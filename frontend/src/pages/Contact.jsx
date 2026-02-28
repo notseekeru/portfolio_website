@@ -109,6 +109,7 @@ export default function Contact() {
                     value={form.name}
                     onChange={handleChange}
                     required
+                    maxLength={100}
                   />
                   <FormField
                     label="Email"
@@ -117,6 +118,7 @@ export default function Contact() {
                     value={form.email}
                     onChange={handleChange}
                     required
+                    maxLength={254}
                   />
                 </div>
                 <div>
@@ -127,6 +129,7 @@ export default function Contact() {
                     onChange={handleChange}
                     required
                     rows={5}
+                    maxLength={5000}
                     placeholder="What's on your mind?"
                     className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm text-zinc-200 placeholder-zinc-600 outline-none focus:border-accent/40 transition-colors resize-none"
                   />
@@ -204,7 +207,7 @@ export default function Contact() {
   )
 }
 
-function FormField({ label, name, type, value, onChange, required }) {
+function FormField({ label, name, type, value, onChange, required, maxLength }) {
   return (
     <div>
       <label className="block text-xs font-medium text-zinc-400 mb-1.5">{label}</label>
@@ -214,6 +217,7 @@ function FormField({ label, name, type, value, onChange, required }) {
         value={value}
         onChange={onChange}
         required={required}
+        maxLength={maxLength}
         placeholder={label}
         className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm text-zinc-200 placeholder-zinc-600 outline-none focus:border-accent/40 transition-colors"
       />

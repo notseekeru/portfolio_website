@@ -34,10 +34,19 @@ frontend/
 │   │   ├── Experience.jsx      Work experience timeline
 │   │   ├── Skills.jsx          Tech stack badges grid
 │   │   ├── ChatBot.jsx         Floating AI chatbot widget
+│   │   ├── ErrorBoundary.jsx   React error boundary (crash recovery)
 │   │   └── Footer.jsx          Site footer
+│   ├── content/
+│   │   └── blogs/              Drop .md files here to create blog posts
+│   │       ├── *.md            Blog post markdown (frontmatter: title, date, description, image)
+│   ├── utils/
+│   │   ├── markdown.js         Lightweight markdown parser (no external deps)
+│   │   └── blogLoader.js       Loads blogs from content/blogs/ via import.meta.glob
 │   ├── pages/
 │   │   ├── Home.jsx            Assembles Hero + About + Experience + Skills
 │   │   ├── Projects.jsx        Project cards grid + template projects
+│   │   ├── Blog.jsx            Blog listing page (grid of blog cards)
+│   │   ├── BlogPost.jsx        Individual blog post view (renders markdown)
 │   │   └── Contact.jsx         Contact form + social links
 │   ├── App.jsx                 Router setup + layout wrapper
 │   ├── main.jsx                React entry point
@@ -57,6 +66,7 @@ frontend/
 |---|---|
 | Update personal info | `src/data/personalData.js` |
 | Add a new page | `src/pages/` + register route in `src/App.jsx` |
+| Add a new blog post | Drop a `.md` file into `src/content/blogs/` with frontmatter |
 | Add a new component | `src/components/` |
 | Add a template project | `src/data/personalData.js` → `templateProjects` array |
 | Change theme colors | `tailwind.config.js` |
@@ -72,7 +82,8 @@ Express.js server used **only for local development via Docker Compose**. In pro
 backend/
 ├── src/
 │   ├── routes/
-│   │   └── chat.js             POST /api/chat handler
+│   │   ├── chat.js             POST /api/chat handler
+│   │   └── contact.js          POST /api/contact handler
 │   └── server.js               Express app entry point
 ├── .env.example                Backend env template
 ├── package.json
@@ -87,7 +98,8 @@ Vercel Serverless Functions — mirrors the backend routes for **production depl
 
 ```
 api/
-└── chat.js                     POST /api/chat (Vercel serverless)
+├── chat.js                     POST /api/chat (Vercel serverless)
+└── contact.js                  POST /api/contact (Vercel serverless)
 ```
 
 ---
@@ -146,3 +158,24 @@ Open `frontend/src/data/personalData.js` and add to the `projects` array:
 ## Adding a Template Project
 
 Same as above but set `isTemplate: true`. Template projects display a "Template" badge on the card.
+
+## Adding a Blog Post
+
+Create a `.md` file in `frontend/src/content/blogs/`. The filename becomes the URL slug (e.g., `my-post.md` → `/blog/my-post`).
+
+Each file must start with YAML frontmatter:
+
+```markdown
+---
+title: My Blog Post Title
+date: 2026-03-01
+description: Short summary shown on the blog card.
+image: /blog/screenshot.png
+---
+
+Your markdown content here...
+```
+
+- **image** — optional; place screenshots in `frontend/public/blog/`
+- Posts are automatically sorted by date (newest first)
+- No build config or code changes needed — just drop the file and it appears

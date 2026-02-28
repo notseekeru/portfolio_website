@@ -50,8 +50,16 @@ const seedHistory = [
 router.post('/', async (req, res) => {
   const { message, history } = req.body
 
-  if (!message) {
+  if (!message || typeof message !== 'string') {
     return res.status(400).json({ error: 'Message is required' })
+  }
+
+  if (message.length > 1000) {
+    return res.status(400).json({ error: 'Message too long (max 1000 characters)' })
+  }
+
+  if (history && (!Array.isArray(history) || history.length > 50)) {
+    return res.status(400).json({ error: 'Invalid history format' })
   }
 
   const apiKey = process.env.GEMINI_API_KEY

@@ -150,6 +150,7 @@ export default function ChatBot() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKey}
                   placeholder="Ask me anything..."
+                  maxLength={1000}
                   className="flex-1 bg-transparent text-sm text-zinc-200 placeholder-zinc-600 outline-none"
                 />
                 <button

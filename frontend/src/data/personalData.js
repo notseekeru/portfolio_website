@@ -39,18 +39,18 @@ const personalData = {
       techStack: ['Next.js', 'Tailwind', 'TypeScript'],
       link: 'https://example.com/project',
       image: 'https://example.com/image.png',
-      isTemplate: false
+      isHobby: false
     }
   ],
 
-  templateProjects: [
+  HobbyProjects: [
     {
       title: 'E-Commerce Platform',
       description:
         'A full-featured online store with product listings, cart, checkout, and order management.',
       techStack: ['React', 'Node.js', 'PostgreSQL', 'Stripe'],
       link: '#',
-      isTemplate: true
+      isHobby: true
     },
     {
       title: 'Task Management App',
@@ -58,14 +58,14 @@ const personalData = {
         'Kanban-style task board with drag-and-drop, team collaboration, and deadline tracking.',
       techStack: ['React', 'Express', 'MongoDB', 'Socket.io'],
       link: '#',
-      isTemplate: true
+      isHobby: true
     },
     {
       title: 'Weather Dashboard',
       description: 'Real-time weather app with location search, 7-day forecasts, and radar maps.',
       techStack: ['React', 'OpenWeather API', 'Tailwind'],
       link: '#',
-      isTemplate: true
+      isHobby: true
     },
     {
       title: 'Real-Time Chat App',
@@ -73,22 +73,22 @@ const personalData = {
         'Multi-room chat application with user auth, message history, and live presence indicators.',
       techStack: ['React', 'Node.js', 'Socket.io', 'Redis'],
       link: '#',
-      isTemplate: true
+      isHobby: true
     },
     {
       title: 'Blog Platform',
       description: 'Headless CMS-powered blog with markdown support, tags, and an RSS feed.',
       techStack: ['Next.js', 'Contentful', 'Tailwind'],
       link: '#',
-      isTemplate: true
+      isHobby: true
     },
     {
-      title: 'Dev Portfolio Template',
+      title: 'Dev Portfolio Hobby',
       description:
         'A minimal, customizable developer portfolio starter with dark mode and animations.',
       techStack: ['React', 'Vite', 'Framer Motion'],
       link: '#',
-      isTemplate: true
+      isHobby: true
     }
   ]
 }

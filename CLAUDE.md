@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Personal resume website for a Full Stack Developer. Built with React (Vite), Node.js, and Express.js. Features a landing page, dedicated projects page, contact page, and an AI chatbot powered by Google Gemini that impersonates the owner.
+Personal resume website for a Full Stack Developer. Built with React (Vite), Node.js, and Express.js. Features a landing page, dedicated projects page, dynamic blog, contact page, and an AI chatbot powered by Google Gemini that impersonates the owner.
 
 ---
 
@@ -48,6 +48,8 @@ resume_websitev2/
 |---|---|---|
 | `/` | Home | Hero, About, Experience, Skills sections |
 | `/projects` | Projects | Grid of project cards (real + template) |
+| `/blog` | Blog | Blog listing — markdown-driven, auto-loaded from `frontend/src/content/blogs/` |
+| `/blog/:slug` | BlogPost | Individual blog post rendered from `.md` file |
 | `/contact` | Contact | Contact form + social links |
 
 ---
@@ -58,7 +60,9 @@ resume_websitev2/
 - AI chatbot widget (floating) — impersonates the owner using Gemini
 - Smooth page transitions and scroll animations (Framer Motion)
 - Template project cards auto-generated on the Projects page
-- Contact form (frontend-only, no mailer wired unless added)
+- Dynamic blog system — drop `.md` files into `frontend/src/content/blogs/` and they auto-appear
+- Contact form sends submissions via n8n webhook
+- React ErrorBoundary for graceful crash recovery
 
 ---
 
@@ -68,6 +72,7 @@ Backend `.env` (see `backend/.env.example`):
 
 ```
 GEMINI_API_KEY=your_google_gemini_api_key_here
+N8N_WEBHOOK_URL=your_n8n_webhook_url_here
 PORT=5000
 ```
 
@@ -77,7 +82,10 @@ Frontend `.env` (see `frontend/.env.example`):
 VITE_API_URL=http://localhost:5000
 ```
 
-In production on Vercel, set `GEMINI_API_KEY` in the Vercel dashboard under Project Settings → Environment Variables.
+In production on Vercel, set these in the Vercel dashboard under Project Settings → Environment Variables:
+- `GEMINI_API_KEY` — Google Gemini API key
+- `N8N_WEBHOOK_URL` — n8n webhook URL for contact form
+- `ALLOWED_ORIGIN` (optional) — production domain for CORS (defaults to `https://your-domain.vercel.app`)
 
 ---
 
@@ -89,10 +97,20 @@ All personal information lives in `personal.md`. The frontend reads from `fronte
 
 ## AI Chatbot
 
-- Model: `gemini-1.5-flash`
+- Model: `gemini-2.5-flash`
 - The system prompt is built from `personalData.js` in the backend
 - The chatbot is instructed to answer as the portfolio owner
 - API route: `POST /api/chat` — body: `{ message: string, history: Array }`
+
+---
+
+## API Routes
+
+| Method | Route | Description |
+|---|---|---|
+| `POST` | `/api/chat` | AI chatbot — sends message + history, returns AI reply |
+| `POST` | `/api/contact` | Contact form — forwards name/email/message to n8n webhook |
+| `GET` | `/api/health` | Health check (local dev only) |
 
 ---
 
@@ -111,7 +129,7 @@ docker-compose up --build
 
 1. Push the repo to GitHub
 2. Import in Vercel dashboard
-3. Set environment variable: `GEMINI_API_KEY`
+3. Set environment variables: `GEMINI_API_KEY`, `N8N_WEBHOOK_URL`, `ALLOWED_ORIGIN`
 4. Vercel auto-detects the config from `vercel.json`
 5. Every push to `main` triggers automatic redeploy
 
@@ -126,11 +144,33 @@ docker-compose up --build
 
 ---
 
-## Future Features (add your requests here)
+## Security Measures
 
-> Use this section to log features you want added. Format: `- [ ] Feature description`
+### Rate Limiting
+- **Backend (Express):** `express-rate-limit` — 20 req/min on `/api/chat`, 5 req/min on `/api/contact`
+- **Vercel Serverless:** In-memory IP-based rate limiter with same limits
 
-- [ ] Dark/light mode toggle
-- [ ] Blog section
-- [ ] Resume PDF download button
-- [ ] Analytics integration
+### Input Validation
+- Chat message: max 1000 characters, string type enforced
+- Chat history: max 50 entries, array type enforced
+- Contact name: max 100 characters
+- Contact email: regex validated, max 254 characters
+- Contact message: max 5000 characters
+- Frontend `maxLength` attributes mirror backend limits
+
+### Security Headers
+- Backend uses `helmet` middleware for HTTP security headers
+- Request body limited to 100KB via `express.json({ limit: '100kb' })`
+
+### CORS
+- Backend: restricted to `http://localhost:5173`
+- Vercel functions: allowlist via `ALLOWED_ORIGIN` env var + localhost
+
+### Error Handling
+- Internal error details are never leaked to clients
+- React `ErrorBoundary` wraps the entire app for graceful crash recovery
+
+### Docker
+- Containers run as non-root user (`appuser`)
+
+---

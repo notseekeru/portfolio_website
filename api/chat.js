@@ -44,15 +44,59 @@ const seedHistory = [
   }
 ]
 
+const ALLOWED_ORIGINS = [
+  process.env.ALLOWED_ORIGIN || 'https://your-domain.vercel.app',
+  'http://localhost:5173'
+]
+
+const rateLimitMap = new Map()
+
+function isRateLimited(ip, maxRequests = 20, windowMs = 60000) {
+  const now = Date.now()
+  const record = rateLimitMap.get(ip) || { count: 0, resetAt: now + windowMs }
+  if (now > record.resetAt) {
+    record.count = 0
+    record.resetAt = now + windowMs
+  }
+  record.count++
+  rateLimitMap.set(ip, record)
+  if (rateLimitMap.size > 10000) rateLimitMap.clear()
+  return record.count > maxRequests
+}
+
 export default async function handler(req, res) {
+  const origin = req.headers.origin
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin)
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end()
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
+  const clientIp = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown'
+  if (isRateLimited(clientIp)) {
+    return res.status(429).json({ error: 'Too many requests, please try again later.' })
+  }
+
   const { message, history } = req.body
 
-  if (!message) {
+  if (!message || typeof message !== 'string') {
     return res.status(400).json({ error: 'Message is required' })
+  }
+
+  if (message.length > 1000) {
+    return res.status(400).json({ error: 'Message too long (max 1000 characters)' })
+  }
+
+  if (history && (!Array.isArray(history) || history.length > 50)) {
+    return res.status(400).json({ error: 'Invalid history format' })
   }
 
   const apiKey = process.env.GEMINI_API_KEY

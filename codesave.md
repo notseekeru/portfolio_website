@@ -7,7 +7,7 @@
 
 - dedicated listed project page
 - personal contanct page
-- ai chatbot that impersonates me (i will give the api key later in a .env (which u also create a template file for))
+- ai chatbot that impersonates me
 - the ai chatbot suited for google gemini-2.5 api
 - responsive ui design
 - generate template projects in the project page.
@@ -15,17 +15,20 @@
 
 ### PROJECT features
 
+- gitignore sensitive files like .env, node_modules(useless), critical security files. ignore for avoiding pushing it to repos
 - use camelcase for variables (not strict)
 - use react, nodejs, and express js for the stack.
-- automatically deploy this using vercel
-- use dockercompose for this project which manages the frontend and backend.
+- automatically deploy this using vercel mcp
+- use react routing.
 - the docker compose should have live reloading suited for vite-react for code edits.
-- should have react routing
+- create dockercompose for this project that manages the frontend and backend so i can run locally.
+- automatically make .env.example files for files that needs the api within the dir.
+- implement rate limiting for apis
 
 ### your system
 
-- plan first on the given CLAUDE.md (currently empty you decide to plan the structure) file. also add a section where i can write when i need more features for the website
 - update CLAUDE.md for up to date and better implementation, also write there what the client should do next, like api routing and important details that requires client/user intervention.
+- plan first on the given CLAUDE.md file.
 - make a projectStructure.md file, guiding how the developers should navigate through the codebase.
 - my information is located at personal.md
 - ignore/do not update "codesave.md"
@@ -40,4 +43,5 @@
 - prioritize codesave.md for prompting.
 - read CLAUDE.md for anything new, if so update based on that file.
 - always read and compare personal.md file for up to date information regarding personals
-- if theres question or clarification that u want, you can ask me.
+- if theres question or clarification that you want, you can ask me.
+- update packagelock json since i dont want use npm install

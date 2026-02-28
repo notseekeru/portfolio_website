@@ -2,6 +2,8 @@ import { Router } from 'express'
 
 const router = Router()
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 router.post('/', async (req, res) => {
   const { name, email, message } = req.body
 
@@ -9,7 +11,20 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'All fields are required' })
   }
 
-  const webhookUrl = process.env.N8N_WEBHOOK_URL
+  if (typeof name !== 'string' || name.length > 100) {
+    return res.status(400).json({ error: 'Invalid name (max 100 characters)' })
+  }
+
+  if (typeof email !== 'string' || !EMAIL_REGEX.test(email) || email.length > 254) {
+    return res.status(400).json({ error: 'Invalid email address' })
+  }
+
+  if (typeof message !== 'string' || message.length > 5000) {
+    return res.status(400).json({ error: 'Message too long (max 5000 characters)' })
+  }
+
+  const webhookUrl = process.env.N8N_WEBHOOK_URL // WEBHOOK ENV VAR
+
   if (!webhookUrl) {
     return res.status(500).json({ error: 'Webhook URL not configured' })
   }
@@ -30,7 +45,7 @@ router.post('/', async (req, res) => {
     res.json({ success: true })
   } catch (err) {
     console.error('Contact webhook error:', err.message)
-    res.status(500).json({ error: err.message })
+    res.status(500).json({ error: 'Failed to send message' })
   }
 })
 
