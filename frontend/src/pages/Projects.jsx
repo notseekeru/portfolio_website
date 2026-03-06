@@ -2,17 +2,12 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import personalData from '../data/personalData'
 
-const allProjects = [...personalData.projects, ...personalData.HobbyProjects]
+const allProjects = [...personalData.projects]
 
 export default function Projects() {
   const [filter, setFilter] = useState('all')
 
-  const filtered =
-    filter === 'all'
-      ? allProjects
-      : filter === 'real'
-        ? allProjects.filter((p) => !p.isHobby)
-        : allProjects.filter((p) => p.isHobby)
+  const filtered = allProjects
 
   return (
     <motion.div
@@ -34,28 +29,8 @@ export default function Projects() {
           </span>
           <h1 className="text-4xl lg:text-5xl font-bold text-zinc-100 mt-2 mb-4">Projects</h1>
           <p className="text-zinc-500 max-w-lg">
-            A mix of real-world work and Hobby starters I've built or designed.
+            A selection of my professional work and personal projects.
           </p>
-
-          <div className="flex gap-2 mt-8">
-            {[
-              { label: 'All', value: 'all' },
-              { label: 'Real Projects', value: 'real' },
-              { label: 'Hobbys', value: 'Hobby' }
-            ].map((tab) => (
-              <button
-                key={tab.value}
-                onClick={() => setFilter(tab.value)}
-                className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ${
-                  filter === tab.value
-                    ? 'border-accent bg-accent/10 text-accent'
-                    : 'border-border text-zinc-500 hover:border-zinc-600 hover:text-zinc-300'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -100,12 +75,6 @@ function ProjectCard({ project, index }) {
           </div>
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
-
-        {project.isHobby && (
-          <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-accentPurple/20 border border-accentPurple/40 text-purple-400 text-[10px] font-mono font-medium">
-            Hobby
-          </div>
-        )}
       </div>
 
       <div className="flex flex-col flex-1 p-5">

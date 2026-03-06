@@ -1,50 +1,32 @@
 ---
-title: Building a Modern React Portfolio from Scratch
+title: Building a Live Website with AI
 date: 2026-01-25
-description: How I designed and built my personal portfolio using React, Vite, Tailwind CSS, and Framer Motion.
+description: How I designed and built my personal portfolio using React, Vite, Tailwind, and Framer Motion.
 image: /blog/react-portfolio.png
 ---
 
-Every developer needs a portfolio. It's your digital resume and the first thing recruiters and clients see. Here's how I built mine from the ground up.
+Every developer needs a portfolio. It's your digital resume and the first thing recruiters and clients see. Here's the story of how I built mine, step by step.
 
-## Choosing the Stack
+# The Journey
 
-I went with **React + Vite** for the framework, **Tailwind CSS** for styling, and **Framer Motion** for animations. This combo gives you fast builds, utility-first styling, and buttery smooth transitions.
+## Defining the Vision
+It all started with the realization that I needed a live portfolio to showcase my skills and projects. I decided to orchestrate the process using AI, but first, I had to define the tech stack. While the AI provided a generic suggestion, I refined it with custom prompts to make the stack more specific to my needs.
 
-## Project Structure
+## Planning with AI
+With the tech stack finalized, I leveraged Claude Code Opus 4.6 and Copilot to break the project into manageable tasks and phases. This delegation allowed me to focus on one step at a time while ensuring the overall vision stayed on track.
 
-Keeping things organized matters. I separated concerns into clear folders:
+## Building the Website
+The development phase began with React and Vite as the foundation, Tailwind for styling, and Framer Motion for animations. These tools provided the speed, flexibility, and polish I needed to bring the design to life.
 
-- **components/** — Reusable UI pieces like Navbar, Footer, Hero
-- **pages/** — Route-level components (Home, Projects, Contact)
-- **data/** — Centralized personal data in one file
+## Basic Testing and Security
+First was to identify my vulnerabilities with an AI Cybersecurity specialist, after alerting for potential security issues, I delegated task to fix those issues and compare findings with delegated 2 AI architechs for insights. Fix with the AI cybersecurity and made perform test, verify and implement basic vulnerabilities such as Rate limiting, Payload for chatbot, and other factors that could ruin the website. Before this I already acknowledge the use of AI for security, but for a basic portfolio website with just a chatbot, I was completed with this type of achitectural decision.
 
-This makes it easy to update content without touching component logic.
+## Deploying to Production
+Once the website was ready, I deployed it using Vercel. Setting up a custom domain with a registered CNAME was straightforward, and the site was live in no time. However, I soon realized that Vercel's simplicity came with limitations.
 
-## Dark Theme Design
+## Switching to Cloudflare
+To gain more control and flexibility, I migrated the deployment to Cloudflare. This involved replacing my existing registrar with Cloudflare Registers and setting up a subdomain. The transition was seamless, and the new setup offered better performance and scalability.
 
-A dark theme feels modern and is easier on the eyes. The key is contrast — use zinc/neutral grays for backgrounds and a vibrant accent color for interactive elements. I picked cyan as my primary accent with purple as a secondary.
+# Reflecting on the Process
 
-## Animations That Don't Annoy
-
-Framer Motion makes it easy to add page transitions and scroll reveals. The trick is subtlety:
-
-- Keep durations under 0.5 seconds
-- Use opacity and small vertical shifts
-- Stagger child elements for a cascading entrance
-- Never animate something just because you can
-
-## Responsive Design
-
-Tailwind's responsive prefixes make mobile-first design straightforward. Start with the mobile layout, then layer on tablet and desktop styles with `md:` and `lg:` prefixes.
-
-## Performance Tips
-
-- Lazy-load images and heavy components
-- Use Vite's built-in code splitting
-- Optimize images before uploading
-- Keep your bundle lean — audit dependencies regularly
-
-## Final Thoughts
-
-Your portfolio is a living project. Ship the first version fast, then iterate. The best portfolio is one that exists online, not one that's perfect in your head.
+Looking back, this journey was more than just building a website. It was about leveraging AI to enhance creativity, streamline workflows, and push the boundaries of what I could achieve as a developer. The project taught me real code and not something that lives inside the local folder, it taught me I could build and ship real projects that I could show to the world and improve my skills as a developer. Each step taught me something new, and the end result is a portfolio that truly represents my skills and vision.
