@@ -18,7 +18,6 @@
 - gitignore sensitive files like .env, node_modules(useless), critical security files. ignore for avoiding pushing it to repos
 - use camelcase for variables (not strict)
 - use react, nodejs, and express js for the stack.
-- automatically deploy this using vercel mcp
 - use react routing.
 - the docker compose should have live reloading suited for vite-react for code edits.
 - create dockercompose for this project that manages the frontend and backend so i can run locally.
