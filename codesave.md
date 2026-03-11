@@ -23,6 +23,8 @@
 - create dockercompose for this project that manages the frontend and backend so i can run locally.
 - automatically make .env.example files for files that needs the api within the dir.
 - implement rate limiting for apis
+- docker ignore node modules
+- dockerfile should include multistage docker stage for dev, builder, prod.
 
 ### your system
 
@@ -44,3 +46,11 @@
 - always read and compare personal.md file for up to date information regarding personals
 - if theres question or clarification that you want, you can ask me.
 - update packagelock json since i dont want use npm install
+
+### USER NOTES // DO NOT TOUCH
+
+docker compose -f compose.yml -f compose.dev.yml build --no-cache
+docker compose -f compose.yml -f compose.dev.yml up -d
+
+docker compose -f compose.yml -f compose.prod.yml build --no-cache
+docker compose -f compose.yml -f compose.prod.yml up -d
