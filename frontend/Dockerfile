@@ -1,17 +1,30 @@
-FROM node:20-alpine
-
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+FROM node:24-alpine AS base
 
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
 
-COPY . .
+#DEV
+FROM base AS dev
 
-RUN chown -R appuser:appgroup /app
-USER appuser
+COPY --chown=node:node . . 
 
 EXPOSE 5173
 
-CMD ["npm", "run", "dev"]
+USER node
+
+CMD ["npm", "run", "dev", "--", "--host"]
+
+#BUILDER
+FROM base AS builder
+
+COPY . .
+
+RUN npm run build
+
+#PROD
+FROM nginx:1.29.5-alpine AS prod
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
