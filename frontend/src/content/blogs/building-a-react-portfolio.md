@@ -1,6 +1,6 @@
 ---
 title: Building a Live Website with AI
-date: 2026-01-25
+date: 2026-02-25
 description: How I designed and built my personal portfolio using React, Vite, Tailwind, and Framer Motion.
 image: /blog/react-portfolio.png
 ---
