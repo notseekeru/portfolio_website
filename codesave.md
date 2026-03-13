@@ -1,12 +1,12 @@
-### task 
+### TASK
 
 - make a landing page of my personal resume, i want it to look professional, clean and %50 minimal but captures the eyes of the users.
 - make it fit marginally and appealing at the screen.
 
-### FRONTEND PORTFOLIO features
+### FRONTEND PORTFOLIO FEATURES
 
 - dedicated listed project page
-- personal contanct page
+- personal contact page
 - ai chatbot that impersonates me
 - the ai chatbot suited for google gemini-2.5 api
 - responsive ui design
@@ -14,10 +14,9 @@
 - contact form page that routes to post to an api when form submitted.
 - use react routing.
 
-### PROJECT features
+### PROJECT FEATURES
 
-- gitignore sensitive files like .env, node_modules(useless), critical security files. ignore for avoiding pushing it to repos
-- use camelcase for variables (not strict)
+- gitignore sensitive files like .env, node_modules, critical security files. ignore for avoiding pushing it to repos
 - use react, nodejs, and express js for the stack.
 - create multistage dockercompose for this project that manages the frontend and backend so i can run locally.
 - the docker compose should have live reloading suited for vite-react for code edits.
@@ -25,27 +24,29 @@
 - implement rate limiting for apis
 - docker ignore node modules
 
-### your system
+### YOUR SYSTEM
 
-- update CLAUDE.md for up to date and better implementation, also write there what the client should do next, like api routing and important details that requires client/user intervention.
 - plan first on the given CLAUDE.md file.
-- my information is located at personal.md
-- ignore/do not update "codesave.md"
+- update CLAUDE.md for up to date and better implementation, also write there what the client should do next, like api routing and important details that requires client/user intervention.
 
-### DONTS
+### DO / DONT
 
+- use camelcase for variables (not strict)
+- dont use npm install to locally install packages and dependencies
 - dont use comments
-- do not use next.js
+- do not use next.js framework
 
 ### CRITICAL
 
+- ignore/do not update "codesave.md"
 - prioritize codesave.md for prompting.
 - read CLAUDE.md for anything new, if so update based on that file.
 - always read and compare personal.md file for up to date information regarding personals
 - if theres question or clarification that you want, you can ask me.
-- update packagelock json since i dont want use npm install
 
-### DOCKER COMPOSE USER NOTES // DO NOT TOUCH
+### USER NOTES // DO NOT TOUCH
+
+PERFORM SECURITY AUDITS
 
 docker compose -f compose.yml -f compose.dev.yml build --no-cache
 docker compose -f compose.yml -f compose.dev.yml up -d
