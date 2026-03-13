@@ -34,9 +34,10 @@ export default function ChatBot() {
     setInput('')
     setLoading(true)
 
+
     try {
       const history = messages.map((m) => ({ role: m.role, content: m.content }))
-      const res = await axios.post(`${apiUrl}/api/chat`, {
+      const res = await axios.post(`/api/chat`, {
         message: trimmed,
         history
       })

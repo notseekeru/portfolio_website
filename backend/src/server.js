@@ -12,8 +12,10 @@ const app = express()
 const port = process.env.PORT || 5000
 
 app.use(helmet())
-app.use(cors({ origin: 'http://localhost:5173' }))
+const corsallowed = ["http://localhost:5173", "https://portfolio.seekeru.tech"]
+app.use(cors({ origin: corsallowed }))
 app.use(express.json({ limit: '100kb' }))
+app.set('trust proxy', 1)
 
 const chatLimiter = rateLimit({
   windowMs: 60 * 1000,
