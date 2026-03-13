@@ -3,7 +3,7 @@
 - make a landing page of my personal resume, i want it to look professional, clean and %50 minimal but captures the eyes of the users.
 - make it fit marginally and appealing at the screen.
 
-### PORTFOLIO features
+### FRONTEND PORTFOLIO features
 
 - dedicated listed project page
 - personal contanct page
@@ -12,25 +12,23 @@
 - responsive ui design
 - generate template projects in the project page.
 - contact form page that routes to post to an api when form submitted.
+- use react routing.
 
 ### PROJECT features
 
 - gitignore sensitive files like .env, node_modules(useless), critical security files. ignore for avoiding pushing it to repos
 - use camelcase for variables (not strict)
 - use react, nodejs, and express js for the stack.
-- use react routing.
+- create multistage dockercompose for this project that manages the frontend and backend so i can run locally.
 - the docker compose should have live reloading suited for vite-react for code edits.
-- create dockercompose for this project that manages the frontend and backend so i can run locally.
 - automatically make .env.example files for files that needs the api within the dir.
 - implement rate limiting for apis
 - docker ignore node modules
-- dockerfile should include multistage docker stage for dev, builder, prod.
 
 ### your system
 
 - update CLAUDE.md for up to date and better implementation, also write there what the client should do next, like api routing and important details that requires client/user intervention.
 - plan first on the given CLAUDE.md file.
-- make a projectStructure.md file, guiding how the developers should navigate through the codebase.
 - my information is located at personal.md
 - ignore/do not update "codesave.md"
 
@@ -47,7 +45,7 @@
 - if theres question or clarification that you want, you can ask me.
 - update packagelock json since i dont want use npm install
 
-### USER NOTES // DO NOT TOUCH
+### DOCKER COMPOSE USER NOTES // DO NOT TOUCH
 
 docker compose -f compose.yml -f compose.dev.yml build --no-cache
 docker compose -f compose.yml -f compose.dev.yml up -d
