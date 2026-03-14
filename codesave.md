@@ -48,8 +48,8 @@
 
 PERFORM SECURITY AUDITS
 
-docker compose -f compose.yml -f compose.dev.yml build --no-cache
-docker compose -f compose.yml -f compose.dev.yml up -d
+docker compose -p portfolio-dev -f compose.yml -f compose.dev.yml build --no-cache
+docker compose -p portfolio-dev -f compose.yml -f compose.dev.yml up -d
 
-docker compose -f compose.yml -f compose.prod.yml build --no-cache
-docker compose -f compose.yml -f compose.prod.yml up -d
+docker compose -p portfolio-prod -f compose.yml -f compose.prod.yml build --no-cache
+docker compose -p portfolio-prod -f compose.yml -f compose.prod.yml up -d
