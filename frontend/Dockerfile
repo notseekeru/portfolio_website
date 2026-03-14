@@ -12,9 +12,9 @@ COPY --chown=node:node . .
 
 EXPOSE 5173
 
-USER node
-
 CMD ["npm", "run", "dev", "--", "--host"]
+
+USER node
 
 #BUILDER
 FROM base AS builder
