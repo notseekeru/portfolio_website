@@ -14,7 +14,7 @@ export default function About() {
         <div>
           <SectionLabel text="About" />
           <h2 className="text-3xl font-bold text-zinc-100 mt-2 mb-6">A bit about me</h2>
-          <p className="text-zinc-400 leading-relaxed mb-6">{personalData.bio}</p>
+          <p className="text-zinc-400 leading-relaxed mb-6">I am a CPE Undergraduate student from Pampanga State University. I love technology regardless if it's hardware or software. I love it so much that I want to learn and be great at all of the fields I am interested in. That dream drives me to continuously improve my skills and knowledge even though it may be far fetched.</p>
           <p className="text-zinc-500 leading-relaxed text-sm">
             Based in {personalData.location}. Currently working at{' '}
             {personalData.experience[0]?.company} as a {personalData.experience[0]?.title}.
@@ -45,9 +45,9 @@ export default function About() {
         <div className="grid grid-cols-2 gap-4">
           {[
             { value: `${new Date().getFullYear() - 2026}+`, label: 'Years Experience', accent: true },
-            { value: personalData.projects.length, label: 'Projects Built', accent: false },
-            { value: personalData.skills.languages.length + personalData.skills.frameworks.length + personalData.skills.tools.length, label: 'Technologies', accent: false },
-            { value: personalData.experience.length, label: 'Companies', accent: true }
+            { value: personalData.projects.length, label: 'Projects Built', accent: true },
+            { value: personalData.skills.languages.length + personalData.skills.frameworks.length + personalData.skills.tools.length, label: 'Technologies', accent: true },
+            { value: personalData.experience.length - 1, label: 'Companies', accent: true }
           ].map((stat) => (
             <motion.div
               key={stat.label}

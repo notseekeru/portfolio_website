@@ -120,16 +120,6 @@ export default function Hero() {
           </div>
         </motion.div>
       </div>
-
-      <motion.div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2"
-        animate={{ y: [0, 8, 0] }}
-        transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-      >
-        <div className="w-5 h-8 border border-zinc-700 rounded-full flex justify-center pt-1.5">
-          <div className="w-1 h-2 bg-accent rounded-full" />
-        </div>
-      </motion.div>
     </section>
   )
 }

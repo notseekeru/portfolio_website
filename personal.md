@@ -1,7 +1,7 @@
 # Personal Information
 - Profile Picture: profile.png (its a png file in the dir, use this as my profile picture.)
 - Full Name: Stephen Macabulos
-- Professional Title: Developing Engineer
+- Professional Title: Computer Engineer
 - Location: Pampanga, Philippines
 - Email: stpmacabulos0318@gmail.com
 - LinkedIn: https://www.linkedin.com/in/stephen-macabulos-192495336/

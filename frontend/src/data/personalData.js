@@ -1,6 +1,6 @@
 const personalData = {
   name: 'Stephen Macabulos',
-  title: 'Developing Engineer',
+  title: '1st YR Computer Engineer',
   location: 'Pampanga, Philippines',
   email: 'stpmacabulos0318@gmail.com',
   linkedin: 'https://www.linkedin.com/in/stephen-macabulos-192495336/',
@@ -11,10 +11,10 @@ const personalData = {
 
   experience: [
     {
-      company: 'Tech Corp',
-      title: 'Senior Developer',
-      duration: '2020 — Present',
-      responsibilities: 'Developing scalable web applications.'
+      company: 'N/A',
+      title: 'N/A',
+      duration: '2025 — Present',
+      responsibilities: 'N/A'
     }
   ],
 
@@ -22,14 +22,14 @@ const personalData = {
     {
       institution: 'Pampanga State University',
       degree: 'B.S. in Computer Engineering',
-      duration: '2025 — 2029'
+      duration: '2025 — ----'
     }
   ],
 
   skills: {
-    languages: ['JavaScript', 'Python', 'TypeScript'],
-    frameworks: ['React', 'Next.js', 'Tailwind CSS'],
-    tools: ['Git', 'Docker', 'Vercel']
+    languages: ['JavaScript', 'Python', 'TypeScript', 'C++'],
+    frameworks: ['React', 'Tailwind CSS'],
+    tools: ['Git', 'Docker', 'Vercel', 'Nginx', 'Cloudflare']
   },
 
   projects: [
