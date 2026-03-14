@@ -1,8 +1,14 @@
 FROM node:24-alpine AS base
 
+
 WORKDIR /app
 
-COPY package*.json ./
+RUN chown node:node /app
+
+USER node
+
+COPY --chown=node:node package*.json ./
+
 RUN npm install
 
 #DEV
@@ -14,12 +20,11 @@ EXPOSE 5173
 
 CMD ["npm", "run", "dev", "--", "--host"]
 
-USER node
 
 #BUILDER
 FROM base AS builder
 
-COPY . .
+COPY --chown=node:node . .
 
 RUN npm run build
 
