@@ -11,7 +11,7 @@ Migrated a fragmented, Vercel-dependent frontend and local backend into a Harden
 ## Docker Production
 - **Problem:** My windows my quite running out of space when I had my non multistage image taking up my space(around 1GB per image). This was quite a worrysome for me since I was migrating this to my Rasberry Pi. 
 - **Docker Scout:** Conducted CVSS security using docker scout to spot out vulnerabilities of images, and fixed doable easy fixes. Used a smaller image of distros and locked the version of images for lower attack surface. (noted that not all vulnerabilities are fixable and worth fixing)
-- **Docker Files:** Used multistage dockerfile to seperate base, dev, build and prod docker builds. This asses bloated images and seperated unused dependencies from dev to prod.
+- **Docker Files:** Used multistage dockerfile to seperate base, dev, build and prod docker builds. This asses bloated images, seperated unused dependencies from dev to prod and helps with setting up root and nonroot user.
 - **Docker Compose:** Shifted from using one for all compose file for a dev and production compose file to a well defined seperated compose files utilizing seperation eg. base compose, dev and prod compose.
 
 ## Nginx Shift
