@@ -1,11 +1,19 @@
 import { useParams, Link } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
+import Prism from 'prismjs'
 import { getBlogBySlug } from '../utils/blogLoader'
 import { parseMarkdown } from '../utils/markdown'
 
 export default function BlogPost() {
+  const contentRef = useRef(null)
   const { slug } = useParams()
   const post = getBlogBySlug(slug)
+
+  useEffect(() => {
+    if (!contentRef.current) return
+    Prism.highlightAllUnder(contentRef.current)
+  }, [slug, post?.content])
 
   if (!post) {
     return (
@@ -36,10 +44,10 @@ export default function BlogPost() {
 
   const formattedDate = post.date
     ? new Date(post.date).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      })
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
     : ''
 
   const htmlContent = parseMarkdown(post.content)
@@ -92,6 +100,7 @@ export default function BlogPost() {
           )}
 
           <div
+            ref={contentRef}
             className="blog-prose"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
