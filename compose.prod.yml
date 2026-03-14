@@ -3,7 +3,7 @@ services:
     build:
       context: ./frontend
       target: prod
-    container_name: portfolio_frontend
+    container_name: portfolio_frontend_prod
     environment:
       - BACKEND_URL=https://portfolio.seekeru.tech/api
     depends_on:
@@ -13,4 +13,4 @@ services:
     build:
       context: ./backend
       target: prod
-    container_name: portfolio_backend
+    container_name: portfolio_backend_prod
