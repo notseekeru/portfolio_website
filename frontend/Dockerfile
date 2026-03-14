@@ -1,6 +1,5 @@
 FROM node:24-alpine AS base
 
-
 WORKDIR /app
 
 RUN chown node:node /app
