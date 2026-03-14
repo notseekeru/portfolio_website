@@ -12,7 +12,40 @@ Migrated a fragmented, Vercel-dependent frontend and local backend into a Harden
 - **Problem:** My windows my quite running out of space when I had my non multistage image taking up my space(around 1GB per image). This was quite a worrysome for me since I was migrating this to my Rasberry Pi. 
 - **Docker Scout:** Conducted CVSS security using docker scout to spot out vulnerabilities of images, and fixed doable easy fixes. Used a smaller image of distros and locked the version of images for lower attack surface. (noted that not all vulnerabilities are fixable and worth fixing)
 - **Docker Files:** Used multistage dockerfile to seperate base, dev, build and prod docker builds. This asses bloated images, seperated unused dependencies from dev to prod and helps with setting up root and nonroot user.
+
+```dockerfile
+#EXAMPLE FOR A MULTISTAGE DOCKERFILE
+FROM node:24-alpine AS base
+WORKDIR /app
+RUN chown node:node /app
+USER node
+COPY --chown=node:node package*.json ./
+RUN npm install
+
+#DEV
+FROM base AS dev
+COPY --chown=node:node . . 
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host"]
+
+#BUILDER
+FROM base AS builder
+COPY --chown=node:node . .
+RUN npm run build
+
+#PROD
+FROM nginx:1.29.5-alpine AS prod
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+```
+
 - **Docker Compose:** Shifted from using one for all compose file for a dev and production compose file to a well defined seperated compose files utilizing seperation eg. base compose, dev and prod compose.
+
+```javascript
+compose.yml // BASE STAGE AND INHERITS
+compose.dev.yml
+compose.prod.yml
+```
 
 ## Nginx Shift
 - **Problem:** Vercel commercial uptime and for its control is overpriced.
