@@ -1,19 +1,35 @@
 const personalData = {
   name: 'Stephen Macabulos',
-  title: '1st YR Computer Engineer',
+  title: 'Computer Engineer',
   location: 'Pampanga, Philippines',
-  email: 'stpmacabulos0318@gmail.com',
+  email: 'stpmacabulos@gmail.com',
   linkedin: 'https://www.linkedin.com/in/stephen-macabulos-192495336/',
   github: 'https://github.com/notseekeru',
-  facebook: '',
-  bio: 'I am a passionate enthusiastic person, I love tech and my heart craves for it. I develop interesting projects that suits and solves problems.',
+  facebook: 'https://www.facebook.com/notseekeru',
+  instagram: 'https://www.instagram.com/notseekeru/',
+  bio: 'I am a passionate enthusiastic tech person, I love tech and my heart craves for it. Software and Hardware is what I desire and I am aiming to be the best at both worlds.',
   profilePicture: '/profile.png',
+
+  get age() {
+    const birthYear = 2006;
+    const birthMonth = 2; // March (0-indexed)
+    const birthDay = 18;
+    const today = new Date();
+    let age = today.getFullYear() - birthYear;
+    if (
+      today.getMonth() < birthMonth ||
+      (today.getMonth() === birthMonth && today.getDate() < birthDay)
+    ) {
+      age--;
+    }
+    return age;
+  },
 
   experience: [
     {
       company: 'N/A',
       title: 'N/A',
-      duration: '2025 — Present',
+      duration: 'N/A',
       responsibilities: 'N/A'
     }
   ],
@@ -21,22 +37,22 @@ const personalData = {
   education: [
     {
       institution: 'Pampanga State University',
-      degree: 'B.S. in Computer Engineering',
+      degree: 'B.S in Computer Engineering',
       duration: '2025 — ----'
     }
   ],
 
   skills: {
-    languages: ['JavaScript', 'Python', 'TypeScript', 'C++'],
-    frameworks: ['React', 'Tailwind CSS'],
-    tools: ['Git', 'Docker', 'Vercel', 'Nginx', 'Cloudflare']
+    languages: ['JavaScript', 'Python', 'TypeScript', 'C++', 'Java'],
+    frameworks: ['React', 'Next.js', 'Tailwind CSS', 'JavaFX', 'Qt'],
+    tools: ['Git', 'Docker', 'Vercel', 'Github Actions', 'Ansible', 'Terraform', 'K8s', 'NGinx', 'Cloudflared']
   },
 
   projects: [
     {
       title: 'Portfolio Website',
-      description: 'My personal Porfolio website.',
-      techStack: ['React', 'Express', 'Javascript'],
+      description: 'My personal portfolio website to contain blogs and projects.',
+      techStack: ['React', 'Node', 'Express'],
       link: 'https://portfolio.seekeru.tech',
       image: '/1.png'
     }

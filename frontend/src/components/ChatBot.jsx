@@ -10,7 +10,7 @@ export default function ChatBot() {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: `Hi! I'm ${personalData.name}'s AI assistant. Ask me anything about his background, projects, or skills.`
+      content: `Hi! I'm ${personalData.name}. Ask me anything about his background, projects, or skills.`
     }
   ])
   const [input, setInput] = useState('')
@@ -112,11 +112,10 @@ export default function ChatBot() {
                   className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
-                      msg.role === 'user'
+                    className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${msg.role === 'user'
                         ? 'bg-accent text-[#0d0d0d] font-medium rounded-br-sm'
                         : 'bg-zinc-800 text-zinc-200 rounded-bl-sm border border-zinc-700/50'
-                    }`}
+                      }`}
                   >
                     {msg.content}
                   </div>
