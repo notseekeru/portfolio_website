@@ -1,63 +1,81 @@
-import { useState, useRef, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import axios from 'axios'
-import personalData from '../data/personalData'
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
+import personalData from "../data/personalData";
+import type { KeyboardEvent, SyntheticEvent } from "react";
 
-const apiUrl = import.meta.env.VITE_API_URL || ''
+type ChatRole = "assistant" | "user";
+
+interface ChatMessage {
+  role: ChatRole;
+  content: string;
+}
+
+interface ChatResponse {
+  reply: string;
+}
 
 export default function ChatBot() {
-  const [open, setOpen] = useState(false)
-  const [messages, setMessages] = useState([
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
-      role: 'assistant',
-      content: `Hi! I'm ${personalData.name}. Ask me anything about his background, projects, or skills.`
-    }
-  ])
-  const [input, setInput] = useState('')
-  const [loading, setLoading] = useState(false)
-  const messagesEndRef = useRef(null)
+      role: "assistant",
+      content: `Hi! I'm ${personalData.name}. Ask me anything about his background, projects, or skills.`,
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+    scrollToBottom();
+  }, [messages]);
 
   const sendMessage = async () => {
-    const trimmed = input.trim()
-    if (!trimmed || loading) return
+    const trimmed = input.trim();
+    if (!trimmed || loading) return;
 
-    const userMsg = { role: 'user', content: trimmed }
-    setMessages((prev) => [...prev, userMsg])
-    setInput('')
-    setLoading(true)
-
+    const userMsg: ChatMessage = { role: "user", content: trimmed };
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
+    setLoading(true);
 
     try {
-      const history = messages.map((m) => ({ role: m.role, content: m.content }))
-      const res = await axios.post(`/api/chat`, {
+      const history = messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+      const res = await axios.post<ChatResponse>(`/api/chat`, {
         message: trimmed,
-        history
-      })
-      setMessages((prev) => [...prev, { role: 'assistant', content: res.data.reply }])
+        history,
+      });
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: res.data.reply },
+      ]);
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: 'Sorry, I ran into an issue. Please try again.' }
-      ])
+        {
+          role: "assistant",
+          content: "Sorry, I ran into an issue. Please try again.",
+        },
+      ]);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const handleKey = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      sendMessage()
+  const handleKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
     }
-  }
+  };
 
   return (
     <>
@@ -76,29 +94,45 @@ export default function ChatBot() {
                   src={personalData.profilePicture}
                   alt={personalData.name}
                   className="w-8 h-8 rounded-full object-cover"
-                  onError={(e) => {
-                    e.target.style.display = 'none'
-                    e.target.nextSibling.style.display = 'flex'
+                  onError={(e: SyntheticEvent<HTMLImageElement>) => {
+                    const image = e.currentTarget;
+                    image.style.display = "none";
+                    const fallback =
+                      image.nextElementSibling as HTMLDivElement | null;
+                    if (fallback) {
+                      fallback.style.display = "flex";
+                    }
                   }}
                 />
                 <div
                   className="hidden w-8 h-8 rounded-full bg-accent/20 items-center justify-center text-sm font-bold text-accent"
-                  style={{ display: 'none' }}
+                  style={{ display: "none" }}
                 >
                   {personalData.name.charAt(0)}
                 </div>
                 <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-surface" />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-semibold text-zinc-100">{personalData.name}</p>
-                <p className="text-[10px] text-zinc-500">AI · Usually replies instantly</p>
+                <p className="text-sm font-semibold text-zinc-100">
+                  {personalData.name}
+                </p>
+                <p className="text-[10px] text-zinc-500">
+                  AI · Usually replies instantly
+                </p>
               </div>
               <button
                 onClick={() => setOpen(false)}
                 className="text-zinc-500 hover:text-zinc-200 transition-colors p-1"
                 aria-label="Close chat"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -109,13 +143,14 @@ export default function ChatBot() {
               {messages.map((msg, i) => (
                 <div
                   key={i}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${msg.role === 'user'
-                        ? 'bg-accent text-[#0d0d0d] font-medium rounded-br-sm'
-                        : 'bg-zinc-800 text-zinc-200 rounded-bl-sm border border-zinc-700/50'
-                      }`}
+                    className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
+                      msg.role === "user"
+                        ? "bg-accent text-[#0d0d0d] font-medium rounded-br-sm"
+                        : "bg-zinc-800 text-zinc-200 rounded-bl-sm border border-zinc-700/50"
+                    }`}
                   >
                     {msg.content}
                   </div>
@@ -131,7 +166,11 @@ export default function ChatBot() {
                           key={i}
                           className="w-1.5 h-1.5 rounded-full bg-zinc-400"
                           animate={{ opacity: [0.3, 1, 0.3] }}
-                          transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.2 }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 1.2,
+                            delay: i * 0.2,
+                          }}
                         />
                       ))}
                     </div>
@@ -159,13 +198,22 @@ export default function ChatBot() {
                   className="text-accent disabled:text-zinc-700 transition-colors flex-shrink-0"
                   aria-label="Send"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
                     <line x1="22" y1="2" x2="11" y2="13" />
                     <polygon points="22 2 15 22 11 13 2 9 22 2" />
                   </svg>
                 </button>
               </div>
-              <p className="text-[10px] text-zinc-700 text-center mt-2">Powered by Gemini AI</p>
+              <p className="text-[10px] text-zinc-700 text-center mt-2">
+                Powered by Gemini AI
+              </p>
             </div>
           </motion.div>
         )}
@@ -215,5 +263,5 @@ export default function ChatBot() {
         </AnimatePresence>
       </motion.button>
     </>
-  )
+  );
 }

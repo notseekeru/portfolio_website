@@ -1,13 +1,11 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import personalData from '../data/personalData'
+import { motion } from "framer-motion";
+import personalData, { type ProjectItem } from "../data/personalData";
+import type { SyntheticEvent } from "react";
 
-const allProjects = [...personalData.projects]
+const allProjects: ProjectItem[] = [...personalData.projects];
 
 export default function Projects() {
-  const [filter, setFilter] = useState('all')
-
-  const filtered = allProjects
+  const filtered = allProjects;
 
   return (
     <motion.div
@@ -27,7 +25,9 @@ export default function Projects() {
           <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase">
             Portfolio
           </span>
-          <h1 className="text-4xl lg:text-5xl font-bold text-zinc-100 mt-2 mb-4">Projects</h1>
+          <h1 className="text-4xl lg:text-5xl font-bold text-zinc-100 mt-2 mb-4">
+            Projects
+          </h1>
           <p className="text-zinc-500 max-w-lg">
             A selection of my professional work and personal projects.
           </p>
@@ -40,14 +40,19 @@ export default function Projects() {
         </div>
       </div>
     </motion.div>
-  )
+  );
 }
 
-function ProjectCard({ project, index }) {
+interface ProjectCardProps {
+  project: ProjectItem;
+  index: number;
+}
+
+function ProjectCard({ project, index }: ProjectCardProps) {
   return (
     <motion.a
-      href={project.link || '#'}
-      target={project.link && project.link !== '#' ? '_blank' : undefined}
+      href={project.link || "#"}
+      target={project.link && project.link !== "#" ? "_blank" : undefined}
       rel="noopener noreferrer"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -60,15 +65,20 @@ function ProjectCard({ project, index }) {
             src={project.image}
             alt={project.title}
             className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300"
-            onError={(e) => {
-              e.target.style.display = 'none'
-              e.target.nextSibling.style.display = 'flex'
+            onError={(e: SyntheticEvent<HTMLImageElement>) => {
+              const image = e.currentTarget;
+              image.style.display = "none";
+              const fallback =
+                image.nextElementSibling as HTMLDivElement | null;
+              if (fallback) {
+                fallback.style.display = "flex";
+              }
             }}
           />
         ) : null}
         <div
-          className={`${project.image ? 'hidden' : 'flex'} w-full h-full items-center justify-center`}
-          style={project.image ? { display: 'none' } : {}}
+          className={`${project.image ? "hidden" : "flex"} w-full h-full items-center justify-center`}
+          style={project.image ? { display: "none" } : {}}
         >
           <div className="text-5xl font-bold text-gradient opacity-30 select-none">
             {project.title.charAt(0)}
@@ -81,7 +91,9 @@ function ProjectCard({ project, index }) {
         <h3 className="font-semibold text-zinc-100 mb-2 group-hover:text-accent transition-colors duration-200">
           {project.title}
         </h3>
-        <p className="text-zinc-500 text-sm leading-relaxed flex-1 mb-4">{project.description}</p>
+        <p className="text-zinc-500 text-sm leading-relaxed flex-1 mb-4">
+          {project.description}
+        </p>
 
         <div className="flex flex-wrap gap-1.5">
           {project.techStack.map((tech) => (
@@ -111,5 +123,5 @@ function ProjectCard({ project, index }) {
         </div>
       </div>
     </motion.a>
-  )
+  );
 }

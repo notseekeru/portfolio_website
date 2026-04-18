@@ -1,5 +1,9 @@
-import { motion } from 'framer-motion'
-import personalData from '../data/personalData'
+import { motion } from "framer-motion";
+import personalData from "../data/personalData";
+
+interface SectionLabelProps {
+  text: string;
+}
 
 export default function Experience() {
   return (
@@ -11,7 +15,9 @@ export default function Experience() {
         transition={{ duration: 0.6 }}
       >
         <SectionLabel text="Experience" />
-        <h2 className="text-3xl font-bold text-zinc-100 mt-2 mb-12">Work History</h2>
+        <h2 className="text-3xl font-bold text-zinc-100 mt-2 mb-12">
+          Work History
+        </h2>
 
         <div className="relative">
           <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-accent/50 via-border to-transparent" />
@@ -30,14 +36,20 @@ export default function Experience() {
                 <div className="border border-border bg-surface rounded-xl p-6 hover:border-accent/20 transition-colors duration-300">
                   <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
                     <div>
-                      <h3 className="font-semibold text-zinc-100">{exp.title}</h3>
-                      <p className="text-accent text-sm font-medium">{exp.company}</p>
+                      <h3 className="font-semibold text-zinc-100">
+                        {exp.title}
+                      </h3>
+                      <p className="text-accent text-sm font-medium">
+                        {exp.company}
+                      </p>
                     </div>
                     <span className="font-mono text-xs text-zinc-500 bg-zinc-800/50 px-3 py-1 rounded-full">
                       {exp.duration}
                     </span>
                   </div>
-                  <p className="text-zinc-400 text-sm leading-relaxed">{exp.responsibilities}</p>
+                  <p className="text-zinc-400 text-sm leading-relaxed">
+                    {exp.responsibilities}
+                  </p>
                 </div>
               </motion.div>
             ))}
@@ -46,7 +58,9 @@ export default function Experience() {
 
         <div className="mt-16">
           <SectionLabel text="Education" />
-          <h2 className="text-3xl font-bold text-zinc-100 mt-2 mb-12">Academic Background</h2>
+          <h2 className="text-3xl font-bold text-zinc-100 mt-2 mb-12">
+            Academic Background
+          </h2>
 
           <div className="relative">
             <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-accentPurple/50 via-border to-transparent" />
@@ -65,8 +79,12 @@ export default function Experience() {
                   <div className="border border-border bg-surface rounded-xl p-6 hover:border-accentPurple/20 transition-colors duration-300">
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div>
-                        <h3 className="font-semibold text-zinc-100">{edu.degree}</h3>
-                        <p className="text-purple-400 text-sm font-medium">{edu.institution}</p>
+                        <h3 className="font-semibold text-zinc-100">
+                          {edu.degree}
+                        </h3>
+                        <p className="text-purple-400 text-sm font-medium">
+                          {edu.institution}
+                        </p>
                       </div>
                       <span className="font-mono text-xs text-zinc-500 bg-zinc-800/50 px-3 py-1 rounded-full">
                         {edu.duration}
@@ -80,11 +98,13 @@ export default function Experience() {
         </div>
       </motion.div>
     </section>
-  )
+  );
 }
 
-function SectionLabel({ text }) {
+function SectionLabel({ text }: SectionLabelProps) {
   return (
-    <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase">{text}</span>
-  )
+    <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase">
+      {text}
+    </span>
+  );
 }

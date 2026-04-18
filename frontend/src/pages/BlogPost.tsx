@@ -1,19 +1,20 @@
-import { useParams, Link } from 'react-router-dom'
-import { useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
-import Prism from 'prismjs'
-import { getBlogBySlug } from '../utils/blogLoader'
-import { parseMarkdown } from '../utils/markdown'
+import { useParams, Link } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import Prism from "prismjs";
+import { getBlogBySlug } from "../utils/blogLoader";
+import { parseMarkdown } from "../utils/markdown";
+import type { SyntheticEvent } from "react";
 
 export default function BlogPost() {
-  const contentRef = useRef(null)
-  const { slug } = useParams()
-  const post = getBlogBySlug(slug)
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const { slug } = useParams<{ slug: string }>();
+  const post = getBlogBySlug(slug ?? "");
 
   useEffect(() => {
-    if (!contentRef.current) return
-    Prism.highlightAllUnder(contentRef.current)
-  }, [slug, post?.content])
+    if (!contentRef.current) return;
+    Prism.highlightAllUnder(contentRef.current);
+  }, [slug, post?.content]);
 
   if (!post) {
     return (
@@ -25,13 +26,24 @@ export default function BlogPost() {
         className="min-h-screen pt-28 pb-24"
       >
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h1 className="text-4xl font-bold text-zinc-100 mb-4">Post Not Found</h1>
-          <p className="text-zinc-500 mb-8">The blog post you're looking for doesn't exist.</p>
+          <h1 className="text-4xl font-bold text-zinc-100 mb-4">
+            Post Not Found
+          </h1>
+          <p className="text-zinc-500 mb-8">
+            The blog post you're looking for doesn't exist.
+          </p>
           <Link
             to="/blog"
             className="inline-flex items-center gap-2 text-sm font-mono text-accent hover:text-accent/80 transition-colors"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <line x1="19" y1="12" x2="5" y2="12" />
               <polyline points="12 19 5 12 12 5" />
             </svg>
@@ -39,18 +51,18 @@ export default function BlogPost() {
           </Link>
         </div>
       </motion.div>
-    )
+    );
   }
 
   const formattedDate = post.date
-    ? new Date(post.date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-    : ''
+    ? new Date(post.date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "";
 
-  const htmlContent = parseMarkdown(post.content)
+  const htmlContent = parseMarkdown(post.content);
 
   return (
     <motion.div
@@ -65,7 +77,14 @@ export default function BlogPost() {
           to="/blog"
           className="inline-flex items-center gap-2 text-sm font-mono text-zinc-500 hover:text-accent transition-colors duration-200 mb-10"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <line x1="19" y1="12" x2="5" y2="12" />
             <polyline points="12 19 5 12 12 5" />
           </svg>
@@ -92,8 +111,11 @@ export default function BlogPost() {
                 src={post.image}
                 alt={post.title}
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.parentElement.style.display = 'none'
+                onError={(e: SyntheticEvent<HTMLImageElement>) => {
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    parent.style.display = "none";
+                  }
                 }}
               />
             </div>
@@ -107,5 +129,5 @@ export default function BlogPost() {
         </motion.div>
       </div>
     </motion.div>
-  )
+  );
 }

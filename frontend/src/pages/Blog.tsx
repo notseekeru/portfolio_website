@@ -1,8 +1,9 @@
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { loadBlogs } from '../utils/blogLoader'
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { loadBlogs, type BlogPost } from "../utils/blogLoader";
+import type { SyntheticEvent } from "react";
 
-const blogs = loadBlogs()
+const blogs: BlogPost[] = loadBlogs();
 
 export default function Blog() {
   return (
@@ -23,14 +24,18 @@ export default function Blog() {
           <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase">
             Writing
           </span>
-          <h1 className="text-4xl lg:text-5xl font-bold text-zinc-100 mt-2 mb-4">Blog</h1>
+          <h1 className="text-4xl lg:text-5xl font-bold text-zinc-100 mt-2 mb-4">
+            Blog
+          </h1>
           <p className="text-zinc-500 max-w-lg">
             Thoughts, guides, and things I've learned along the way.
           </p>
         </motion.div>
 
         {blogs.length === 0 ? (
-          <p className="text-zinc-500 text-center py-20">No posts yet. Check back soon.</p>
+          <p className="text-zinc-500 text-center py-20">
+            No posts yet. Check back soon.
+          </p>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {blogs.map((post, i) => (
@@ -40,17 +45,22 @@ export default function Blog() {
         )}
       </div>
     </motion.div>
-  )
+  );
 }
 
-function BlogCard({ post, index }) {
+interface BlogCardProps {
+  post: BlogPost;
+  index: number;
+}
+
+function BlogCard({ post, index }: BlogCardProps) {
   const formattedDate = post.date
-    ? new Date(post.date).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+    ? new Date(post.date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       })
-    : ''
+    : "";
 
   return (
     <motion.div
@@ -68,15 +78,20 @@ function BlogCard({ post, index }) {
               src={post.image}
               alt={post.title}
               className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300"
-              onError={(e) => {
-                e.target.style.display = 'none'
-                e.target.nextSibling.style.display = 'flex'
+              onError={(e: SyntheticEvent<HTMLImageElement>) => {
+                const image = e.currentTarget;
+                image.style.display = "none";
+                const fallback =
+                  image.nextElementSibling as HTMLDivElement | null;
+                if (fallback) {
+                  fallback.style.display = "flex";
+                }
               }}
             />
           ) : null}
           <div
-            className={`${post.image ? 'hidden' : 'flex'} w-full h-full items-center justify-center`}
-            style={post.image ? { display: 'none' } : {}}
+            className={`${post.image ? "hidden" : "flex"} w-full h-full items-center justify-center`}
+            style={post.image ? { display: "none" } : {}}
           >
             <div className="text-5xl font-bold text-gradient opacity-30 select-none">
               {post.title.charAt(0)}
@@ -100,7 +115,14 @@ function BlogCard({ post, index }) {
 
           <div className="mt-4 flex items-center gap-1 text-accent text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             Read more
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
             </svg>
@@ -108,5 +130,5 @@ function BlogCard({ post, index }) {
         </div>
       </Link>
     </motion.div>
-  )
+  );
 }

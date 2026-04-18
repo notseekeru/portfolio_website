@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion'
-import Hero from '../components/Hero'
-import About from '../components/About'
-import Experience from '../components/Experience'
+import { motion } from "framer-motion";
+import Hero from "../components/Hero";
+import About from "../components/About";
+import Experience from "../components/Experience";
 
 export default function Home() {
   return (
@@ -24,7 +24,7 @@ export default function Home() {
         <Divider />
       </div>
     </motion.div>
-  )
+  );
 }
 
 function Divider() {
@@ -32,5 +32,5 @@ function Divider() {
     <div className="px-6">
       <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
     </div>
-  )
+  );
 }

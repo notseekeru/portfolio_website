@@ -16,6 +16,7 @@
 
 ### PROJECT FEATURES
 
+- typescript for typesafety
 - gitignore sensitive files like .env, node_modules, critical security files. ignore for avoiding pushing it to repos
 - use react, nodejs, and express js for the stack.
 - create multistage dockercompose for this project that manages the frontend and backend so i can run locally.
@@ -24,14 +25,9 @@
 - implement rate limiting for apis
 - docker ignore node modules
 
-### YOUR SYSTEM
-
-- plan first on the given CLAUDE.md file.
-- update CLAUDE.md for up to date and better implementation, also write there what the client should do next, like api routing and important details that requires client/user intervention.
-
 ### DO / DONT
 
-- use camelcase for variables (not strict)
+- use camelcase for variables
 - dont use npm install to locally install packages and dependencies
 - dont use comments
 - do not use next.js framework
@@ -43,13 +39,3 @@
 - read CLAUDE.md for anything new, if so update based on that file.
 - always read and compare personal.md file for up to date information regarding personals
 - if theres question or clarification that you want, you can ask me.
-
-### USER NOTES // DO NOT TOUCH
-
-PERFORM SECURITY AUDITS
-
-docker compose -p portfolio-dev -f compose.yml -f compose.dev.yml build --no-cache
-docker compose -p portfolio-dev -f compose.yml -f compose.dev.yml up -d
-
-docker compose -p portfolio-prod -f compose.yml -f compose.prod.yml build --no-cache
-docker compose -p portfolio-prod -f compose.yml -f compose.prod.yml up -d
