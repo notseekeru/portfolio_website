@@ -15,17 +15,19 @@ COPY --chown=node:node . .
 
 EXPOSE 5000
 
-CMD ["node", "--watch", "./src/server.js"]
+CMD ["npm", "run", "dev"]
 
 #PRUNE // STAY AS ROOT USER
 FROM base AS prune
 
 COPY . .
 
-RUN npm prune --omit=dev
+RUN npm run build && npm prune --omit=dev
 
 #PROD // RUN AS NODE USER
 FROM node:24-alpine AS prod
+
+ENV NODE_ENV=production
 
 USER node
 
@@ -34,4 +36,4 @@ WORKDIR /app
 
 COPY --from=prune --chown=node:node /app .
 
-CMD ["node", "./src/server.js"]
+CMD ["node", "./dist/server.js"]

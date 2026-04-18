@@ -31,4 +31,4 @@ RUN npm run build
 FROM nginxinc/nginx-unprivileged:1.29.5-alpine AS prod
 
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
