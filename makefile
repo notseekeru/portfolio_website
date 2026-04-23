@@ -1,11 +1,23 @@
-dev build:
-	docker compose -p portfolio-dev -f compose.yml -f compose.dev.yml build --no-cache
+DEV_CMD  = docker compose -p portfolio-dev -f compose.yml -f compose.dev.yml
+PROD_CMD = docker compose -p portfolio-prod -f compose.yml -f compose.prod.yml
 
-dev up:
-	docker compose -p portfolio-dev -f compose.yml -f compose.dev.yml up -d
+dev-build:
+	$(DEV_CMD) build
 
-prod build:
-	docker compose -p portfolio-prod -f compose.yml -f compose.prod.yml build --no-cache
+dev-buildcache:
+	$(DEV_CMD) build --no-cache
 
-prod up:
-	docker compose -p portfolio-prod -f compose.yml -f compose.prod.yml up -d
+dev-clean:
+	$(DEV_CMD) down -v --rmi local
+
+dev-up:
+	$(DEV_CMD) up -d
+
+dev-logs:
+	$(DEV_CMD) logs -f
+
+dev-down:
+	$(DEV_CMD) down
+
+prod-up:
+	$(PROD_CMD) up -d

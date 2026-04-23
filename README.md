@@ -1,41 +1,3 @@
-       USER'S BROWSER (HTTPS)
-
-              |
-      [ CLOUDFLARE EDGE ]
-              |
-      ( Secure Tunnel )
-
-              |
-
-+------------------------------------------+
-| RASPBERRY PI (The Gate) |
-| |
-| [ CLOUDFLARED ] <--- (Hop 1) |
-| | |
-| (tunnel_edge network) |
-| | |
-| [ GATEWAY NGINX ] <--- (Hop 2) |
-| | |
-+-------|----------------------------------+
-
-        |
-
-( TAILSCALE ENCRYPTED BRIDGE )
-( Pi IP -> Desktop Tailscale IP )
-|
-+-------|----------------------------------+
-
-| | LOCAL DESKTOP (The App) |
-| v |
-| [ FRONTEND NGINX ] |
-| | |
-| (app_internal network) |
-| | |
-| [ BACKEND CONTAINER ] |
-| | |
-| (backend_egress network) |
-+------------------------------------------+
-
 TechStack
 
 - TypeScript (for frontend and backend development)
@@ -63,3 +25,9 @@ Lingos
 - Encrypted bridge: A secure communication channel that encrypts data as it travels between two points. In this architecture, Tailscale is used to create an encrypted bridge between the Raspberry Pi and the local desktop.
 - Containerization: The process of packaging an application and its dependencies into a container, allowing for consistent deployment across different environments. In this architecture, Docker is used to containerize the backend application.
 - Cloudflare Tunnel: A service that allows you to securely expose your local server to the internet without opening ports on your router. In this architecture, cloudflared is used to create a secure tunnel from the Raspberry Pi to the Cloudflare edge.
+
+Todos:
+
+- N8N integration for contact form submissions using webhooks and secure headers.
+- Implementing security measures to prevent XSS attacks and ensure secure communication between frontend and backend services.
+- Dependabot in GitHub for automated dependency updates and security patches.

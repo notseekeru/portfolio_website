@@ -6,9 +6,9 @@ const router = Router();
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 interface ContactRequestBody {
-  name?: unknown;
-  email?: unknown;
-  message?: unknown;
+  name?: string;
+  email?: string;
+  message?: string;
 }
 
 router.post("/", (req: Request, res: Response) => {
@@ -22,18 +22,18 @@ router.post("/", (req: Request, res: Response) => {
     return res.status(400).json({ error: "All fields are required" });
   }
 
-  if (name.length === 0 || name.length > 100) {
-    return res.status(400).json({ error: "Invalid name (max 100 characters)" });
+  if (name.length < 2 || name.length > 100) {
+    return res.status(400).json({ error: "Invalid name (2-100 characters)" });
   }
 
   if (!EMAIL_REGEX.test(email) || email.length > 254) {
     return res.status(400).json({ error: "Invalid email address" });
   }
 
-  if (message.length === 0 || message.length > 5000) {
+  if (message.length < 10 || message.length > 5000) {
     return res
       .status(400)
-      .json({ error: "Message too long (max 5000 characters)" });
+      .json({ error: "Message too long (10-5000 characters)" });
   }
 
   return res.status(200).json({ success: true });

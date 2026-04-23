@@ -13,8 +13,9 @@ const port = Number(process.env.PORT ?? 5000);
 const trustProxyHops = Number(process.env.TRUST_PROXY_HOPS ?? "0");
 
 app.use(helmet());
-const corsallowed = ["http://localhost:5173", "https://portfolio.seekeru.tech"];
-app.use(cors({ origin: corsallowed }));
+app.use(
+  cors({ origin: ["http://localhost:5173", "https://portfolio.seekeru.tech"] }),
+);
 app.use(express.json({ limit: "100kb" }));
 if (Number.isInteger(trustProxyHops) && trustProxyHops > 0) {
   app.set("trust proxy", trustProxyHops);
@@ -29,10 +30,6 @@ const contactLimiter = rateLimit({
 });
 
 app.use("/api/contact", contactLimiter, contactRoute);
-
-app.get("/api/health", (_req: Request, res: Response) => {
-  res.json({ status: "ok" });
-});
 
 interface RequestError extends Error {
   status?: number;
@@ -65,6 +62,10 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
     requestError instanceof Error ? requestError.message : "Unknown error";
   console.error("Unhandled backend error:", message);
   return res.status(500).json({ error: "Internal server error" });
+});
+
+app.get("/api/health", (_req: Request, res: Response) => {
+  res.json({ status: "ok" });
 });
 
 app.listen(port, () => {
