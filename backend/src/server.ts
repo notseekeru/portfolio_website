@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT ?? 5000);
-const trustProxyHops = Number(process.env.TRUST_PROXY_HOPS ?? "0");
+const trustProxyHops = Number(process.env.TRUST_PROXY_HOPS ?? "2");
 
 app.use(helmet());
 app.use(

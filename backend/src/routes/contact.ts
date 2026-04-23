@@ -22,18 +22,18 @@ router.post("/", (req: Request, res: Response) => {
     return res.status(400).json({ error: "All fields are required" });
   }
 
-  if (name.length < 2 || name.length > 100) {
-    return res.status(400).json({ error: "Invalid name (2-100 characters)" });
+  if (name.trim().length < 2 || name.trim().length > 50) {
+    return res.status(400).json({ error: "Invalid name (2-50 characters)" });
   }
 
-  if (!EMAIL_REGEX.test(email) || email.length > 254) {
+  if (!EMAIL_REGEX.test(email) || email.trim().length > 254) {
     return res.status(400).json({ error: "Invalid email address" });
   }
 
-  if (message.length < 10 || message.length > 5000) {
+  if (message.trim().length < 10 || message.trim().length > 500) {
     return res
       .status(400)
-      .json({ error: "Message too long (10-5000 characters)" });
+      .json({ error: "Message too long or too short (10-500 characters)" });
   }
 
   return res.status(200).json({ success: true });

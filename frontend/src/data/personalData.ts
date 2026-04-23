@@ -92,6 +92,7 @@ const personalData: PersonalData = {
     frameworks: ["React", "Tailwind CSS", "Express", "Node.js"],
     tools: [
       "Git",
+      "Bash",
       "Docker",
       "Vercel",
       "Github Actions",
@@ -105,7 +106,7 @@ const personalData: PersonalData = {
 
   projects: [
     {
-      title: "Portfolio Website(This Website)",
+      title: "Portfolio Website (This Website)",
       description:
         "My personal portfolio website to contain blogs and projects.",
       techStack: ["React", "Node", "Express"],
