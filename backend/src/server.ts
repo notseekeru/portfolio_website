@@ -3,7 +3,6 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
-import chatRoute from "./routes/chat.js";
 import contactRoute from "./routes/contact.js";
 import type { NextFunction, Request, Response } from "express";
 
@@ -21,14 +20,6 @@ if (Number.isInteger(trustProxyHops) && trustProxyHops > 0) {
   app.set("trust proxy", trustProxyHops);
 }
 
-const chatLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 20,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: "Too many requests, please try again later." },
-});
-
 const contactLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 5,
@@ -37,7 +28,6 @@ const contactLimiter = rateLimit({
   message: { error: "Too many submissions, please try again later." },
 });
 
-app.use("/api/chat", chatLimiter, chatRoute);
 app.use("/api/contact", contactLimiter, contactRoute);
 
 app.get("/api/health", (_req: Request, res: Response) => {

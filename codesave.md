@@ -7,11 +7,8 @@
 
 - dedicated listed project page
 - personal contact page
-- ai chatbot that impersonates me
-- the ai chatbot suited for google gemini-2.5 api
 - responsive ui design
 - generate template projects in the project page.
-- contact form page that routes to post to an api when form submitted.
 - use react routing.
 
 ### PROJECT FEATURES

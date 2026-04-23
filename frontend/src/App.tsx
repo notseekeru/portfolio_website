@@ -1,14 +1,13 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { AnimatePresence } from 'framer-motion'
-import ErrorBoundary from './components/ErrorBoundary'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import ChatBot from './components/ChatBot'
-import Home from './pages/Home'
-import Projects from './pages/Projects'
-import Contact from './pages/Contact'
-import Blog from './pages/Blog'
-import BlogPost from './pages/BlogPost'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import ErrorBoundary from "./components/ErrorBoundary";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import Projects from "./pages/Projects";
+import Contact from "./pages/Contact";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 
 export default function App() {
   return (
@@ -28,9 +27,8 @@ export default function App() {
             </AnimatePresence>
           </main>
           <Footer />
-          <ChatBot />
         </div>
       </BrowserRouter>
     </ErrorBoundary>
-  )
+  );
 }

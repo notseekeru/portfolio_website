@@ -89,7 +89,7 @@ const personalData: PersonalData = {
 
   skills: {
     languages: ["JavaScript", "Python", "TypeScript", "C++", "Java"],
-    frameworks: ["React", "Next.js", "Tailwind CSS", "JavaFX", "Qt"],
+    frameworks: ["React", "Tailwind CSS", "Express", "Node.js"],
     tools: [
       "Git",
       "Docker",
@@ -99,13 +99,13 @@ const personalData: PersonalData = {
       "Terraform",
       "K8s",
       "NGinx",
-      "Cloudflared",
+      "Cloudflare",
     ],
   },
 
   projects: [
     {
-      title: "Portfolio Website",
+      title: "Portfolio Website(This Website)",
       description:
         "My personal portfolio website to contain blogs and projects.",
       techStack: ["React", "Node", "Express"],
