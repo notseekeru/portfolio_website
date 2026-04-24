@@ -4,7 +4,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
 import contactRoute from "./routes/contact.js";
-import type { NextFunction, Request, Response } from "express";
+import type { Request, Response } from "express";
 
 dotenv.config();
 
@@ -37,7 +37,7 @@ interface RequestError extends Error {
   type?: string;
 }
 
-app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+app.use((err: unknown, _req: Request, res: Response) => {
   const requestError = err as RequestError;
   const status =
     typeof requestError.status === "number"

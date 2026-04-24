@@ -108,10 +108,18 @@ const personalData: PersonalData = {
     {
       title: "Portfolio Website (This Website)",
       description:
-        "My personal portfolio website to contain blogs and projects.",
-      techStack: ["React", "Node", "Express"],
+        "My personal portfolio website to contain blogs, projects, and resume.",
+      techStack: ["Vite", "TypeScript", "React", "Node", "Express"],
       link: "https://portfolio.seekeru.tech",
       image: "/1.png",
+    },
+    {
+      title: "PC Building Business Website",
+      description:
+        "A website for my local PC building business to showcase my services and builds.",
+      techStack: ["React", "Node.js", "Express", "SQLite"],
+      link: "https://shop.seekeru.tech",
+      image: "/2.png",
     },
   ],
 };
