@@ -9,7 +9,7 @@ RUN chown node:node /app
 
 USER node
 
-RUN npm install
+RUN npm ci
 
 COPY --chown=node:node . . 
 
