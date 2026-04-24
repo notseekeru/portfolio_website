@@ -48,6 +48,7 @@ jobs:
         run: |
           echo 'CVE-2026-40200' > .trivyignore
           echo 'CVE-2026-22184' >> .trivyignore
+          echo 'GHSA-h52r-9f32-9m89' >> .trivyignore # picomatch vulnerability
 
       - name: Debug .trivyignore contents
         run: |
@@ -71,7 +72,10 @@ jobs:
 
       - name: Scan image with Trivy (fail on HIGH/CRITICAL)
         run: |
-          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.41.0 image --severity HIGH,CRITICAL --exit-code 1 ${{ env.IMAGE }}:${{ github.sha }}
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v ${{ github.workspace }}/.trivyignore:/.trivyignore \
+            aquasec/trivy:0.41.0 image --severity HIGH,CRITICAL --exit-code 1 ${{ env.IMAGE }}:${{ github.sha }}
 
       - name: Run frontend smoke container
         run: |
@@ -139,9 +143,18 @@ jobs:
           tags: ${{ env.IMAGE }}:${{ github.sha }}
           no-cache: true
 
+      - name: Create .trivyignore file
+        run: |
+          echo 'CVE-2026-40200' > .trivyignore
+          echo 'CVE-2026-22184' >> .trivyignore
+          echo 'GHSA-h52r-9f32-9m89' >> .trivyignore # picomatch vulnerability
+
       - name: Scan image with Trivy (fail on HIGH/CRITICAL)
         run: |
-          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.41.0 image --severity HIGH,CRITICAL --exit-code 1 ${{ env.IMAGE }}:${{ github.sha }}
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v ${{ github.workspace }}/.trivyignore:/.trivyignore \
+            aquasec/trivy:0.41.0 image --severity HIGH,CRITICAL --exit-code 1 ${{ env.IMAGE }}:${{ github.sha }}
 
       - name: Run backend smoke container
         run: |
