@@ -1,15 +1,17 @@
-# --- BASE IMAGE
+# --- BASE IMAGE FOR BACKEND
 FROM node:lts-alpine3.22 AS base
 
 WORKDIR /app
 
 COPY --chown=node:node package*.json ./
 
-RUN npm ci
-
-COPY --chown=node:node . . 
+RUN chown node:node /app
 
 USER node
+
+RUN npm install
+
+COPY --chown=node:node . . 
 
 # --- DEV // RUN AS NODE USER
 FROM base AS dev
@@ -33,7 +35,7 @@ RUN mkdir /app && chown node:node /app
 
 WORKDIR /app
 
-COPY --from=prune --chown=node:node /app .
+COPY --from=prune /app .
 
 USER node
 
