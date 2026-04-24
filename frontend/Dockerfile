@@ -1,5 +1,7 @@
 # --- BASE IMAGE FOR FRONTEND
-FROM node:lts-alpine3.22 AS base
+FROM node:lts-alpine3.23 AS base
+
+RUN apk add --no-cache --upgrade musl musl-utils zlib
 
 WORKDIR /app
 

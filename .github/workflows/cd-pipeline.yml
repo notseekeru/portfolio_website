@@ -1,10 +1,5 @@
 name: CD
 
-# Build and push Docker images for frontend & backend to GHCR.
-# Manual-only workflow: build a local single-arch image for smoke tests
-# (loaded into the runner), then push a multi-arch image (amd64 + arm64)
-# to GHCR using Buildx + QEMU. No path filtering, no concurrency, no auto-promotion.
-
 on:
   workflow_dispatch:
     inputs:
@@ -37,21 +32,17 @@ jobs:
         run: echo "IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/portfolio-frontend" >> $GITHUB_ENV
 
       - name: Set up QEMU (for arm/amd64 cross-builds)
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Log in to registry (GHCR)
-        uses: docker/login-action@v2
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      # To use a custom registry, replace the above with:
-      # registry: ${{ secrets.REGISTRY_HOST }}
-      # username: ${{ secrets.REGISTRY_USERNAME }}
-      # password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Build local image for smoke test (single-arch, load into daemon)
         uses: docker/build-push-action@v4
@@ -61,7 +52,6 @@ jobs:
           load: true
           push: false
           tags: ${{ env.IMAGE }}:${{ github.sha }}
-          # For faster local builds, you may set: platforms: linux/amd64
 
       - name: Scan image with Trivy (fail on HIGH/CRITICAL)
         run: |
@@ -110,21 +100,17 @@ jobs:
         run: echo "IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/portfolio-backend" >> $GITHUB_ENV
 
       - name: Set up QEMU (for arm/amd64 cross-builds)
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Log in to registry (GHCR)
-        uses: docker/login-action@v2
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      # To use a custom registry, replace the above with:
-      # registry: ${{ secrets.REGISTRY_HOST }}
-      # username: ${{ secrets.REGISTRY_USERNAME }}
-      # password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Build local image for smoke test (single-arch, load into daemon)
         uses: docker/build-push-action@v4
@@ -134,7 +120,6 @@ jobs:
           load: true
           push: false
           tags: ${{ env.IMAGE }}:${{ github.sha }}
-          # platforms: linux/amd64
 
       - name: Scan image with Trivy (fail on HIGH/CRITICAL)
         run: |
