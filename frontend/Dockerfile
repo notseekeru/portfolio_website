@@ -1,33 +1,29 @@
-FROM node:24-alpine AS base
+# --- BASE IMAGE
+FROM node:lts-alpine3.22 AS base
 
 WORKDIR /app
-
-RUN chown node:node /app
-
-USER node
 
 COPY --chown=node:node package*.json ./
 
 RUN npm ci
 
-#DEV
-FROM base AS dev
-
 COPY --chown=node:node . . 
+
+USER node
+
+# --- DEV
+FROM base AS dev
 
 EXPOSE 5173
 
 CMD ["npm", "run", "dev", "--", "--host"]
 
-
-#BUILDER
+# --- BUILDER
 FROM base AS builder
-
-COPY --chown=node:node . .
 
 RUN npm run build
 
-#PROD
+# --- PROD
 FROM nginxinc/nginx-unprivileged:1.29.5-alpine AS prod
 
 COPY --from=builder /app/dist /usr/share/nginx/html

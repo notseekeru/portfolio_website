@@ -1,40 +1,40 @@
-#BASE IMAGE FOR DEV AND PRUNE STAGE
-FROM node:24-alpine AS base
+# --- BASE IMAGE
+FROM node:lts-alpine3.22 AS base
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY --chown=node:node package*.json ./
 
 RUN npm ci
 
-#DEV // RUN AS NODE USER
-FROM base AS dev
+COPY --chown=node:node . . 
 
 USER node
 
-COPY --chown=node:node . . 
+# --- DEV // RUN AS NODE USER
+FROM base AS dev
 
 EXPOSE 5000
 
 CMD ["npm", "run", "dev"]
 
-#PRUNE // STAY AS ROOT USER
+# --- PRUNE // RUN AS NODE USER
 FROM base AS prune
-
-COPY . .
 
 RUN npm run build && npm prune --omit=dev
 
-#PROD // RUN AS NODE USER
-FROM node:24-alpine AS prod
+# --- PROD NEW IMAGE // RUN AS NODE USER
+FROM node:lts-alpine3.22 AS prod
 
 ENV NODE_ENV=production
 
-USER node
-
 #SET ANOTHER WORKDIR BECAUSE YOU HAVE STARTED A NEW IMAGE
+RUN mkdir /app && chown node:node /app
+
 WORKDIR /app
 
 COPY --from=prune --chown=node:node /app .
+
+USER node
 
 CMD ["node", "./dist/server.js"]
