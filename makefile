@@ -19,5 +19,17 @@ dev-logs:
 dev-down:
 	$(DEV_CMD) down -v --rmi local
 
+prod-build:
+	$(PROD_CMD) build
+
+prod-buildcache:
+	$(PROD_CMD) build --no-cache
+
 prod-up:
 	$(PROD_CMD) up -d
+
+prod-logs:
+	$(PROD_CMD) logs -f
+
+prod-down:
+	$(PROD_CMD) down -v --rmi local
