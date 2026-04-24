@@ -7,7 +7,7 @@ dev-build:
 dev-buildcache:
 	$(DEV_CMD) build --no-cache
 
-dev-clean:
+dev-down:
 	$(DEV_CMD) down -v --rmi local
 
 dev-up:
@@ -17,7 +17,7 @@ dev-logs:
 	$(DEV_CMD) logs -f
 
 dev-down:
-	$(DEV_CMD) down
+	$(DEV_CMD) down -v --rmi local
 
 prod-up:
 	$(PROD_CMD) up -d
