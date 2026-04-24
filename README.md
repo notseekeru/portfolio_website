@@ -1,4 +1,5 @@
 Network Flow
+
 Cloudflare Tunnel (cloudflared) -> Master Nginx (reverse proxy) -> Slave Nginx (serving frontend) + Backend API (Node.js application)
 
 TechStack
