@@ -19,34 +19,34 @@ I decided to decommission the "default-permit" mindset and rebuild my server's s
 
 ## The Audit: Identifying the Attack Surface
 
-Using `ss -tupln`, I audited my listening ports and found several services exposing unnecessary surfaces.
-
-Other commands I used for the audit:
-
-```bash
-# Verify listening ports
-ss -tupln
-# UFW Commands
-sudo ufw status verbose # Check current firewall status
-sudo ufw allow 22/tcp # Allow SSH
-sudo ufw default deny incoming # Deny all incoming by default
-sudo ufw default allow outgoing # Allow all outgoing by default
-sudo ufw enable # Enable the firewall
-# Audit service logs
-journalctl -u tailscaled --since "1 hour ago"
-```
-
 **The Problem:** Every open port is a potential entry point for unauthorized lateral movement.
 
 **The Audit:** Performed a full audit of running services, group permissions, and user accounts.
 
-**The Hardening:**
+**The Hardening:** Before enabling UFW, double-check that /etc/ssh/sshd_config has Port 223 set and you have restarted the service. This ensures you don't lock yourself out when you enable the firewall.
 
 - Enforced non-root user management for all persistent processes.
 - Implemented a "Defense in Depth" strategy using UFW with a strict default-deny policy.
 - SSH Key-based authentication only, with port forwarding disabled and root login prohibited.
 - Eliminated `password-based SSH` access in favor of hardened key-based authentication.
 - Public Access is None thanks to Tailscale, which provides a secure, encrypted bridge between my local desktop and the Raspberry Pi.
+
+Using `sudo ss -tupln`, I audited my listening ports and found several services exposing unnecessary surfaces.
+
+Other commands I used for the audit:
+
+```bash
+# Verify listening ports
+sudo ss -tupln
+# UFW Commands
+sudo ufw status verbose # Check current firewall status
+sudo ufw allow 223/tcp # Allow SSH on port 223
+sudo ufw default deny incoming # Deny all incoming by default
+sudo ufw default allow outgoing # Allow all outgoing by default
+sudo ufw enable # Enable the firewall
+# Audit service logs
+journalctl -u tailscaled --since "1 hour ago"
+```
 
 ---
 

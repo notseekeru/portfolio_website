@@ -55,11 +55,11 @@ CMD ["node", "./dist/server.js"]
 
 - **Docker Compose:** Shifted from using a single compose file for both dev and production to separate, well-defined compose files. This allows for more flexible and maintainable configurations. For example:
 
-  ```text
-  compose.yml; // Base stage and inherits
-  compose.dev.yml; // Dev stage, inherits from base, adds dev-specific services and configurations
-  compose.prod.yml; // Prod stage, inherits from base, adds prod-specific services and configurations
-  ```
+```yml
+compose.yml; // Base stage and inherits
+compose.dev.yml; // Dev stage, inherits from base, adds dev-specific services and configurations
+compose.prod.yml; // Prod stage, inherits from base, adds prod-specific services and configurations
+```
 
 ## Docker Security
 
