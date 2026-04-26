@@ -18,20 +18,23 @@ System Stack
 - Local Desktop (running the frontend and backend applications)
 - Internal networking (for communication between containers and services)
 
-Lingos
+Curl commands:
 
-- Demitelarized zone: A network architecture where the frontend and backend services are separated into different zones, enhancing security and scalability.
-- Network hops: The number of intermediary steps or devices that data must pass through to reach its destination. In this context, it refers to the path from the user's browser to the backend application.
-- Network segmentation: The practice of dividing a network into smaller, isolated segments to improve security and performance. In this architecture, different segments are used for the tunnel edge, gateway, and application services.
-- Cross-origin resource sharing (CORS): A security feature implemented by web browsers to restrict web pages from making requests to a different domain than the one that served the web page. In this architecture, CORS is configured to allow communication between the frontend and backend services.
-- Xss (Cross-site scripting): A security vulnerability that allows attackers to inject malicious scripts into web pages viewed by other users. In this architecture, security measures are implemented to prevent XSS attacks.
-- Reverse proxy: A server that sits in front of web servers and forwards client requests to those web servers. In this architecture, Nginx is used as a reverse proxy to route traffic to the appropriate services.
-- Encrypted bridge: A secure communication channel that encrypts data as it travels between two points. In this architecture, Tailscale is used to create an encrypted bridge between the Raspberry Pi and the local desktop.
-- Containerization: The process of packaging an application and its dependencies into a container, allowing for consistent deployment across different environments. In this architecture, Docker is used to containerize the backend application.
-- Cloudflare Tunnel: A service that allows you to securely expose your local server to the internet without opening ports on your router. In this architecture, cloudflared is used to create a secure tunnel from the Raspberry Pi to the Cloudflare edge.
+- To test the backend API endpoint:
+
+  ```bash
+    curl -I https://portfolio.seekeru.tech
+  ```
 
 Todos:
 
 - N8N integration for contact form submissions using webhooks and secure headers.
 - Implementing security measures to prevent XSS attacks and ensure secure communication between frontend and backend services.
 - Dependabot in GitHub for automated dependency updates and security patches.
+- implement hsts headers for better security. why? HSTS (HTTP Strict Transport Security) is a security feature that forces web browsers to only communicate with the server over HTTPS, preventing man-in-the-middle attacks and ensuring that all data transmitted between the client and server is encrypted. By implementing HSTS headers, you can enhance the security of your website and protect your users' data from potential threats.
+- ssllabs for testing ssl configuration and security headers.
+- Implementing a monitoring solution to track the performance and health of the backend application and the overall system.
+- uptime kuma for monitoring system uptime and performance that sends to my Slack channel.
+- Implementing a logging solution to capture and analyze logs from the backend application and the Nginx reverse proxy for troubleshooting and performance optimization.
+- look at how the CNCF (Cloud Native Computing Foundation) handles these things. Compare your Nginx patterns to the Nginx Ingress Controller documentation.
+- Mermaid Diagram Section for my homelab so recruiters can see my understanding of networking and infrastructure. This will be a visual representation of the architecture and flow of the system, showcasing the different components and how they interact with each other.
