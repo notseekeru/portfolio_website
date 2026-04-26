@@ -1,19 +1,74 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
+import { createRoot, Root } from "react-dom/client";
 import { motion } from "framer-motion";
 import Prism from "prismjs";
+import mermaid from "mermaid";
+import InteractiveMermaid from "../components/InteractiveMermaid";
 import { getBlogBySlug } from "../utils/blogLoader";
 import { parseMarkdown } from "../utils/markdown";
 import type { SyntheticEvent } from "react";
+
+mermaid.initialize({
+  startOnLoad: false,
+  theme: "dark",
+});
 
 export default function BlogPost() {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const { slug } = useParams<{ slug: string }>();
   const post = getBlogBySlug(slug ?? "");
+  const mermaidRootsRef = useRef<Root[]>([]);
 
   useEffect(() => {
     if (!contentRef.current) return;
+
+    // Clean up previous dynamically inserted roots
+    mermaidRootsRef.current.forEach((root) =>
+      setTimeout(() => root.unmount(), 0),
+    );
+    mermaidRootsRef.current = [];
+
     Prism.highlightAllUnder(contentRef.current);
+
+    // Instead of querying ".mermaid" and modifying the parent class (which breaks strict-mode double renders),
+    // query by a custom data attribute on the div that we can safely mutate contents for without losing its identity
+    const mermaidNodes = contentRef.current.querySelectorAll(
+      "div.mermaid, div[data-mermaid-processed]",
+    );
+
+    if (mermaidNodes.length > 0) {
+      mermaidNodes.forEach((node) => {
+        // Tag the node so it's found across strict-mode cleanups
+        node.setAttribute("data-mermaid-processed", "true");
+        node.classList.remove("mermaid"); // Still remove to avoid other css, but we can query by data attribute
+
+        // Read the pure unrendered text content unless we already stored it
+        let chartCode = node.getAttribute("data-mermaid-code");
+        if (!chartCode) {
+          chartCode = node.textContent || "";
+          node.setAttribute("data-mermaid-code", chartCode);
+        }
+
+        // Empty the container for the new React root
+        node.textContent = "";
+
+        // Render interactive React root inside the DOM node
+        const childContainer = document.createElement("div");
+        node.appendChild(childContainer);
+
+        const root = createRoot(childContainer);
+        mermaidRootsRef.current.push(root);
+        root.render(<InteractiveMermaid chart={chartCode} />);
+      });
+    }
+
+    return () => {
+      mermaidRootsRef.current.forEach((root) =>
+        setTimeout(() => root.unmount(), 0),
+      );
+      mermaidRootsRef.current = [];
+    };
   }, [slug, post?.content]);
 
   if (!post) {

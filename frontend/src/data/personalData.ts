@@ -117,7 +117,7 @@ const personalData: PersonalData = {
       title: "PC Building Business Website",
       description:
         "A website for my local PC building business to showcase my services and builds.",
-      techStack: ["React", "Node.js", "Express", "SQLite"],
+      techStack: ["React", "Node.js", "Express"],
       link: "https://shop.seekeru.tech",
       image: "/2.png",
     },

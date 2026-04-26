@@ -102,8 +102,13 @@ function parseMarkdown(md: string): string {
         i++;
       }
       i++;
-      const highlighted = highlightCode(code, language);
-      html += `<pre class="blog-code-block"><code class="${highlighted.className}">${highlighted.html}</code></pre>`;
+
+      if (language === "mermaid") {
+        html += `<div class="mermaid">${escapeHtml(code)}</div>`;
+      } else {
+        const highlighted = highlightCode(code, language);
+        html += `<pre class="blog-code-block"><code class="${highlighted.className}">${highlighted.html}</code></pre>`;
+      }
       continue;
     }
 
