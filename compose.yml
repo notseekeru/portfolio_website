@@ -16,4 +16,4 @@ services:
 
 networks:
   portfolio_website:
-    external: true
+    driver: bridge
