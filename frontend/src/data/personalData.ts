@@ -63,7 +63,7 @@ const personalData: PersonalData = {
   bio: "Passionate about building reliable and scalable systems, I am a Site Reliability Engineer with a strong background in software development and DevOps practices. With experience in designing and maintaining complex infrastructures, I thrive on securing cloud/physical environments and ensuring seamless user experiences. My expertise includes cloud computing, automation, and monitoring, allowing me to proactively identify and resolve issues while continuously improving system reliability.",
   background:
     "I am a Computer Engineering undergraduate student with a obession for technology. I have a strong passion for learning and exploring various fields in technology, from software development to hardware tinkering. I am driven by a desire to understand how things work under the hood and to create innovative solutions that can make a positive impact.",
-  profilePicture: "/profile.png",
+  profilePicture: "/profile2.png",
 
   get age(): number {
     const birthYear = 2006;
