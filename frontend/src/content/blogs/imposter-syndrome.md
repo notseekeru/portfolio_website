@@ -1,31 +1,29 @@
 ---
-title: Love Hate Perfectionism
+title: Imposter Syndrome
 date: 2026-04-25
 description: Escaping the AI-generated "blackbox" to build a deterministic, hardened proxy chain and segmented network on a Raspberry Pi 5.
-image: /blog/images/04.png
+image: "https://png.pngtree.com/png-vector/20220621/ourmid/pngtree-man-breaks-theatrical-mask-to-conquer-imposter-syndrome-vector-png-image_47229500.jpg"
 ---
 
 # Summary
 
-This article chronicles a pivotal refactoring of my portfolio website. What started as an abstracted, AI-"vibe-coded" application evolved into an opaque blackbox that I frankly didn't fully understand. Driven by perfectionism, QA paranoia, and performance anxiety, I tore it down and rebuilt it. This narrative covers dismantling complex logic to reconstruct the infrastructure from the bottom up—establishing strict Docker network segmentations, navigating Raspberry Pi 5 SSD storage limits, and mastering raw proxy chains from Cloudflare down to Nginx.
+This article chronicles a pivotal refactoring of my portfolio website. What started as an abstracted, Imposter Syndrome reinforced by AI-Generated code, suggestions and Confusion. Driven by perfectionism, QA paranoia, and security anxiety, I tore it down and rebuilt it. This narrative covers complex logic to reconstruct the infrastructure from the bottom up—establishing strict Docker network segmentations, ci-cd pipelines, Raw Nginx configurations, and mastering raw proxy chains from Cloudflare down to Nginx.
 
 ---
 
 # Escaping the Blackbox
 
-The architectural journey began a month prior when I migrated away from expensive, abstracted Vercel infrastructure to a self-hosted Raspberry Pi setup. To compensate for the new self-hosted learning curve, I relied heavily on AI to "vibe code" features and complex integrations—like Google APIs for a chatbot system—at breakneck speed.
+The architectural journey began a month prior when I migrated away from expensive, abstracted Vercel infrastructure to a self-hosted Raspberry Pi setup. To compensate for the new self-hosted infrastructure and TSX Refactoring, I relied heavily on AI to "vibe code" my networking features and complex integrations and "good" code suggestions.
 
-At first, AI generation genuinely felt like a superpower. Features were shipping at lightspeed. But the abstraction had a hidden cost.
+At first, AI generation genuinely felt like a superpower. Features were shipping at Fast. But the abstraction, Lack of understanding, and code quality had a hidden cost.
 
-It started innocently—asking an AI to write a raw Nginx script via PowerShell. Hours later, I discovered it had saved the configuration in UTF-16 instead of UTF-8, breaking the entire gateway in a way I couldn't initially diagnose. When deeper state-recreation issues arose between my backend routing and Cloudflare tunnels, the illusion completely shattered. I looked at my own codebase and realized I was staring into a blackbox.
-
-There is a profound, suffocating discomfort in not understanding your own work. The anxiety of taking a brittle, opaque system into production—especially one with open ports—forced me to stop. I had to rip out the complex, unnecessary layers, including my neat little chatbot, and start over from the conceptual bottom.
+There is a profound, suffocating discomfort in not understanding your own work at the deepest level. The anxiety of taking a brittle, opaque system into production forced me to stop. I had to rip out the complex, unnecessary layers, including my neat little chatbot, and start over from the conceptual bottom.
 
 ## The Paradox of Perfectionism
 
 This teardown triggered my old nemesis: perfectionism. I wanted the network to be flawless. I wanted my Ansible playbooks and Pi deployments to be bulletproof. I spent days rigoring my QA process, manually testing rate limits, testing maximum payload sizes, and implementing UFW rules until I was paralyzed by the sheer volume of "what-ifs."
 
-But perfectionism is a double-edged sword. On one hand, it kept me in maintenance mode, endlessly polishing configurations instead of shipping content. On the other hand, it was precisely that paranoia—that obsessive need to thoroughly understand the _why_ and _how_ behind Nginx configs and Docker segmentations—that broke open the blackbox. It forced me to learn the very networking foundations that AI had so conveniently abstracted away.
+But perfectionism is a double-edged sword. On one hand, it kept me in maintenance mode, endlessly polishing configurations instead of shipping content. On the other hand, it was precisely that paranoia—that obsessive need to thoroughly understand the _why_ and _how_ behind Nginx configs and Docker segmentations—that broke open the blackbox. It forced me to learn the very networking foundations that AI had so conveniently fed to me.
 
 ## Rebuilding the Foundation: The Proxy Chain
 
@@ -36,7 +34,10 @@ Configuring this manually built muscle memory. I enforced headers, real IPs, and
 ```nginx
 # nginx.conf
 server {
-    # This is just a snippet of the specific server block for the portfolio domain(./nginx/con.f/portfolio.conf). The full configuration(./nginx.conf) and some h5bp includes additional security hardening and optimizations.
+    # This is just a snippet of the specific server block for the portfolio
+    domain (./nginx/con.f/portfolio.conf).
+    # The full configuration(./nginx.conf) and some h5bp includes additional
+    security hardening and optimizations.
 
     listen 80;
     server_name portfolio.seekeru.tech;
@@ -96,7 +97,12 @@ services:
   frontend:
     image: ghcr.io/my-portfolio/frontend:latest
     networks:
-      - frontend_net # Cannot be reached directly from the host
+      - frontend_net # Cannot be reached directly from the host and cannot reach the backend
+
+  backend:
+    image: ghcr.io/my-portfolio/backend:latest
+    networks:
+      - backend_net # Cannot be reached directly from the host and cannot reach the frontend
 
 networks:
   edge:
@@ -111,16 +117,36 @@ networks:
 
 Running workloads on a Raspberry Pi 5 introduces hardware constraints, specifically concerning SSD storage capacity and IOPS exhaustion over time. Building natively on the Pi previously resulted in bloated 1GB images that choked my initial deployments.
 
-Building upon my earlier multi-stage isolation strategies (separating base, dev, prune, and prod layers to run as `non-root`), I fully offloaded the continuous delivery process. I implemented GitHub Container Registry (GHCR) for remote image storage and Docker Buildx with QEMU to natively support cross-platform ARM and AMD64 deployments.
+Building upon my earlier multi-stage isolation strategies (separating base, dev, prune, and prod layers to run as `non-root`), I fully offloaded the continuous delivery process. I implemented GitHub Container Registry (GHCR) for remote image storage and Docker Buildx with QEMU to natively support cross-platform ARM and AMD64 (Because I need to develop on x64) deployments.
 
 I also integrated Trivy into the CD pipeline for CVE and Secret scanning. Realizing that "zero vulnerabilities" is an unattainable ideal that blocks production, I implemented a blast-radius mitigation strategy, deliberately bypassing low-impact base-image CVEs (e.g., `musl`, `zlib`, `picomatch`) locally so we can deploy efficiently while remaining guarded against critical application-level threats.
 
-```bash
-# Push multi-arch to GHCR, saving Pi SSD space
-docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/my-portfolio/app:latest --push .
+```yml
+# Push multi-arch to GHCR, then pull and run on the Pi
+- name: Push multi-arch image to registry (amd64 + arm64)
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE }}:latest
 
-# Trivy execution: High/Crit only, ignore unfixed system libs
-trivy image --severity HIGH,CRITICAL --ignore-unfixed --skip-files "musl,zlib,picomatch" ghcr.io/my-portfolio/app:latest
+# Trivy execution: High/Crit only, ignore unpatchable base image CVEs
+- name: Create .trivyignore file
+  run: |
+    echo 'CVE-2026-33671' >> .trivyignore # picomatch vulnerability
+
+- name: Scan image with Trivy (fail on HIGH/CRITICAL)
+  run: |
+    docker run --rm \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -v ${{ github.workspace }}/.trivyignore:/.trivyignore \
+      aquasec/trivy:0.41.0 image --severity HIGH,CRITICAL --exit-code 1 ${{ env.IMAGE }}:${{ github.sha }}
+
+# Note that you should also smoke test the image before pushing to production.
 ```
 
 The Pi now acts entirely as a lightweight pull-node using Watchtower.

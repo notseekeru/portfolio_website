@@ -2,7 +2,7 @@
 title: The First Hurdle
 date: 2026-02-25
 description: How I designed and built my first live website.
-image: /blog/images/01.png
+image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfM21gdAKGbsc4tUO29PLVGvmI5dPHZeN_xg&s"
 ---
 
 ---

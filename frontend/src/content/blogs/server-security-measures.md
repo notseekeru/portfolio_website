@@ -2,7 +2,7 @@
 title: Server Security Measures
 date: 2026-04-12
 description: Transforming a standard Linux server into a hardened, production-ready edge gateway.
-image: /blog/images/03.png
+image: "https://dreamix.eu/wp-content/uploads/2023/09/linux.security.11614.jpg"
 ---
 
 # Summary
