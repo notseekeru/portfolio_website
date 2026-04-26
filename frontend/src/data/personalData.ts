@@ -17,6 +17,12 @@ export interface Skills {
   tools: string[];
 }
 
+export interface InfrastructureItem {
+  role: string;
+  description: string;
+  focus: string[];
+}
+
 export interface ProjectItem {
   title: string;
   description: string;
@@ -41,6 +47,7 @@ export interface PersonalData {
   experience: ExperienceItem[];
   education: EducationItem[];
   skills: Skills;
+  infrastructure: InfrastructureItem[];
   projects: ProjectItem[];
 }
 
@@ -100,12 +107,24 @@ const personalData: PersonalData = {
       "Mermaid",
       "Github Actions",
       "Ansible",
-      "Terraform",
-      "K8s",
       "NGinx",
       "Cloudflare",
     ],
   },
+
+  infrastructure: [
+    {
+      role: "Self-Hosted Infrastructure (RPi5 Lab)",
+      description:
+        "Architected and hardened a production-grade proxy chain environment.",
+      focus: [
+        "Ansible (IaC)",
+        "Docker Compose (Orchestration)",
+        "Network Security (UFW/Tailscale)",
+        "Observability (Prometheus/Loki/Grafana)",
+      ],
+    },
+  ],
 
   projects: [
     {

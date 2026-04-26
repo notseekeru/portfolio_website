@@ -22,6 +22,7 @@
 
 Todos:
 
+- Refactor to fit to a single page design.
 - Add your-workflow-might-be-obsolete and student-workflow blog posts to the website.
 - N8N integration for contact form submissions using webhooks and secure headers.
 - Dependabot in GitHub for automated dependency updates and security patches.
