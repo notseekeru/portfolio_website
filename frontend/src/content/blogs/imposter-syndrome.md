@@ -113,6 +113,38 @@ networks:
     driver: bridge
 ```
 
+## Interactive Visuals of the Architecture
+
+```mermaid
+graph TB
+    classDef clearStyle fill:none,stroke:#fff,stroke-width:2px,color:#fff;
+
+    subgraph 1 [Browser]
+        Client[Client's Browser]
+    end
+
+    subgraph 2 [Cloudflare]
+        CF[Cloudflare Connector]
+    end
+
+    subgraph 3 [Containerized]
+        Tunnel[Cloudflared]
+        Nginx[Nginx Reverse Proxy]
+        Frontend[React Frontend]
+        Backend[Node.js Backend]
+    end
+
+    class 1 clearStyle
+    class 2 clearStyle
+    class 3 clearStyle
+
+    Client -->|HTTPS| CF
+    CF -->|Tunnel| Tunnel
+    Tunnel -->|Proxy| Nginx
+    Nginx -->|Proxy| Frontend
+    Nginx -->|Proxy| Backend
+```
+
 ## Overcoming Hardware Constraints
 
 Running workloads on a Raspberry Pi 5 introduces hardware constraints, specifically concerning SSD storage capacity and IOPS exhaustion over time. Building natively on the Pi previously resulted in bloated 1GB images that choked my initial deployments.
@@ -148,8 +180,6 @@ I also integrated Trivy into the CD pipeline for CVE and Secret scanning. Realiz
 
 # Note that you should also smoke test the image before pushing to production.
 ```
-
-The Pi now acts entirely as a lightweight pull-node using Watchtower.
 
 ## Lessons Learned: Fundamentals Beat Vibe Coding
 

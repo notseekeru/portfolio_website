@@ -37,4 +37,3 @@ Todos:
 - uptime kuma for monitoring system uptime and performance that sends to my Slack channel.
 - Implementing a logging solution to capture and analyze logs from the backend application and the Nginx reverse proxy for troubleshooting and performance optimization.
 - look at how the CNCF (Cloud Native Computing Foundation) handles these things. Compare your Nginx patterns to the Nginx Ingress Controller documentation.
-- Mermaid Diagram Section for my homelab so recruiters can see my understanding of networking and infrastructure. This will be a visual representation of the architecture and flow of the system, showcasing the different components and how they interact with each other.
