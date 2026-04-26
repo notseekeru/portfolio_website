@@ -81,7 +81,7 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
           minScale={0.1}
           maxScale={5}
           centerOnInit={true}
-          wheel={{ step: 0.004, smoothStep: 0.5 }}
+          wheel={{ step: 0.004 }}
           pinch={{ step: 3 }}
         >
           <TransformComponent
