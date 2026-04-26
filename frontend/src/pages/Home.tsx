@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import Hero from "../components/Hero";
 import About from "../components/About";
-import Experience from "../components/Experience";
+import Education from "../components/Education";
 
 export default function Home() {
   return (
@@ -19,7 +19,7 @@ export default function Home() {
       <div className="max-w-6xl mx-auto">
         <Divider />
       </div>
-      <Experience />
+      <Education />
       <div className="max-w-6xl mx-auto">
         <Divider />
       </div>

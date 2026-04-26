@@ -35,6 +35,7 @@ export interface PersonalData {
   facebook: string;
   instagram: string;
   bio: string;
+  background: string;
   profilePicture: string;
   age: number;
   experience: ExperienceItem[];
@@ -45,14 +46,16 @@ export interface PersonalData {
 
 const personalData: PersonalData = {
   name: "Stephen Macabulos",
-  title: "Computer Engineer",
+  title: "Site Reliability Engineer | DevOps | System Administrator",
   location: "Pampanga, Philippines",
   email: "stpmacabulos@gmail.com",
   linkedin: "https://www.linkedin.com/in/stephen-macabulos-192495336/",
   github: "https://github.com/notseekeru",
   facebook: "https://www.facebook.com/notseekeru",
   instagram: "https://www.instagram.com/notseekeru/",
-  bio: "I am a passionate enthusiastic tech person, I love tech and my heart craves for it. Software and Hardware is what I desire and I am aiming to be the best at both worlds.",
+  bio: "Passionate about building reliable and scalable systems, I am a Site Reliability Engineer with a strong background in software development and DevOps practices. With experience in designing and maintaining complex infrastructures, I thrive on securing cloud/physical environments and ensuring seamless user experiences. My expertise includes cloud computing, automation, and monitoring, allowing me to proactively identify and resolve issues while continuously improving system reliability.",
+  background:
+    "I am a Computer Engineering undergraduate student with a obession for technology. I have a strong passion for learning and exploring various fields in technology, from software development to hardware tinkering. I am driven by a desire to understand how things work under the hood and to create innovative solutions that can make a positive impact.",
   profilePicture: "/profile.png",
 
   get age(): number {
@@ -83,7 +86,7 @@ const personalData: PersonalData = {
     {
       institution: "Pampanga State University",
       degree: "B.S in Computer Engineering",
-      duration: "2025 — ----",
+      duration: "2025 — 2029",
     },
   ],
 
@@ -94,7 +97,7 @@ const personalData: PersonalData = {
       "Git",
       "Bash",
       "Docker",
-      "Vercel",
+      "Mermaid",
       "Github Actions",
       "Ansible",
       "Terraform",
@@ -109,7 +112,7 @@ const personalData: PersonalData = {
       title: "Portfolio Website (This Website)",
       description:
         "My personal portfolio website to contain blogs, projects, and resume.",
-      techStack: ["Vite", "TypeScript", "React", "Node", "Express"],
+      techStack: ["Vite", "TypeScript", "React", "Node.js", "Express"],
       link: "https://portfolio.seekeru.tech",
       image: "/1.png",
     },

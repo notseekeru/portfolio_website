@@ -21,16 +21,7 @@ export default function About() {
             A bit about me
           </h2>
           <p className="text-zinc-400 leading-relaxed mb-6">
-            I am a CPE Undergraduate student from Pampanga State University. I
-            love technology regardless if it's hardware or software. I love it
-            so much that I want to learn and be great at all of the fields I am
-            interested in. That dream drives me to continuously improve my
-            skills and knowledge even though it may be far fetched.
-          </p>
-          <p className="text-zinc-500 leading-relaxed text-sm">
-            Based in {personalData.location}. Currently working at{" "}
-            {personalData.experience[0]?.company} as a{" "}
-            {personalData.experience[0]?.title}.
+            {personalData.background}
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
