@@ -49,8 +49,8 @@ export default function About() {
         <div className="grid grid-cols-2 gap-4">
           {[
             {
-              value: `${new Date().getFullYear() - 2026}+`,
-              label: "Years Experience",
+              value: personalData.infrastructure.length, // TODO UPDATE THESE TO HOVER
+              label: "Infrastructure",
               accent: true,
             },
             {
@@ -60,15 +60,14 @@ export default function About() {
             },
             {
               value:
-                personalData.skills.languages.length +
                 personalData.skills.frameworks.length +
                 personalData.skills.tools.length,
-              label: "Technologies",
+              label: "Tools & Frameworks",
               accent: true,
             },
             {
-              value: personalData.experience.length - 1,
-              label: "Companies",
+              value: personalData.skills.languages.length,
+              label: "Languages",
               accent: true,
             },
           ].map((stat) => (

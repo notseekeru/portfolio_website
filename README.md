@@ -23,6 +23,11 @@
 Todos:
 
 - Refactor to fit to a single page design.
+- Add Section to prefer remote work and you can work from anywhere.
+- Add where you're currently located and your timezone.
+- Remove Experience section and and company component. Replace it with Infrastructure, Projects, Primary Tools, and Supporting Tools. Make it hover interactive that pops up a small overview of the project or tool when you hover over it.
+- Add Interactive Mermaid Diagrams for the infrastructure and CI/CD pipelines.
+- Add `Labs` section for a full diagram breakdown of my whole homelab infrastructure, including the Raspberry Pi, Tailscale, Cloudflare Tunnel, and Nginx setup.
 - Add your-workflow-might-be-obsolete and student-workflow blog posts to the website.
 - N8N integration for contact form submissions using webhooks and secure headers.
 - Dependabot in GitHub for automated dependency updates and security patches.

@@ -7,7 +7,7 @@ image: "https://png.pngtree.com/png-vector/20220621/ourmid/pngtree-man-breaks-th
 
 # Summary
 
-This article chronicles a pivotal refactoring of my portfolio website. What started as an abstracted, Imposter Syndrome reinforced by AI-Generated code, suggestions and Confusion. Driven by perfectionism, QA paranoia, and security anxiety, I tore it down and rebuilt it. This narrative covers complex logic to reconstruct the infrastructure from the bottom up—establishing strict Docker network segmentations, ci-cd pipelines, Raw Nginx configurations, and mastering raw proxy chains from Cloudflare down to Nginx.
+This article linearly narrates a pivotal refactoring of my portfolio website. What started as an abstracted, Imposter Syndrome reinforced by AI-Generated code, suggestions and Confusion. Driven by perfectionism, QA paranoia, and security anxiety, I tore it down and rebuilt it. This narrative covers complex logic to reconstruct the infrastructure from the bottom up, establishing strict Docker network segmentations, ci-cd pipelines, Raw Nginx configurations, and mastering raw proxy chains from Cloudflare down to Nginx Reverse Proxy.
 
 ---
 
@@ -23,21 +23,19 @@ There is a profound, suffocating discomfort in not understanding your own work a
 
 This teardown triggered my old nemesis: perfectionism. I wanted the network to be flawless. I wanted my Ansible playbooks and Pi deployments to be bulletproof. I spent days rigoring my QA process, manually testing rate limits, testing maximum payload sizes, and implementing UFW rules until I was paralyzed by the sheer volume of "what-ifs."
 
-But perfectionism is a double-edged sword. On one hand, it kept me in maintenance mode, endlessly polishing configurations instead of shipping content. On the other hand, it was precisely that paranoia—that obsessive need to thoroughly understand the _why_ and _how_ behind Nginx configs and Docker segmentations—that broke open the blackbox. It forced me to learn the very networking foundations that AI had so conveniently fed to me.
+But perfectionism is a double-edged sword. On one hand, it kept me in maintenance mode, endlessly polishing configurations instead of shipping content. On the other hand, it was precisely that paranoia.that obsessive need to thoroughly understand the `why` and `how` behind Nginx configs and Docker segmentations. It forced me to learn the very networking foundations that AI had so conveniently fed to me.
 
-## Rebuilding the Foundation: The Proxy Chain
+## The Proxy Chain
 
-I abandoned abstracted, AI-generated proxying rules. Instead, I established a strict, linear proxy chain that I explicitly controlled. Public traffic now hits the Cloudflare Edge, tunnels securely into the internal network via `cloudflared`, lands on a dedicated `Nginx` reverse proxy acting as the edge gateway, and only then gets routed to the internal Vite/React website.
+I abandoned garbage, AI-generated proxying rules. Instead, I established a strict, linear proxy chain that I explicitly controlled. Public traffic now hits the Cloudflare Edge, tunnels securely into the internal network via `cloudflared`, lands on a dedicated `Nginx` reverse proxy acting as the edge gateway, and only then gets routed to the internal Vite/React website.
 
-Configuring this manually built muscle memory. I enforced headers, real IPs, and strict network policies resulting in a flawless HTTP 200 health check and an SSL Labs 'A' (Because I didn't implement all security measures needed inside the cloudflare Dashboard, I think it was HSTS. Im not sure, not a Security Guy) rating on the first try.
+Configuring this manually built muscle memory. I enforced headers, real IPs, and strict network policies resulting in a flawless HTTP 200 health check and an SSL Labs 'A' (Because I didn't implement all security measures needed inside the cloudflare Dashboard, I think it was that my HSTS was turned off.) rating on the first try.
 
 ```nginx
 # nginx.conf
 server {
-    # This is just a snippet of the specific server block for the portfolio
-    domain (./nginx/con.f/portfolio.conf).
-    # The full configuration(./nginx.conf) and some h5bp includes additional
-    security hardening and optimizations.
+    # This is just a snippet of the specific server block for the portfolio domain (./nginx/con.f/portfolio.conf).
+    # The full configuration(./nginx.conf) and some h5bp includes additional security hardening and optimizations.
 
     listen 80;
     server_name portfolio.seekeru.tech;
@@ -71,16 +69,16 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
-    include h5bp/basic.conf;
-    include h5bp/location/security_file_access.conf;
+    include h5bp/basic.conf; // Common security headers and optimizations. The configuration is based on the h5bp project, which provides a set of best practices for securing and optimizing web servers.
+    include h5bp/location/security_file_access.conf; // Prevent access to sensitive files
 }
 ```
 
-_Note: Propagating `X-Forwarded-For` explicitly allowed Express to apply `app.set('trust proxy', 1)`, preventing the internal rate limiter from mistakenly blocking the Nginx Gateway IP._
+**Note: Propagating `X-Forwarded-For` explicitly allowed Express to apply `app.set('trust proxy', 1)`, preventing the internal rate limiter from mistakenly blocking the Nginx Gateway IP.**
 
 ## Segmenting the Network boundaries
 
-To enforce these new routing rules, the entire application stack was re-orchestrated into a unified Docker Compose file. We implemented discrete software-defined networks: `edge`, `frontend_net`, and `backend_net`. Containers can only communicate within their assigned lanes, effectively isolating potential blast radii.
+To enforce these new routing rules, the entire application stack was re-orchestrated into a unified Docker Compose file. We implemented discrete software-defined networks: `edge`, `frontend_net`, and `backend_net`. Containers can only communicate within their assigned lanes, effectively isolating potential blast radius.
 
 ```yaml
 # compose.yml snippet
@@ -187,4 +185,4 @@ At some point during the endless cycle of `docker compose down` and `docker comp
 
 Accepting that AI output isn't a substitute for systemic comprehension was a hard lesson, but an essential one. Sometimes, avoiding complexity is just an excuse to stay in our comfort zones. AI forced me to generate code I couldn't comprehend, which in turn forced me to rip it out and learn it from the ground up.
 
-I’m deliberately carving my path toward becoming a Systems Architect. To get there, I don't need to write flawless code on the first try, nor do I need an AI to magically solve my networking woes. I need the resilience to break things apart, the humility to embrace the boring fundamentals, and the wisdom to know that true security isn't just about firewall rules—it's about deeply understanding the blackbox until it isn't a blackbox anymore.
+I’m deliberately carving my path toward becoming a Systems Architect. To get there, I don't need to write flawless code on the first try, nor do I need an AI to magically solve my networking gaps. I need the resilience to break things apart, the humility to embrace the boring fundamentals, and the wisdom to know that true security isn't just about firewall rules, it's about deeply understanding the blackbox until it isn't a blackbox anymore.

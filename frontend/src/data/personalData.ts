@@ -60,9 +60,9 @@ const personalData: PersonalData = {
   github: "https://github.com/notseekeru",
   facebook: "https://www.facebook.com/notseekeru",
   instagram: "https://www.instagram.com/notseekeru/",
-  bio: "Passionate about building reliable and scalable systems, I am a Site Reliability Engineer with a strong background in software development and DevOps practices. With experience in designing and maintaining complex infrastructures, I thrive on securing cloud/physical environments and ensuring seamless user experiences. My expertise includes cloud computing, automation, and monitoring, allowing me to proactively identify and resolve issues while continuously improving system reliability.",
+  bio: "Building reliable and scalable systems, I am a Site Reliability Engineer with a strong background in software development and DevOps practices. With experience in designing and maintaining complex infrastructures, I thrive on securing cloud/physical environments and ensuring seamless user experiences. My expertise includes cloud computing, automation, and monitoring, allowing me to proactively identify and resolve issues while continuously improving system reliability.",
   background:
-    "I am a Computer Engineering undergraduate student with a obession for technology. I have a strong passion for learning and exploring various fields in technology, from software development to hardware tinkering. I am driven by a desire to understand how things work under the hood and to create innovative solutions that can make a positive impact.",
+    "I am a Computer Engineering undergraduate student with a obession for technology. I have a strong obsession(not passion) for learning and exploring various fields in technology, from software development to hardware tinkering. I am driven by a desire to understand how things work under the hood and to create innovative solutions that can make a positive impact. I currently operate a self-hosted homelab infrastructure, where I experiment with various technologies and build projects that showcase my skills and creativity. I am always eager to take on new challenges and expand my knowledge in the ever-evolving world of technology.",
   profilePicture: "/profile2.png",
 
   get age(): number {

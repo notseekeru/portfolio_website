@@ -53,6 +53,8 @@ USER node
 CMD ["node", "./dist/server.js"]
 ```
 
+- **Reward:** The final production image is now around 70% smaller, which is a significant improvement from the initial 1GB+. This optimization is crucial for running the application on resource-constrained devices like Raspberry Pi.
+
 - **Docker Compose:** Shifted from using a single compose file for both dev and production to separate, well-defined compose files. This allows for more flexible and maintainable configurations. For example:
 
 ```yml
