@@ -1,23 +1,32 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { loadBlogs, type BlogPost } from "../utils/blogLoader";
 import type { SyntheticEvent } from "react";
 
 const blogs: BlogPost[] = loadBlogs();
+const POSTS_PER_PAGE = 9;
 
 export default function Blog() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(blogs.length / POSTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+  const visibleBlogs = blogs.slice(startIndex, startIndex + POSTS_PER_PAGE);
+
   return (
     <motion.div
+      id="blog"
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
       transition={{ duration: 0.3 }}
-      className="min-h-screen pt-28 pb-24"
+      className="py-24"
     >
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           className="mb-16"
         >
@@ -37,11 +46,37 @@ export default function Blog() {
             No posts yet. Check back soon.
           </p>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {blogs.map((post, i) => (
-              <BlogCard key={post.slug} post={post} index={i} />
-            ))}
-          </div>
+          <>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {visibleBlogs.map((post, i) => (
+                <BlogCard key={post.slug} post={post} index={i} />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4 mt-12">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 border border-border rounded-md text-sm text-zinc-400 hover:text-zinc-100 hover:border-accent/50 disabled:opacity-50 disabled:pointer-events-none transition-all"
+                >
+                  Previous
+                </button>
+                <span className="text-sm text-zinc-500 font-mono">
+                  {currentPage} / {totalPages}
+                </span>
+                <button
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 border border-border rounded-md text-sm text-zinc-400 hover:text-zinc-100 hover:border-accent/50 disabled:opacity-50 disabled:pointer-events-none transition-all"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </motion.div>

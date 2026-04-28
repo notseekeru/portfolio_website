@@ -9,11 +9,12 @@ export default function Projects() {
 
   return (
     <motion.div
+      id="projects"
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
       transition={{ duration: 0.3 }}
-      className="min-h-screen pt-28 pb-24"
+      className="py-24"
     >
       <div className="max-w-6xl mx-auto px-6">
         <motion.div

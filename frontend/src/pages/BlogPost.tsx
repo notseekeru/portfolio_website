@@ -88,7 +88,7 @@ export default function BlogPost() {
             The blog post you're looking for doesn't exist.
           </p>
           <Link
-            to="/blog"
+            to="/#blog"
             className="inline-flex items-center gap-2 text-sm font-mono text-accent hover:text-accent/80 transition-colors"
           >
             <svg
