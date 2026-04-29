@@ -11,6 +11,13 @@
 - Tailscale (for secure encrypted bridge between Raspberry Pi and local desktop)
 - Docker (for containerizing the backend application)
 
+## Website Features
+
+- Single Page Application (SPA) for smooth navigation and fast loading times.
+- Hover interactive project and tool overview in the Infrastructure, Projects, Languages, Tools & Framework sections.
+- Interactive Mermaid Diagrams for infrastructure and CI/CD pipelines at blogposts.
+- Contact form with N8N integration using webhooks and secure headers.
+
 ## Testing and Security:
 
 - SSLLabs for testing SSL configuration and security headers.
@@ -22,11 +29,8 @@
 
 Todos:
 
-- Refactor to fit to a single page design.
 - Add Section to prefer remote work and you can work from anywhere.
 - Add where you're currently located and your timezone.
-- Remove Experience section and and company component. Replace it with Infrastructure, Projects, Primary Tools, and Supporting Tools. Make it hover interactive that pops up a small overview of the project or tool when you hover over it.
-- Add Interactive Mermaid Diagrams for the infrastructure and CI/CD pipelines.
 - Add `Labs` section for a full diagram breakdown of my whole homelab infrastructure, including the Raspberry Pi, Tailscale, Cloudflare Tunnel, and Nginx setup.
 - Add your-workflow-might-be-obsolete, ansible-power,student-workflow blog posts to the website.
 - N8N integration for contact form submissions using webhooks and secure headers.

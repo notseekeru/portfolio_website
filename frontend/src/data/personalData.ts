@@ -11,16 +11,26 @@ export interface EducationItem {
   duration: string;
 }
 
+export interface SkillItem {
+  name: string;
+  icon: string;
+  summary: string;
+  implementation: string;
+}
+
 export interface Skills {
-  languages: string[];
-  frameworks: string[];
-  tools: string[];
+  languages: SkillItem[];
+  frameworks: SkillItem[];
+  tools: SkillItem[];
 }
 
 export interface InfrastructureItem {
   role: string;
   description: string;
   focus: string[];
+  icon: string;
+  summary: string;
+  implementation: string;
 }
 
 export interface ProjectItem {
@@ -98,17 +108,113 @@ const personalData: PersonalData = {
   ],
 
   skills: {
-    languages: ["JavaScript", "Python", "TypeScript", "C++", "Java"],
-    frameworks: ["React", "Tailwind CSS", "Express", "Node.js"],
+    languages: [
+      {
+        name: "JavaScript",
+        icon: "SiJavascript",
+        summary: "Dynamic web semantics.",
+        implementation: "Used for frontend interactivity and backend tooling.",
+      },
+      {
+        name: "Python",
+        icon: "SiPython",
+        summary: "Versatile object-oriented language.",
+        implementation: "Scripting and backend systems automation.",
+      },
+      {
+        name: "TypeScript",
+        icon: "SiTypescript",
+        summary: "Type-safe JavaScript.",
+        implementation: "Core language for reliable React architectures.",
+      },
+      {
+        name: "C++",
+        icon: "SiCplusplus",
+        summary: "Systems-level programming.",
+        implementation: "Hardware control and low-level optimization.",
+      },
+      {
+        name: "Java",
+        icon: "FaJava",
+        summary: "Write once, run anywhere.",
+        implementation: "Object-oriented enterprise backend structures.",
+      },
+    ],
+    frameworks: [
+      {
+        name: "React",
+        icon: "SiReact",
+        summary: "UI component library.",
+        implementation: "Building SPAs and interactive web frontends.",
+      },
+      {
+        name: "Tailwind CSS",
+        icon: "SiTailwindcss",
+        summary: "Utility-first styling.",
+        implementation: "Rapid responsive UI component designing.",
+      },
+      {
+        name: "Express",
+        icon: "SiExpress",
+        summary: "Node.js framework.",
+        implementation: "Fast and minimalist REST API development.",
+      },
+      {
+        name: "Node.js",
+        icon: "SiNodedotjs",
+        summary: "JavaScript runtime.",
+        implementation: "Serverside execution for full-stack apps.",
+      },
+    ],
     tools: [
-      "Git",
-      "Bash",
-      "Docker",
-      "Mermaid",
-      "Github Actions",
-      "Ansible",
-      "NGinx",
-      "Cloudflare",
+      {
+        name: "Git",
+        icon: "FaGitAlt",
+        summary: "Version control system.",
+        implementation: "Code tracking and collaborative development.",
+      },
+      {
+        name: "Bash",
+        icon: "SiGnubash",
+        summary: "Unix shell.",
+        implementation: "Automation and OS-level administration scripts.",
+      },
+      {
+        name: "Docker",
+        icon: "FaDocker",
+        summary: "Containerization.",
+        implementation: "Isolating microservices for stable deployments.",
+      },
+      {
+        name: "Mermaid",
+        icon: "SiMermaid",
+        summary: "Diagramming tool.",
+        implementation: "Visualizing architecture flows as code.",
+      },
+      {
+        name: "Github Actions",
+        icon: "SiGithubactions",
+        summary: "CI/CD pipelines.",
+        implementation: "Automating testing and build workflows.",
+      },
+      {
+        name: "Ansible",
+        icon: "SiAnsible",
+        summary: "IT automation tool.",
+        implementation: "Configuration management of infrastructure.",
+      },
+      {
+        name: "NGinx",
+        icon: "SiNginx",
+        summary: "Web server.",
+        implementation: "Reverse proxy and load balancing operations.",
+      },
+      {
+        name: "Cloudflare",
+        icon: "SiCloudflare",
+        summary: "CDN and security.",
+        implementation: "DDoS protection and DNS record management.",
+      },
     ],
   },
 
@@ -123,6 +229,10 @@ const personalData: PersonalData = {
         "Network Security (UFW/Tailscale)",
         "Observability (Prometheus/Loki/Grafana)",
       ],
+      icon: "FaServer",
+      summary: "Homelab cluster for self-hosted applications.",
+      implementation:
+        "Managed via Docker Compose and Ansible over Tailscale VPN.",
     },
   ],
 

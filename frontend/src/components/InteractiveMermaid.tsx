@@ -95,7 +95,7 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
             }}
           >
             <div
-              className="flex items-center justify-center [&>svg]:max-w-full [&>svg]:max-h-full w-full h-full"
+              className="flex items-center justify-center [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-w-full w-full h-full"
               dangerouslySetInnerHTML={{ __html: svgContent }}
             />
           </TransformComponent>

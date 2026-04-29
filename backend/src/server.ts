@@ -58,9 +58,10 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
     return res.status(status).json({ error: "Invalid request" });
   }
 
-  const message =
-    requestError instanceof Error ? requestError.message : "Unknown error";
-  console.error("Unhandled backend error:", message);
+  console.error(
+    "Unhandled backend error:",
+    requestError instanceof Error ? requestError.message : "Unknown error",
+  );
   return res.status(500).json({ error: "Internal server error" });
 });
 
