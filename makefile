@@ -1,6 +1,13 @@
 DEV_CMD  = docker compose -p portfolio-dev -f compose.yml -f compose.dev.yml
 PROD_CMD = docker compose -p portfolio-prod -f compose.yml -f compose.prod.yml
 
+exec-test:
+	docker exec -it portfolio_frontend_dev npm run lint
+	docker exec -it portfolio_frontend_dev npm audit
+	docker exec -it portfolio_backend_dev npm run lint
+	docker exec -it portfolio_backend_dev npm run typecheck
+
+
 dev-build:
 	$(DEV_CMD) build
 
