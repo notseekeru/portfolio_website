@@ -134,7 +134,7 @@ export default function BlogPost() {
     >
       <div className="max-w-3xl mx-auto px-6">
         <Link
-          to="/blog"
+          to="/#blog"
           className="inline-flex items-center gap-2 text-sm font-mono text-zinc-500 hover:text-accent transition-colors duration-200 mb-10"
         >
           <svg
