@@ -49,15 +49,12 @@ export default function Contact() {
     setLoading(true);
     setError("");
     try {
-      await axios.post("/api/contact", {
-        name: form.name,
-        email: form.email,
-        message: form.message,
-      });
+      await axios.post("/api/contact", form);
       setSubmitted(true);
       setForm({ name: "", email: "", message: "" });
     } catch (err) {
-      setError(err.response?.data?.error || "Something went wrong. Please try again.");
+      const msg = axios.isAxiosError(err) ? err.response?.data?.error : "Error";
+      setError(msg || "Something went wrong.");
     } finally {
       setLoading(false);
     }

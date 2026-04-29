@@ -256,42 +256,52 @@ export default function About() {
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {stats
                   .find((s) => s.label === activeCategory)
-                  ?.items.map((item: string, idx: number) => {
-                    const Icon =
-                      item.icon && iconMap[item.icon]
-                        ? iconMap[item.icon]
-                        : FaCode;
-                    return (
-                      <div
-                        key={idx}
-                        className="p-4 border border-zinc-800/60 rounded-lg bg-zinc-900/40 hover:border-accent/30 transition-colors flex flex-col gap-2"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="text-accent text-xl">
-                            <Icon />
+                  ?.items.map(
+                    (
+                      item: {
+                        name: string;
+                        icon: string;
+                        summary: string;
+                        implementation: string;
+                      },
+                      idx: number,
+                    ) => {
+                      const Icon =
+                        item.icon && iconMap[item.icon]
+                          ? iconMap[item.icon]
+                          : FaCode;
+                      return (
+                        <div
+                          key={idx}
+                          className="p-4 border border-zinc-800/60 rounded-lg bg-zinc-900/40 hover:border-accent/30 transition-colors flex flex-col gap-2"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="text-accent text-xl">
+                              <Icon />
+                            </div>
+                            <h4 className="font-semibold text-zinc-200">
+                              {item.name}
+                            </h4>
                           </div>
-                          <h4 className="font-semibold text-zinc-200">
-                            {item.name}
-                          </h4>
-                        </div>
-                        {item.summary && (
-                          <p className="text-xs text-zinc-400">
-                            {item.summary}
-                          </p>
-                        )}
-                        {item.implementation && (
-                          <div className="mt-1 pt-2 border-t border-zinc-800/60">
-                            <p className="text-xs text-zinc-500">
-                              <span className="text-zinc-600 font-mono mr-1">
-                                Impl:
-                              </span>
-                              {item.implementation}
+                          {item.summary && (
+                            <p className="text-xs text-zinc-400">
+                              {item.summary}
                             </p>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
+                          )}
+                          {item.implementation && (
+                            <div className="mt-1 pt-2 border-t border-zinc-800/60">
+                              <p className="text-xs text-zinc-500">
+                                <span className="text-zinc-600 font-mono mr-1">
+                                  Impl:
+                                </span>
+                                {item.implementation}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    },
+                  )}
               </div>
             </motion.div>
           </div>
