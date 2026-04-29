@@ -256,7 +256,7 @@ export default function About() {
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {stats
                   .find((s) => s.label === activeCategory)
-                  ?.items.map((item: any, idx: number) => {
+                  ?.items.map((item: string, idx: number) => {
                     const Icon =
                       item.icon && iconMap[item.icon]
                         ? iconMap[item.icon]

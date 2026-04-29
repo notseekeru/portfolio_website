@@ -56,10 +56,8 @@ export default function Contact() {
       });
       setSubmitted(true);
       setForm({ name: "", email: "", message: "" });
-    } catch (err: any) {
-      const backendError =
-        err.response?.data?.error || "Something went wrong. Please try again.";
-      setError(backendError);
+    } catch (err) {
+      setError(err.response?.data?.error || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
