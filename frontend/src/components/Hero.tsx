@@ -117,7 +117,7 @@ export default function Hero() {
               </div>
             </div>
             <div className="absolute -bottom-3 -right-3 w-24 h-24 rounded-xl border border-border bg-surface flex flex-col items-center justify-center">
-              <img className="w-12 h-12" src="../public/ph.png" alt="PH" />
+              <img className="w-12 h-12" src="/ph.png" alt="PH" />
             </div>
           </div>
         </motion.div>

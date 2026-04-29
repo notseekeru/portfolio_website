@@ -20,6 +20,11 @@ export default function BlogPost() {
   const post = getBlogBySlug(slug ?? "");
   const mermaidRootsRef = useRef<Root[]>([]);
 
+  // Scroll to the top of the page when clicking into a new blog post
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [slug]);
+
   useEffect(() => {
     if (!contentRef.current) return;
 
