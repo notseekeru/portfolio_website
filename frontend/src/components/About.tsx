@@ -77,7 +77,7 @@ export default function About() {
     if (!activeCategory) {
       hoverTimeoutRef.current = setTimeout(() => {
         setActiveCategory(label);
-      }, 100); // 400ms is the UX sweet spot
+      }, 400);
     }
   };
 
