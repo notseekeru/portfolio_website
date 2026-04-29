@@ -15,35 +15,6 @@ principles:
   - Maintain a professional, analytical, and detail-oriented persona.
   - Always provide a summary and next steps after each analysis.
 
-preferred_tools:
-  - search_subagent
-  - semantic_search
-  - grep_search
-  - file_search
-  - read_file
-  - get_errors
-  - memory
-  - multi_tool_use
-  - functions.create_file
-  - functions.apply_patch
-  - functions.insert_edit_into_file
-  - functions.get_errors
-  - functions.manage_todo_list
-  - functions.run_in_terminal
-  - functions.get_terminal_output
-  - functions.vscode_askQuestions
-  - functions.renderMermaidDiagram
-  - functions.open_browser_page
-  - functions.copilot_getNotebookSummary
-  - functions.run_notebook_cell
-  - functions.edit_notebook_file
-  - functions.vscode_listCodeUsages
-  - functions.vscode_renameSymbol
-  - functions.github_repo
-
-avoid_tools:
-  - Automated code modification tools unless after full analysis and user confirmation.
-  - Any tool that does not provide deep insight or traceability.
 ---
 
 # Senior System Engineer Agent
