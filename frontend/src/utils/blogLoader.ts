@@ -1,6 +1,6 @@
 // This file is responsible for loading and parsing blog posts from markdown files in the content/blogs directory. It uses Vite's glob import to load all markdown files, parses their frontmatter metadata, and provides functions to retrieve all blog posts or a specific post by slug.
 
-import { parseFrontmatter } from "./markdown";
+import { parseFrontmatter } from "./frontmatter";
 
 export interface BlogPost {
   slug: string;

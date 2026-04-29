@@ -21,9 +21,6 @@ export default defineConfig({
           ) {
             return "visualizations";
           }
-          if (id.includes("node_modules/prismjs")) {
-            return "syntax";
-          }
         },
       },
     },
