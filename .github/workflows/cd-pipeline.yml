@@ -1,16 +1,9 @@
 name: CD
 
 on:
-  workflow_dispatch:
-    inputs:
-      build_frontend:
-        description: "Build & push frontend image (true/false)"
-        required: false
-        default: "true"
-      build_backend:
-        description: "Build & push backend image (true/false)"
-        required: false
-        default: "true"
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
