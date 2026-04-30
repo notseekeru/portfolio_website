@@ -32,7 +32,6 @@ Todos:
 - Add Section to prefer remote work and you can work from anywhere.
 - Add where you're currently located and your timezone.
 - Add `Labs` section for a full diagram breakdown of my whole homelab infrastructure, including the Raspberry Pi, Tailscale, Cloudflare Tunnel, and Nginx setup.
-- Add your-workflow-might-be-obsolete, ansible-power,student-workflow blog posts to the website.
 - N8N integration for contact form submissions using webhooks and secure headers.
 - Dependabot in GitHub for automated dependency updates and security patches.
 - implement hsts headers for better security. why? HSTS (HTTP Strict Transport Security) is a security feature that forces web browsers to only communicate with the server over HTTPS, preventing man-in-the-middle attacks and ensuring that all data transmitted between the client and server is encrypted. By implementing HSTS headers, you can enhance the security of your website and protect your users' data from potential threats.

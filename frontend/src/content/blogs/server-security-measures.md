@@ -7,23 +7,23 @@ image: "https://dreamix.eu/wp-content/uploads/2023/09/linux.security.11614.jpg"
 
 # Summary
 
-This article chronicles my journey of hardening a Raspberry Pi 5 server, transitioning from a default-permit setup to a secure, Tailscale-only gateway. I detail the audit process, the implementation of strict firewall rules, and the architectural shift that transformed my server into a resilient edge node.
+This present my journey of hardening a Raspberry Pi 5 server, transitioning from a default setup to a secure, Tailscale only gateway. I detail the audit process, the implementation of strict firewall rules, and the architectural shift that transformed my server into a sophisticated node.
 
-## The Mission: Building a Secure Foundation
+## Building a Secure Foundation
 
-When I started self-hosting services on my Raspberry Pi 5, I quickly realized that **hosting is 10% application logic and 90% defensive engineering**. My initial setup relied on convenience—open ports and default configurations—which is a structural liability for any public-facing server.
+When I started self-hosting services on my Raspberry Pi 5, I quickly realized that `hosting is 10% application logic and 90% defensive engineering`. My initial setup relied on open ports and default configurations which is a structural liability for any public-facing server.
 
-I decided to decommission the "default-permit" mindset and rebuild my server's security posture from the ground up.
+Though in our region, CGNAT is prevelant on every PH ISPs. I still decided to decommission the "default" mindset and rebuild my server's security from the ground up.
 
 ---
 
-## The Audit: Identifying the Attack Surface
+## Identifying the Attack Surface
 
-**The Problem:** Every open port is a potential entry point for unauthorized lateral movement.
+**The Problem:** Every open port is a potential entry point for unauthorized bot attacks.
 
 **The Audit:** Performed a full audit of running services, group permissions, and user accounts.
 
-**The Hardening:** Before enabling UFW, double-check that /etc/ssh/sshd_config has Port 223 set and you have restarted the service. This ensures you don't lock yourself out when you enable the firewall.
+**The Solution:** Before enabling UFW, double-check that /etc/ssh/sshd_config has Port 223 set and you have restarted the service. This ensures you don't lock yourself out when you enable the firewall.
 
 - Enforced non-root user management for all persistent processes.
 - Implemented a "Defense in Depth" strategy using UFW with a strict default-deny policy.
@@ -48,23 +48,24 @@ sudo ufw enable # Enable the firewall
 journalctl -u tailscaled --since "1 hour ago"
 ```
 
----
+The most critical architectural shift was transitioning the server from an **Unsecure node** to a **Tailscale Private Gateway** to maximize `Defense in Depth`.
 
-## The "Tailscale-Only" Constraint
-
-The most critical architectural shift was transitioning the server from an **Internet-facing node** to a **Tailscale-only gateway**.
-
-**The Logic:** By binding internal dashboard services (Pi-hole, Portainer) exclusively to the Tailscale interface, they are cryptographically unreachable from the public internet.
-
-**The Resilience:** I hit a "locked-out" state once due to a race condition on port 401. I resolved it by shifting from wildcard interface binding to specific `username@100.*` access rules, effectively segmenting my management traffic while maintaining full control.
+By binding internal services exclusively to the Tailscale interface, they are unreachable from the public internet.
 
 ---
 
-## Lessons Learned: When Security Meets Infrastructure
+## Post Mortem
 
-1. **"Secure by Default" is Flawed:** Standard Linux distros prioritize usability. I learned that hardening is an active process—you have to hunt for "defaults" and consciously dismantle them.
+I hit a "locked-out" state once due to me layering UFW rules incorrectly, effectively blocking all incoming connections. This was a critical learning moment. I had to physically access the Raspberry Pi, connect a monitor and keyboard, and manually disable UFW to regain access. This experience underscored the importance of careful planning and testing when implementing security measures. This helped me design my ansible playbook to be idempotent and avoid human error and intervention when provisioning future infrastructure.
+
+---
+
+## When Security Meets Infrastructure
+
+1. **"Secure by Default is Flawed:** Standard Linux distros prioritize usability. I learned that hardening is an active process—you have to hunt for "defaults" and consciously dismantle them.
 2. **Audit over Intuition:** I stopped "vibe-coding" my security. I spent hours in `journalctl` and `systemctl` logs, learning the precise handshake failures between my services.
 3. **Documentation as Defense:** By mapping out my port requirements in an ADR, I stopped making "emergency" firewall exceptions and started implementing "architectural" security policies.
+4. **Future Vision:** I eventually made my whole infrastructure setup to a portable `ansible playbook` to power my `Idempotent` nodes to minimize human intervention and labor to provision systems. This allowed me to automate my future infrastructure to a modular `ansible role` and minimize server downtime and planned Disaster Recover.
 
 ---
 

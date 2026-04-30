@@ -1,7 +1,7 @@
 ---
-title: The First Hurdle
+title: The Awakening
 date: 2026-02-25
-description: How I designed and built my first live website.
+description: How I designed and built my first live website. The architectural decisions, the tech stack, and the lessons learned from the experience.
 image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfM21gdAKGbsc4tUO29PLVGvmI5dPHZeN_xg&s"
 ---
 
@@ -21,7 +21,7 @@ It all started with the realization that I needed a live portfolio to showcase m
 
 ## Planning with AI
 
-With the tech stack finalized, I leveraged Claude Code Opus 4.6 and Copilot to break the project into manageable tasks and phases. This delegation allowed me to focus on one step at a time while ensuring the overall vision stayed on track.
+With the tech stack finalized, I leveraged Claude Code Opus 4.6 and `Copilot Education` to break the project into manageable tasks and phases. This delegation allowed me to focus on one step at a time while ensuring the overall vision stayed on track.
 
 ---
 
@@ -33,13 +33,13 @@ The development phase began with React and Vite as the foundation, Tailwind for 
 
 ## Deploying to Production
 
-Once the website was ready, I deployed it using Vercel. Setting up a custom domain with a registered CNAME was straightforward, and the site was live in no time. However, I soon realized that Vercel's simplicity came with limitations (e.g., limited control over server-side logic, deployment configurations, infrastructure costs if commercial and scaled).
+Once the website was ready, I deployed it using `Vercel`, a serverless hosting platform. Setting up a custom domain with a registered CNAME was straightforward, and the site was live in no time. However, I soon realized that Vercel's simplicity came with limitations (e.g., limited control over server-side logic, deployment configurations, infrastructure costs if commercial and scaled).
 
 ---
 
 ## Switching to Cloudflare
 
-To gain more control and flexibility, I migrated the deployment to Cloudflare. This involved replacing my existing registrar with Cloudflare Registers and setting up a subdomain. The transition was seamless, and the new setup offered better performance and scalability.
+To gain more control and flexibility, I migrated the deployment to Cloudflare. This involved replacing my existing registrar with Cloudflare Registers and setting up a subdomain. Learned about A Records, CNAMEs, and other `Cloudflare Dashboard` configurations. The transition was a little rough, but the new setup offered better performance and scalability.
 
 ---
 
@@ -51,7 +51,7 @@ This made me realize that I was `technically "vibe-coding"` the project, meaning
 
 # Conclusion
 
-Looking back, this journey was more than just building a website. It was about leveraging AI to enhance creativity, streamline workflows, and push the boundaries of what I could achieve as a developer.This made me think of system architecture and design the `bigger picture` that otherwise wouldn't have occurred to me if I hadn't used AI as a `tool`. This allowed me to think bigger and approach problems with a more strategic mindset and not just worry about the details, the code, the nuance of programming. The project taught me real patterns of code and not something that lives inside the local folder, it taught me I could build and ship real projects that I could show to the world and improve my skills as a developer. Each step taught me something new, and the end result is a portfolio that truly represents my skills and vision.
+Looking back, this journey was more than just building a website. It was about leveraging AI to enhance creativity, streamline workflows, and push the boundaries of what I could achieve as a developer. This made me think of system architecture and design the `bigger picture` that otherwise wouldn't have occurred to me if I hadn't used AI as a `tool`. This allowed me to think bigger and approach problems with a more strategic mindset and not just worry about the details, the code, the nuance of programming. The project taught me real patterns of code and not something that lives inside the local folder, it taught me I could build and ship real projects that I could show to the world and improve my skills as a developer. Each step taught me something new, and the end result is a portfolio that truly represents my skills and vision.
 
 ---
 

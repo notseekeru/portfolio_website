@@ -7,7 +7,7 @@ image: "https://png.pngtree.com/png-vector/20220621/ourmid/pngtree-man-breaks-th
 
 # Summary
 
-This article linearly narrates a pivotal refactoring of my portfolio website. What started as an abstracted, Imposter Syndrome reinforced by AI-Generated code, suggestions and Confusion. Driven by perfectionism, QA paranoia, and security anxiety, I tore it down and rebuilt it. This narrative covers complex logic to reconstruct the infrastructure from the bottom up, establishing strict Docker network segmentations, ci-cd pipelines, Raw Nginx configurations, and mastering raw proxy chains from Cloudflare down to Nginx Reverse Proxy.
+This document narrates the critical architectural pivot of my portfolio infrastructure—from an abstracted, AI-generated "blackbox" to a deterministic, self-hosted proxy chain on a Raspberry Pi 5. Driven by the paralyzing realization that I did not understand my own production environment, I executed a complete teardown. By manually reconstructing Docker network segmentations, CI/CD pipelines, and raw Nginx configurations, I eradicated my imposter syndrome, replacing it with the hardened confidence of a Systems Architect.
 
 ---
 
@@ -113,6 +113,8 @@ networks:
 
 ## Interactive Visuals of the Architecture
 
+`Diagrams` are worth a thousand words, if not more. If you can visualize the architectural flow of data and the segmentation of the network, you'll better understand the system's design. This helped me internalize the architecture and escape the blackbox. Here is a simplified diagram of the architecture using `Mermaid`:
+
 ```mermaid
 graph TB
     classDef clearStyle fill:none,stroke:#fff,stroke-width:2px,color:#fff;
@@ -145,11 +147,11 @@ graph TB
 
 ## Overcoming Hardware Constraints
 
-Running workloads on a Raspberry Pi 5 introduces hardware constraints, specifically concerning SSD storage capacity and IOPS exhaustion over time. Building natively on the Pi previously resulted in bloated 1GB images that choked my initial deployments.
+Running production workloads on a Raspberry Pi 5 introduces severe hardware constraints—specifically storage capacity and IOPS exhaustion. Building images natively on the Pi previously resulted in bloated 1GB monsters that choked deployments.
 
-Building upon my earlier multi-stage isolation strategies (separating base, dev, prune, and prod layers to run as `non-root`), I fully offloaded the continuous delivery process. I implemented GitHub Container Registry (GHCR) for remote image storage and Docker Buildx with QEMU to natively support cross-platform ARM and AMD64 (Because I need to develop on x64) deployments.
+The architectural solution was to entirely offload the Continuous Delivery process. I implemented a GitHub Container Registry (GHCR) pipeline utilizing Docker Buildx with QEMU for simultaneous multi-architecture (ARM/AMD64) compilation.
 
-I also integrated Trivy into the CD pipeline for CVE and Secret scanning. Realizing that "zero vulnerabilities" is an unattainable ideal that blocks production, I implemented a blast-radius mitigation strategy, deliberately bypassing low-impact base-image CVEs (e.g., `musl`, `zlib`, `picomatch`) locally so we can deploy efficiently while remaining guarded against critical application-level threats.
+Furthermore, I integrated Trivy for automated CVE and secret scanning. Recognizing that achieving "zero vulnerabilities" is an unattainable ideal that blocks production, I implemented a pragmatic blast-radius mitigation strategy. By explicitly deliberately bypassing unpatchable, low-impact base-image CVEs (e.g., `musl`, `zlib`) via a `.trivyignore` file, deployments remain rapid while fully guarded against critical application-level threats.
 
 ```yml
 # Push multi-arch to GHCR, then pull and run on the Pi
@@ -183,6 +185,4 @@ I also integrated Trivy into the CD pipeline for CVE and Secret scanning. Realiz
 
 At some point during the endless cycle of `docker compose down` and `docker compose up`, muscle memory took over. Staring at raw Nginx blocks and configuring the Cloudflare tunnel manually made me understand the flow of data across my infrastructure in a way that AI generation never could.
 
-Accepting that AI output isn't a substitute for systemic comprehension was a hard lesson, but an essential one. Sometimes, avoiding complexity is just an excuse to stay in our comfort zones. AI forced me to generate code I couldn't comprehend, which in turn forced me to rip it out and learn it from the ground up.
-
-I’m deliberately carving my path toward becoming a Systems Architect. To get there, I don't need to write flawless code on the first try, nor do I need an AI to magically solve my networking gaps. I need the resilience to break things apart, the humility to embrace the boring fundamentals, and the wisdom to know that true security isn't just about firewall rules, it's about deeply understanding the blackbox until it isn't a blackbox anymore.
+Accepting that AI output is not a substitute for systemic comprehension was a brutal but essential lesson. I am deliberately carving my path toward becoming a Systems Architect. True security and competence do not come from firewall rules or generated code; they come from relentlessly interrogating the blackbox until it no longer exists.
