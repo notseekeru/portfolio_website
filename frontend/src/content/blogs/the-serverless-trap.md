@@ -81,10 +81,10 @@ compose.prod.yml; // Prod stage, inherits from base, adds prod-specific services
 
 ---
 
-## Infastructure Debugging && Troubleshooting
+## Infrastructure Debugging && Troubleshooting
 
 - **Problem:** I faced a ton of problems I had to debug myself, this involved a lot of things since I second-guessed and used AI and Github repos to just essentially copy-paste my nginx raw conf. This introduced a lot of networking issues for connection networks inside my dockerized container and some internal project code flaws.
-- **Nginx AI File:** This one was probably one of the hardest things to solve since it was my first time using nginx. It really troubled me specially when I told an AI who was on dangerously-on-skip-permissions to WRITE me some boilerplate code on my raw conf files in nginx. The prompt was quite vague and I didn't tell them to test the code to work. The AI wrote the code but tested it and ran PowerShell commands and made the file UTF-16 (which is supposed to be UTF-8). This confused me, had a hard time trying to debug just one file.
+- **Nginx AI File:** This one was probably one of the hardest things to solve since it was my first time using nginx. It really troubled me especially when I told an AI who was on dangerously-on-skip-permissions to WRITE me some boilerplate code on my raw conf files in nginx. The prompt was quite vague and I didn't tell them to test the code to work. The AI wrote the code but tested it and ran PowerShell commands and made the file UTF-16 (which is supposed to be UTF-8). This confused me, had a hard time trying to debug just one file.
 - **Internal Project Code:** Code inside projects itself needs to be added and manipulated for sustaining nginx. This code usually involves adding raw nginx.conf in the project folder and some backend server code and environment variables for connecting the project all together.
 
 ---

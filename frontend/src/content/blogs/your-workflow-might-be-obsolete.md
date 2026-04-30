@@ -2,7 +2,7 @@
 title: Your Workflow Might Be Obsolete
 date: 2026-03-10
 description: A transition from browser-based tools to CLI-native LLMs, Agentic Systems, autonomous agents, and deterministic automation workflows.
-image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop"
+image: https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop
 ---
 
 # Summary
@@ -62,11 +62,11 @@ graph LR
 
 To expose this infrastructure safely, I routed external webhooks through Cloudflare Zero Trust and a Cloudflared Tunnel into an Nginx reverse proxy. Zero compromise on security, absolute flexibility for incoming triggers.
 
-## Case Study: The Compounding ROI of Micro-Automations
+## The Compounding ROI of Micro-Automations
 
 Theory is useless without metrics. I deployed this architecture to build an AI Gmail Labeler. Using n8n data transformations feeding into a targeted agent, incoming emails are now processed, evaluated, and routed deterministically.
 
-The tangible ROI? It saves me roughly 10 seconds of my life on _every single email I receive_. While 10 seconds sounds trivial in isolation, multiplied by daily inbound volume, it represents a massive reduction in cognitive load and context switching. I am no longer manually triaging requests; the system handles the noise deterministically while I focus on high-value engineering execution.
+The tangible ROI? It saves me roughly 10 seconds of my life on every single email I receive. While 10 seconds sounds trivial in isolation, multiplied by daily inbound volume, it represents a massive reduction in cognitive load and context switching. I am no longer manually triaging requests; the system handles the noise deterministically while I focus on high-value engineering execution.
 
 ---
 

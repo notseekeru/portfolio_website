@@ -56,7 +56,7 @@ By binding internal services exclusively to the Tailscale interface, they are un
 
 ## Post Mortem
 
-I hit a "locked-out" state once due to a race condition on port 223, and couldn't access any ports due binding on tailscale and ssh to 223. I resolved it by shifting from wildcard interface binding to specific `username@100.*` access rules, effectively segmenting my management traffic while maintaining full control.
+I hit a "locked-out" state once due to me layering UFW rules incorrectly, effectively blocking all incoming connections. This was a critical learning moment. I had to physically access the Raspberry Pi, connect a monitor and keyboard, and manually disable UFW to regain access. This experience underscored the importance of careful planning and testing when implementing security measures. This helped me design my ansible playbook to be idempotent and avoid human error and intervention when provisioning future infrastructure.
 
 ---
 
@@ -65,7 +65,7 @@ I hit a "locked-out" state once due to a race condition on port 223, and couldn'
 1. **"Secure by Default is Flawed:** Standard Linux distros prioritize usability. I learned that hardening is an active process—you have to hunt for "defaults" and consciously dismantle them.
 2. **Audit over Intuition:** I stopped "vibe-coding" my security. I spent hours in `journalctl` and `systemctl` logs, learning the precise handshake failures between my services.
 3. **Documentation as Defense:** By mapping out my port requirements in an ADR, I stopped making "emergency" firewall exceptions and started implementing "architectural" security policies.
-4. **Future Vision:** I eventually made my whole infrastructure setup to a portable `ansible playbook` to power my `Idempotent` nodes to minimize human intervention and labor to provision system. This allowed me to automate my future infrastructure to a modular `ansible role` and minimize server downtime and planned Disaster Recover.
+4. **Future Vision:** I eventually made my whole infrastructure setup to a portable `ansible playbook` to power my `Idempotent` nodes to minimize human intervention and labor to provision systems. This allowed me to automate my future infrastructure to a modular `ansible role` and minimize server downtime and planned Disaster Recover.
 
 ---
 

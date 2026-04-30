@@ -55,7 +55,7 @@ graph TD
     D -->|No| B
 ```
 
-This is a high-risk, high-reward protocol. You skip expected discussion days on GE subjects to reclaim hours of focused engineering work. However, This is not perfect due various factors(eg. attendance grade, missed groupings, unexpected announcements, etc.). You must track it flawlessly so a surprise requirement doesn't crash your grade.
+This is a high-risk, high-reward protocol. You skip expected discussion days on GE subjects to reclaim hours of focused engineering work. However, this is not perfect due various factors(eg. attendance grade, missed groupings, unexpected announcements, etc.). You must track it flawlessly so a surprise requirement doesn't crash your grade.
 
 ---
 
