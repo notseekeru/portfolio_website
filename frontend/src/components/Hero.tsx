@@ -44,13 +44,13 @@ export default function Hero() {
 
           <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
             <Link
-              to="/projects"
+              to="/#projects"
               className="px-6 py-3 bg-accent text-[#0d0d0d] font-semibold text-sm rounded-md hover:bg-accent/90 glow-accent transition-all duration-200"
             >
               View Projects
             </Link>
             <Link
-              to="/contact"
+              to="/#contact"
               className="px-6 py-3 border border-border text-zinc-300 font-medium text-sm rounded-md hover:border-zinc-500 hover:text-zinc-100 transition-all duration-200"
             >
               Get In Touch
