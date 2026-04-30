@@ -43,6 +43,7 @@ export interface ProjectItem {
 
 export interface PersonalData {
   name: string;
+  status: string;
   title: string;
   location: string;
   email: string;
@@ -63,16 +64,17 @@ export interface PersonalData {
 
 const personalData: PersonalData = {
   name: "Stephen Macabulos",
-  title: "Site Reliability Engineer | DevOps | System Administrator",
+  status: "Intern",
+  title: "Site Reliability Engineer | Platform Engineer | DevOps Engineer",
   location: "Pampanga, Philippines",
   email: "stpmacabulos@gmail.com",
   linkedin: "https://www.linkedin.com/in/stephen-macabulos-192495336/",
   github: "https://github.com/notseekeru",
   facebook: "https://www.facebook.com/notseekeru",
   instagram: "https://www.instagram.com/notseekeru/",
-  bio: "Building reliable and scalable systems, I am a Site Reliability Engineer with a strong background in software development and DevOps practices. With experience in designing and maintaining complex infrastructures, I thrive on securing cloud/physical environments and ensuring seamless user experiences. My expertise includes cloud computing, automation, and monitoring, allowing me to proactively identify and resolve issues while continuously improving system reliability.",
+  bio: "Building reliable and scalable systems, I am a Site Reliability Engineer with a strong background in software development and DevOps practices. With experience in designing and maintaining complex infrastructures, I can thrive on securing cloud/physical environments and ensuring seamless user experiences. My expertise includes cloud computing, automation, and monitoring, allowing me to proactively identify and resolve issues while continuously improving system reliability.",
   background:
-    "I am a Computer Engineering undergraduate student with a obession for technology. I have a strong obsession(not passion) for learning and exploring various fields in technology, from software development to hardware tinkering. I am driven by a desire to understand how things work under the hood and to create innovative solutions that can make a positive impact. I currently operate a self-hosted homelab infrastructure, where I experiment with various technologies and build projects that showcase my skills and creativity. I am always eager to take on new challenges and expand my knowledge in the ever-evolving world of technology.",
+    "I am a Computer Engineering undergraduate student with a obession for technology. I have a strong obsession(not only passion) for learning and exploring various fields in technology, from software development to hardware building. I am driven by a desire to understand how things work under the hood and to develop deep technical skills. I currently operate a self-hosted homelab infrastructure, where I experiment with various technologies and build projects that showcase my skills and creativity. I am always eager to take on new challenges and expand my knowledge in the ever-evolving world of technology.",
   profilePicture: "/profile2.png",
 
   get age(): number {
