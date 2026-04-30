@@ -101,37 +101,36 @@ export default function About() {
   const stats = useMemo(
     () => [
       {
-        value: personalData.infrastructure.length,
-        label: "Infrastructure",
-        accent: true,
-        items: personalData.infrastructure.map((i) => ({
-          name: i.role,
-          icon: i.icon,
-          summary: i.summary,
-          implementation: i.implementation,
-        })),
-      },
-      {
-        value: personalData.projects.length,
-        label: "Projects Built",
-        accent: true,
-        items: personalData.projects.map((p) => ({
-          name: p.title,
-          icon: "FaCode",
-          summary: p.description,
-          implementation: "Stack: " + p.techStack.join(", "),
-        })),
-      },
-      {
         value:
-          personalData.skills.frameworks.length +
-          personalData.skills.tools.length,
-        label: "Tools & Frameworks",
+          personalData.projects.length + personalData.infrastructure.length,
+        label: "Projects & Infrastructure",
         accent: true,
         items: [
-          ...personalData.skills.frameworks,
-          ...personalData.skills.tools,
+          ...personalData.projects.map((p) => ({
+            name: p.title,
+            icon: "FaCode",
+            summary: p.description,
+            implementation: "Stack: " + p.techStack.join(", "),
+          })),
+          ...personalData.infrastructure.map((i) => ({
+            name: i.role,
+            icon: i.icon || "FaServer",
+            summary: i.summary,
+            implementation: i.implementation,
+          })),
         ],
+      },
+      {
+        value: personalData.skills.tools.length,
+        label: "Tools",
+        accent: true,
+        items: personalData.skills.tools,
+      },
+      {
+        value: personalData.skills.frameworks.length,
+        label: "Frameworks",
+        accent: true,
+        items: personalData.skills.frameworks,
       },
       {
         value: personalData.skills.languages.length,

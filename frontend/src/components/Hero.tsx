@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import personalData from "../data/personalData";
@@ -24,16 +25,14 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            Available for work
-          </motion.span>
+          ></motion.span>
 
           <h1 className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight mb-4">
             <span className="text-zinc-100">Hi, I'm </span>
             <span className="text-gradient">{personalData.name}</span>
           </h1>
           <h2 className="text-lg lg:text-xl font-semibold text-accent mb-4">
-            {personalData.status}
+            {personalData.level}
           </h2>
           <h2 className="text-xl lg:text-2xl font-light text-zinc-400 mb-6">
             {personalData.title}
@@ -59,31 +58,34 @@ export default function Hero() {
           </div>
 
           <div className="flex items-center gap-6 mt-10 justify-center lg:justify-start">
-            <a
-              href={personalData.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-zinc-500 hover:text-zinc-100 transition-colors"
-              aria-label="GitHub"
-            >
-              <GitHubIcon />
-            </a>
-            <a
-              href={personalData.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-zinc-500 hover:text-zinc-100 transition-colors"
-              aria-label="LinkedIn"
-            >
-              <LinkedInIcon />
-            </a>
-            <a
-              href={`mailto:${personalData.email}`}
-              className="text-zinc-500 hover:text-zinc-100 transition-colors"
-              aria-label="Email"
-            >
-              <MailIcon />
-            </a>
+            <div className="flex items-center gap-6">
+              <a
+                href={personalData.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-zinc-500 hover:text-zinc-100 transition-colors"
+                aria-label="GitHub"
+              >
+                <GitHubIcon />
+              </a>
+              <a
+                href={personalData.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-zinc-500 hover:text-zinc-100 transition-colors"
+                aria-label="LinkedIn"
+              >
+                <LinkedInIcon />
+              </a>
+              <a
+                href={`mailto:${personalData.email}`}
+                className="text-zinc-500 hover:text-zinc-100 transition-colors"
+                aria-label="Email"
+              >
+                <MailIcon />
+              </a>
+            </div>
+            <LiveClock />
           </div>
         </motion.div>
 
@@ -157,5 +159,35 @@ function MailIcon() {
       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
       <polyline points="22,6 12,13 2,6" />
     </svg>
+  );
+}
+
+function LiveClock() {
+  const [time, setTime] = useState("");
+
+  useEffect(() => {
+    const updateClock = () => {
+      const now = new Date();
+      const formatter = new Intl.DateTimeFormat("en-US", {
+        timeZone: "Asia/Manila",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+      setTime(formatter.format(now) + " (UTC+8)");
+    };
+
+    updateClock();
+    const interval = setInterval(updateClock, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!time) return null;
+
+  return (
+    <div className="text-zinc-500 text-xs font-mono flex items-center gap-2 border-l border-zinc-800 pl-6 ml-2">
+      <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
+      {time}
+    </div>
   );
 }

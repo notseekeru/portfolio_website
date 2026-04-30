@@ -229,7 +229,7 @@ export default function Contact() {
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full bg-green-400" />
                 <span className="text-sm text-zinc-300 font-medium">
-                  Available for work
+                  {personalData.status}
                 </span>
               </div>
               <p className="text-zinc-500 text-sm leading-relaxed">

@@ -43,6 +43,7 @@ export interface ProjectItem {
 
 export interface PersonalData {
   name: string;
+  level: string;
   status: string;
   title: string;
   location: string;
@@ -64,7 +65,8 @@ export interface PersonalData {
 
 const personalData: PersonalData = {
   name: "Stephen Macabulos",
-  status: "Intern",
+  level: "Intern",
+  status: "Available for internships offers",
   title: "Site Reliability Engineer | Platform Engineer | DevOps Engineer",
   location: "Pampanga, Philippines",
   email: "stpmacabulos@gmail.com",
@@ -133,7 +135,7 @@ const personalData: PersonalData = {
         name: "C++",
         icon: "SiCplusplus",
         summary: "Systems-level programming.",
-        implementation: "Hardware control and low-level optimization.",
+        implementation: "Hardware control and Microcontroller programming.",
       },
       {
         name: "Java",
