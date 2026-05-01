@@ -66,11 +66,11 @@ export interface PersonalData {
 const personalData: PersonalData = {
   name: "Stephen Macabulos",
   level: "Intern",
-  status: "Available for internships offers",
+  status: "Available for internships/entry-level roles",
   title: "Site Reliability Engineer | Platform Engineer | DevOps Engineer",
   location: "Pampanga, Philippines",
   email: "stpmacabulos@gmail.com",
-  linkedin: "https://www.linkedin.com/in/stephen-macabulos-192495336/",
+  linkedin: "https://www.linkedin.com/in/stephen-macabulos-521a6b406/",
   github: "https://github.com/notseekeru",
   facebook: "https://www.facebook.com/notseekeru",
   instagram: "https://www.instagram.com/notseekeru/",
