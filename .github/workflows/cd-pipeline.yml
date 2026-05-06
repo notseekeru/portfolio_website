@@ -42,16 +42,6 @@ jobs:
           echo 'CVE-2026-22184' >> .trivyignore
           echo 'GHSA-h52r-9f32-9m89' >> .trivyignore # picomatch vulnerability
 
-      - name: Debug .trivyignore contents
-        run: |
-          echo "Listing files in workspace root:" && ls -al
-          echo "\n.trivyignore contents:" && cat .trivyignore
-
-      - name: Debug .trivyignore contents
-        run: |
-          echo "Listing files in workspace root:" && ls -al
-          echo "\n.trivyignore contents:" && cat .trivyignore
-
       - name: Build local image for smoke test (single-arch, load into daemon)
         uses: docker/build-push-action@v4
         with:
