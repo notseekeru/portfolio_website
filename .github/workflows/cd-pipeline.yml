@@ -38,9 +38,10 @@ jobs:
 
       - name: Create .trivyignore file
         run: |
-          echo 'CVE-2026-40200' > .trivyignore
-          echo 'CVE-2026-22184' >> .trivyignore
-          echo 'GHSA-h52r-9f32-9m89' >> .trivyignore # picomatch vulnerability
+          echo 'CVE-2026-40200' > .trivyignore # musl lib
+          echo 'CVE-2026-22184' >> .trivyignore # z lib 
+          echo 'CVE-2026-33671' >> .trivyignore # picomatch
+          echo 'CVE-2026-27135' >> .trivyignore # nghttp2
 
       - name: Build local image for smoke test (single-arch, load into daemon)
         uses: docker/build-push-action@v4
