@@ -16,6 +16,11 @@ import {
   SiAnsible,
   SiNginx,
   SiCloudflare,
+  SiGrafana,
+  SiPrometheus,
+  SiOpentelemetry,
+  SiFastapi,
+  SiSpringboot,
 } from "react-icons/si";
 import {
   FaJava,
@@ -23,8 +28,8 @@ import {
   FaDocker,
   FaServer,
   FaCode,
-  FaTimes,
-} from "react-icons/fa";
+  FaGolang,
+} from "react-icons/fa6";
 import { IconType } from "react-icons";
 
 const iconMap: Record<string, IconType> = {
@@ -46,6 +51,12 @@ const iconMap: Record<string, IconType> = {
   FaGitAlt,
   FaDocker,
   FaServer,
+  FaGolang,
+  SiGrafana,
+  SiPrometheus,
+  SiOpentelemetry,
+  SiFastapi,
+  SiSpringboot,
 };
 
 interface SectionLabelProps {
@@ -247,9 +258,7 @@ export default function About() {
                   onClick={() => setActiveCategory(null)}
                   className="p-2 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
                   aria-label="Close details"
-                >
-                  <FaTimes size={20} />
-                </button>
+                ></button>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

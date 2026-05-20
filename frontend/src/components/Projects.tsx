@@ -27,10 +27,10 @@ export default function Projects() {
             Portfolio
           </span>
           <h1 className="text-4xl lg:text-5xl font-bold text-zinc-100 mt-2 mb-4">
-            Projects
+            Projects & Infrastructure
           </h1>
           <p className="text-zinc-500 max-w-lg">
-            A selection of my professional work and personal projects.
+            A selection of my work, personal projects and infrastructure.
           </p>
         </motion.div>
 

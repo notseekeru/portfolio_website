@@ -143,6 +143,12 @@ const personalData: PersonalData = {
         summary: "Write once, run anywhere.",
         implementation: "Object-oriented enterprise backend structures.",
       },
+      {
+        name: "Go",
+        icon: "FaGolang",
+        summary: "Compiled language for concurrency.",
+        implementation: "Building efficient microservices",
+      },
     ],
     frameworks: [
       {
@@ -164,13 +170,25 @@ const personalData: PersonalData = {
         implementation: "Fast and minimalist REST API development.",
       },
       {
+        name: "FastAPI",
+        icon: "SiFastapi",
+        summary: "Python web framework.",
+        implementation: "High-performance APIs with async support.",
+      },
+      {
+        name: "Spring Boot",
+        icon: "SiSpringboot",
+        summary: "Java application framework.",
+        implementation: "Building robust enterprise backend systems.",
+      },
+    ],
+    tools: [
+      {
         name: "Node.js",
         icon: "SiNodedotjs",
         summary: "JavaScript runtime.",
         implementation: "Serverside execution for full-stack apps.",
       },
-    ],
-    tools: [
       {
         name: "Git",
         icon: "FaGitAlt",
@@ -218,6 +236,44 @@ const personalData: PersonalData = {
         icon: "SiCloudflare",
         summary: "CDN and security.",
         implementation: "DDoS protection and DNS record management.",
+      },
+      {
+        name: "Loki",
+        icon: "SiGrafana",
+        summary: "Log aggregation.",
+        implementation: "Centralized logging for troubleshooting and analysis.",
+      },
+      {
+        name: "Grafana",
+        icon: "SiGrafana",
+        summary: "Data visualization.",
+        implementation: "Monitoring dashboards for system metrics.",
+      },
+      {
+        name: "Tempo",
+        icon: "SiGrafana",
+        summary: "Distributed tracing.",
+        implementation:
+          "Tracing requests across microservices for performance insights.",
+      },
+      {
+        name: "Prometheus",
+        icon: "SiPrometheus",
+        summary: "Metrics database.",
+        implementation: "Scraping and storing time-series telemetry data.",
+      },
+      {
+        name: "Grafana Alloy",
+        icon: "SiGrafana",
+        summary: "Telemetry collector.",
+        implementation: "Agile pipeline routing for logs, metrics, and traces.",
+      },
+      {
+        name: "OpenTelemetry",
+        icon: "SiOpentelemetry",
+        summary: "Observability framework.",
+        implementation:
+          "Standardizing cloud-native instrumentation and traces.",
       },
     ],
   },
