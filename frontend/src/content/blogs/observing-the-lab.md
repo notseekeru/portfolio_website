@@ -2,7 +2,6 @@
 title: Observing the Lab
 date: 2026-05-18
 description: Architecting an observability stack with LGTM + Alloy on RPi5 for achieving full system monitoring across logs, metrics, and traces.
-image: "https://via.placeholder.com/512"
 ---
 
 ---
@@ -153,4 +152,3 @@ graph TD
 This project was an exercise in disciplined architecture and persistence. It taught me the importance of balancing simplicity and functionality, leveraging AI intelligently while remaining prepared to do the manual legwork. With these lessons, I have not only built an effective observability solution but also deepened my skills as a systems architect.
 
 ---
-

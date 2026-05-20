@@ -2,7 +2,6 @@
 title: Imposter Syndrome
 date: 2026-04-25
 description: Escaping the AI-generated "blackbox" to build a deterministic, hardened proxy chain and segmented network on a Raspberry Pi 5.
-image: "https://png.pngtree.com/png-vector/20220621/ourmid/pngtree-man-breaks-theatrical-mask-to-conquer-imposter-syndrome-vector-png-image_47229500.jpg"
 ---
 
 # Summary

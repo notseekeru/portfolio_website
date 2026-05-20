@@ -2,7 +2,6 @@
 title: The Architecture of Student Discipline
 date: 2026-03-30
 description: Comprehensive approach to my lifestyle as a student. Philosophy, Cognitive Science, Time Management, and Engineering Systems for continuous growth.
-image: ""
 ---
 
 ---

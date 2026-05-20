@@ -2,7 +2,6 @@
 title: The Serverless Trap
 date: 2026-03-12
 description: How I managed Infrastructure using Containerized Cloudflare and Raw Nginx Configuration
-image: "https://cdn-icons-png.flaticon.com/512/18146/18146428.png"
 ---
 
 ---
