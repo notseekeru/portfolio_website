@@ -5,6 +5,8 @@ description: Comprehensive approach to my lifestyle as a student. Philosophy, Co
 image: ""
 ---
 
+---
+
 # Summary
 
 This document outlines the architecture of my daily workflow and how I manage my compute time as a university student. It covers my personal battles with procrastination and ego, my metacognitive approach to self-discipline, and the logic behind min-maxing university requirements in the Philippines. By engineering my environment from dopamine regulation to calculated absenteeism. I have bypassed the traditional learning curve to achieve extreme growth.

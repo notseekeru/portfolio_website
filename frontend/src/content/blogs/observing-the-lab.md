@@ -36,7 +36,56 @@ Security was a significant aspect of the design. Initially, open ports were used
 ## Highlights of the Final Architecture
 
 - **Unified Data Plane**: Alloy was configured to serve as the universal data ingestion point.
-  - Placeholder: Insert configuration snippet here.
+
+- Example Config(only Prometheus):
+
+```alloy
+prometheus.exporter.unix "node_stats" {
+  procfs_path = "/host/proc"
+  sysfs_path  = "/host/sys"
+}
+
+prometheus.scrape "scrape_node_stats" {
+  targets         = prometheus.exporter.unix.node_stats.targets
+  forward_to      = [prometheus.relabel.standardize_metrics.receiver]
+  scrape_interval = "60s"
+
+}
+
+prometheus.exporter.self "alloy_stats" {
+}
+
+prometheus.scrape "scrape_alloy" {
+  targets    = prometheus.exporter.self.alloy_stats.targets
+  forward_to = [prometheus.relabel.standardize_metrics.receiver]
+}
+
+prometheus.relabel "standardize_metrics" {
+  forward_to = [prometheus.remote_write.local_prometheus.receiver]
+
+	rule {
+		target_label = "collector"
+		replacement  = "alloy"
+	}
+
+  rule {
+    target_label = "instance"
+    replacement  = sys.env("HOSTNAME")
+  }
+
+  rule {
+    target_label = "job"
+    replacement  = "node"
+  }
+}
+
+prometheus.remote_write "local_prometheus" {
+  endpoint {
+    url = "http://prometheus:9090/api/v1/write"
+  }
+}
+```
+
 - **Alerts and Proactive Monitoring**: Alerts for resource monitoring (memory/CPU) and state monitoring (e.g., InstanceDown) were implemented, with notifications sent to a Slack channel.
 - **Automated Log Discovery**: Docker logs and system-level stats were integrated seamlessly, ensuring no critical data was missed.
 - **Trace Verification**: I validated the system using Python-based OTLP producers and manual cURL commands to ensure trace propagation and log indexing functioned as expected.
@@ -58,6 +107,45 @@ The final implementation delivered a robust observability stack that realizes th
 - Proactive alerts to maintain the health and functionality of monitored systems.
 - A scalable foundation for extending observability as projects grow in complexity.
 
+- Diagram of the Alloy config and overall scope:
+
+```mermaid
+---
+config:
+  layout: dagre
+---
+graph TD
+    subgraph Logs ["Logs Pipeline"]
+        D_Docker[discovery.docker.containers] --> R_Filter[discovery.relabel.filter_containers]
+        R_Filter --> L_Docker[loki.source.docker.logs]
+        L_Docker --> P_Loki[loki.process.standard_pipeline]
+        P_Loki --> W_Loki[loki.write.local_loki]
+    end
+
+    subgraph OTLP ["OTLP Telemetry Pipeline"]
+        Rec_Otel[otelcol.receiver.otlp.default] --> Proc_Mem[otelcol.processor.memory_limiter.default]
+        Proc_Mem --> Exp_OtelLoki[otelcol.exporter.loki.to_loki]
+        Proc_Mem --> Proc_Batch[otelcol.processor.batch.default]
+        Proc_Batch --> Exp_Tempo[otelcol.exporter.otlp.tempo]
+        Proc_Batch --> Exp_OtelProm[otelcol.exporter.prometheus.to_prometheus]
+    end
+
+    subgraph Metrics ["System & Self Metrics"]
+        Exp_Node[prometheus.exporter.unix.node_stats] --> Scr_Node[prometheus.scrape.scrape_node_stats]
+        Exp_Self[prometheus.exporter.self.alloy_stats] --> Scr_Alloy[prometheus.scrape.scrape_alloy]
+        Scr_Node --> R_Prom[prometheus.relabel.standardize_metrics]
+        Scr_Alloy --> R_Prom
+        R_Prom --> W_Prom[prometheus.remote_write.local_prometheus]
+    end
+
+    Exp_OtelLoki --> W_Loki
+    Exp_OtelProm --> W_Prom
+
+    W_Loki --> Out_Loki[(Loki Endpoint)]
+    Exp_Tempo --> Out_Tempo[(Tempo Endpoint)]
+    W_Prom --> Out_Prom[(Prometheus Endpoint)]
+```
+
 ---
 
 # Conclusion
@@ -65,3 +153,4 @@ The final implementation delivered a robust observability stack that realizes th
 This project was an exercise in disciplined architecture and persistence. It taught me the importance of balancing simplicity and functionality, leveraging AI intelligently while remaining prepared to do the manual legwork. With these lessons, I have not only built an effective observability solution but also deepened my skills as a systems architect.
 
 ---
+

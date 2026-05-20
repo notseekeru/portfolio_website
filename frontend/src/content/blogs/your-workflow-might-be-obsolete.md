@@ -5,6 +5,8 @@ description: A transition from browser-based tools to CLI-native LLMs, Agentic S
 image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop"
 ---
 
+---
+
 # Summary
 
 There comes a point in every developer's journey where the tools that once accelerated execution become the very bottlenecks choking it. This document chronicles the architectural migration from casual, browser-based LLM interactions to a rigorous, CLI-native workflow powered by deterministic automation and agentic orchestration. It details the failure points of manual prompting, the architectural logic behind moving to n8n, and the compounding returns of treating AI operations as infrastructure rather than magic.

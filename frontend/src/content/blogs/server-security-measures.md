@@ -5,6 +5,8 @@ description: Transforming a standard Linux server into a hardened, production-re
 image: "https://dreamix.eu/wp-content/uploads/2023/09/linux.security.11614.jpg"
 ---
 
+---
+
 # Summary
 
 This present my journey of hardening a Raspberry Pi 5 server, transitioning from a default setup to a secure, Tailscale only gateway. I detail the audit process, the implementation of strict firewall rules, and the architectural shift that transformed my server into a sophisticated node.
