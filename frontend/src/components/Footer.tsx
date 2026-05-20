@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
-import personalData from '../data/personalData'
+import { Link } from "react-router-dom";
+import personalData from "../data/personalData";
 
 export default function Footer() {
   return (
@@ -18,9 +18,9 @@ export default function Footer() {
 
         <nav className="flex items-center gap-6">
           {[
-            { label: 'Home', to: '/' },
-            { label: 'Projects', to: '/projects' },
-            { label: 'Contact', to: '/contact' }
+            { label: "Home", to: "/#home" },
+            { label: "Projects", to: "/#projects" },
+            { label: "Contact", to: "/#contact" },
           ].map((link) => (
             <Link
               key={link.to}
@@ -58,5 +58,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
