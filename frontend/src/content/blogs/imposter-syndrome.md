@@ -28,7 +28,7 @@ But perfectionism is a double-edged sword. On one hand, it kept me in maintenanc
 
 I abandoned garbage, AI-generated proxying rules. Instead, I established a strict, linear proxy chain that I explicitly controlled. Public traffic now hits the Cloudflare Edge, tunnels securely into the internal network via `cloudflared`, lands on a dedicated `Nginx` reverse proxy acting as the edge gateway, and only then gets routed to the internal Vite/React website.
 
-Configuring this manually built muscle memory. I enforced headers, real IPs, and strict network policies resulting in a flawless HTTP 200 health check and an SSL Labs 'A' (Because I didn't implement all security measures needed inside the cloudflare Dashboard, I think it was that my HSTS was turned off.) rating on the first try.
+Configuring this manually built muscle memory. I enforced headers, real IPs, and strict network policies resulting in a flawless HTTP 200 health check and an SSL Labs 'A' (Because I didn't implement all security measures needed inside the cloudflare Dashboard, I think it was that my HSTS was turned off.) rating on the first try. [Update: After implementing HSTS headers, I achieved an 'A+' rating on SSL Labs.]
 
 ```nginx
 # nginx.conf
