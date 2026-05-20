@@ -24,8 +24,8 @@ export default function App() {
             >
               <AnimatePresence mode="wait">
                 <Routes>
-                  <Route path="/#home" element={<Home />} />
-                  <Route path="/#blog/:slug" element={<BlogPost />} />
+                  <Route path="/" element={<Home />} />
+                  <Route path="/blog/:slug" element={<BlogPost />} />
                 </Routes>
               </AnimatePresence>
             </Suspense>
