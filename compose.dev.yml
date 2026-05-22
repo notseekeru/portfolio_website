@@ -6,8 +6,6 @@ services:
     container_name: portfolio_frontend_dev
     ports:
       - "5173:5173"
-    env_file:
-      - ./frontend/.env
     environment:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
@@ -24,8 +22,6 @@ services:
     container_name: portfolio_backend_dev
     ports:
       - "5000:5000"
-    env_file:
-      - ./backend/.env
     environment:
       - CHOKIDAR_USEPOLLING=true
     volumes:
