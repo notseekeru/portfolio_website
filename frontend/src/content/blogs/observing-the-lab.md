@@ -152,3 +152,7 @@ graph TD
 This project was an exercise in disciplined architecture and persistence. It taught me the importance of balancing simplicity and functionality, leveraging AI intelligently while remaining prepared to do the manual legwork. With these lessons, I have not only built an effective observability solution but also deepened my skills as a systems architect.
 
 ---
+
+## Update (June 1, 2026)
+
+You can now see another blog connecting to this one, where I dive into the implementation of OpenTelemetry and how I instrumented my applications to send traces and logs to the LGTM stack. Check it out here: [Telemetry Madness](https://portfolio.seekeru.tech/blog/telemetry-madness).

@@ -180,7 +180,7 @@ Furthermore, I integrated Trivy for automated CVE and secret scanning. Recognizi
 # Note that you should also smoke test the image before pushing to production.
 ```
 
-## Lessons Learned: Fundamentals Beat Vibe Coding
+## Conclusion
 
 At some point during the endless cycle of `docker compose down` and `docker compose up`, muscle memory took over. Staring at raw Nginx blocks and configuring the Cloudflare tunnel manually made me understand the flow of data across my infrastructure in a way that AI generation never could.
 
