@@ -2,7 +2,8 @@
 title: Your Workflow Might Be Obsolete
 date: 2026-03-10
 description: A transition from browser-based tools to CLI-native LLMs, Agentic Systems, autonomous agents, and deterministic automation workflows.
-image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop"
+---
+
 ---
 
 # Summary

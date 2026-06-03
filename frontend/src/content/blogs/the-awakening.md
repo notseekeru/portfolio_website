@@ -2,7 +2,6 @@
 title: The Awakening
 date: 2026-02-25
 description: How I designed and built my first live website. The architectural decisions, the tech stack, and the lessons learned from the experience.
-image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfM21gdAKGbsc4tUO29PLVGvmI5dPHZeN_xg&s"
 ---
 
 ---

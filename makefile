@@ -7,6 +7,7 @@ exec:
 	
 	@echo "**---------Checking Backend...-----------**"
 	docker exec -t portfolio_backend_dev sh -c "npm run lint && npm run typecheck && npm audit && npm outdated || true && npm prune"
+	
 git-branch-d:
 	git checkout main
 	git pull origin main

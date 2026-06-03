@@ -2,7 +2,6 @@
 title: Imposter Syndrome
 date: 2026-04-25
 description: Escaping the AI-generated "blackbox" to build a deterministic, hardened proxy chain and segmented network on a Raspberry Pi 5.
-image: "https://png.pngtree.com/png-vector/20220621/ourmid/pngtree-man-breaks-theatrical-mask-to-conquer-imposter-syndrome-vector-png-image_47229500.jpg"
 ---
 
 # Summary
@@ -29,7 +28,7 @@ But perfectionism is a double-edged sword. On one hand, it kept me in maintenanc
 
 I abandoned garbage, AI-generated proxying rules. Instead, I established a strict, linear proxy chain that I explicitly controlled. Public traffic now hits the Cloudflare Edge, tunnels securely into the internal network via `cloudflared`, lands on a dedicated `Nginx` reverse proxy acting as the edge gateway, and only then gets routed to the internal Vite/React website.
 
-Configuring this manually built muscle memory. I enforced headers, real IPs, and strict network policies resulting in a flawless HTTP 200 health check and an SSL Labs 'A' (Because I didn't implement all security measures needed inside the cloudflare Dashboard, I think it was that my HSTS was turned off.) rating on the first try.
+Configuring this manually built muscle memory. I enforced headers, real IPs, and strict network policies resulting in a flawless HTTP 200 health check and an SSL Labs 'A' (Because I didn't implement all security measures needed inside the cloudflare Dashboard, I think it was that my HSTS was turned off.) rating on the first try. [Update: After implementing HSTS headers, I achieved an 'A+' rating on SSL Labs.]
 
 ```nginx
 # nginx.conf
@@ -181,7 +180,7 @@ Furthermore, I integrated Trivy for automated CVE and secret scanning. Recognizi
 # Note that you should also smoke test the image before pushing to production.
 ```
 
-## Lessons Learned: Fundamentals Beat Vibe Coding
+## Conclusion
 
 At some point during the endless cycle of `docker compose down` and `docker compose up`, muscle memory took over. Staring at raw Nginx blocks and configuring the Cloudflare tunnel manually made me understand the flow of data across my infrastructure in a way that AI generation never could.
 

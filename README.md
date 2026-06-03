@@ -30,7 +30,6 @@
 Todos:
 
 - Add Section to prefer remote work and you can work from anywhere.
-- Add where you're currently located and your timezone.
 - Add `Labs` section for a full diagram breakdown of my whole homelab infrastructure, including the Raspberry Pi, Tailscale, Cloudflare Tunnel, and Nginx setup.
 - N8N integration for contact form submissions using webhooks and secure headers.
 - Dependabot in GitHub for automated dependency updates and security patches.

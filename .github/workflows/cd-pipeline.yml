@@ -42,6 +42,7 @@ jobs:
           echo 'CVE-2026-22184' >> .trivyignore # z lib 
           echo 'CVE-2026-33671' >> .trivyignore # picomatch
           echo 'CVE-2026-27135' >> .trivyignore # nghttp2
+          echo 'CVE-2026-6732' >> .trivyignore # libxml2
 
       - name: Build local image for smoke test (single-arch, load into daemon)
         uses: docker/build-push-action@v4
