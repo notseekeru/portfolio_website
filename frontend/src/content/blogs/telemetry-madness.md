@@ -1,6 +1,6 @@
 ---
 title: Telemetry Madness
-date: 2026-05-18
+date: 2026-05-30
 description: Tearing down an AI-generated Go template to build a lean, deterministic OTLP telemetry pipeline and exposing silent dependency failures through chaos engineering.
 ---
 
