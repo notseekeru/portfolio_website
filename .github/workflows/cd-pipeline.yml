@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Security Scan Source Code
-        uses: aquasecurity/trivy-action@69295e29b06ce273fa2e7f4c33c29b0f47385962
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           scan-type: 'fs'
           scan-ref: './${{ matrix.component }}'
