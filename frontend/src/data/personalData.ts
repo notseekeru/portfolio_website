@@ -275,16 +275,28 @@ const personalData: PersonalData = {
         implementation:
           "Standardizing cloud-native instrumentation and traces.",
       },
+      {
+        name: "Terraform",
+        icon: "SiTerraform",
+        summary: "Infrastructure as Code.",
+        implementation:
+          "Automating the provisioning and management of infrastructure.",
+      },
+      {
+        name: "DigitalOcean",
+        icon: "SiDigitalocean",
+        summary: "Cloud computing platform.",
+        implementation: "Hosting and managing cloud infrastructure.",
+      },
     ],
   },
 
   infrastructure: [
     {
       role: "Self-Hosted Infrastructure (RPi5 Lab)",
-      description:
-        "Architected and hardened a production-grade proxy chain environment.",
+      description: "Architected and secured a production-grade environment.",
       focus: [
-        "Ansible (IaC)",
+        "Ansible and Terraform(IaC)",
         "Docker Compose (Orchestration)",
         "Network Security (UFW/Tailscale)",
         "Observability (Prometheus/Loki/Grafana)",
@@ -293,6 +305,30 @@ const personalData: PersonalData = {
       summary: "Homelab cluster for self-hosted applications.",
       implementation:
         "Managed via Docker Compose and Ansible over Tailscale VPN.",
+    },
+    {
+      role: "Cloudflared + Nginx Reverse Proxy",
+      description:
+        "Configured and optimized a reverse proxy for load balancing and SSL termination.",
+      focus: [
+        "CSP and Security Headers",
+        "Nginx payload optimization",
+        "SSL/TLS Management",
+      ],
+      icon: "SiCloudflare",
+      summary: "Web server for routing requests.",
+      implementation:
+        "Managed via Cloudflared and Nginx configuration files to securely route traffic to personal websites.",
+    },
+    {
+      role: "Tailscale and UFW Firewall",
+      description:
+        "Configured and managed a secure network infrastructure with Tailscale VPN and UFW firewall.",
+      focus: ["Tailscale VPN", "UFW Firewall", "Server Security"],
+      icon: "SiTailscale",
+      summary: "Secure network connectivity and firewall management.",
+      implementation:
+        "Managed via Tailscale for secure remote access and UFW for local network security.",
     },
   ],
 
