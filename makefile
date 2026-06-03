@@ -19,13 +19,13 @@ dev-buildcache:
 	$(DEV_CMD) build --no-cache
 
 dev-down:
-	$(DEV_CMD) down -v --rmi local
-
-dev-up:
-	$(DEV_CMD) up -d
+	$(DEV_CMD) down
 
 dev-logs:
 	$(DEV_CMD) logs -f
+
+dev-up:
+	$(DEV_CMD) up -d
 
 dev-down:
 	$(DEV_CMD) down -v --rmi local
@@ -36,11 +36,11 @@ prod-build:
 prod-buildcache:
 	$(PROD_CMD) build --no-cache
 
-prod-up:
-	$(PROD_CMD) up -d
-
 prod-logs:
 	$(PROD_CMD) logs -f
 
 prod-down:
 	$(PROD_CMD) down -v --rmi local
+
+prod-up:
+	$(PROD_CMD) up -d
