@@ -67,7 +67,7 @@ const personalData: PersonalData = {
   name: "Stephen Macabulos",
   level: "Intern",
   status: "Available for internships/entry level roles",
-  title: "Site Reliability Engineer | Platform Engineer | DevOps Engineer",
+  title: "Site Reliability Engineer | DevOps Engineer | Platform Engineer",
   location: "Pampanga, Philippines",
   email: "stpmacabulos@gmail.com",
   linkedin: "https://www.linkedin.com/in/stephen-macabulos-521a6b406/",
