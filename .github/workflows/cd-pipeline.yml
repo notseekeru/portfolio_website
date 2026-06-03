@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         component: [frontend, backend]
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
@@ -39,11 +39,11 @@ jobs:
       - name: Security Scan Source Code
         uses: aquasecurity/trivy-action@v0.35.0
         with:
-          scan-type: 'fs'
-          scan-ref: './${{ matrix.component }}'
-          severity: 'HIGH,CRITICAL'
-          exit-code: '1'
-          format: 'table'
+          scan-type: "fs"
+          scan-ref: "./${{ matrix.component }}"
+          severity: "HIGH,CRITICAL"
+          exit-code: "1"
+          format: "table"
 
       - name: Build and Push ARM64 Image
         uses: docker/build-push-action@v6
@@ -55,5 +55,3 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ github.repository_owner }}/portfolio-${{ matrix.component }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ github.repository_owner }}/portfolio-${{ matrix.component }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
