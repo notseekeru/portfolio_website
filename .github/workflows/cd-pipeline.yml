@@ -24,7 +24,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v6
 
-      # 1. Initialize Buildx USING THE NATIVE HOST DRIVER (Prevents the freeze bug)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
@@ -37,16 +36,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 2. Run Trivy directly on the source directory before building (No arch dependency)
       - name: Security Scan Source Code
-        uses: aquasec/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@69295e29b06ce273fa2e7f4c33c29b0f47385962
         with:
           scan-type: 'fs'
           scan-ref: './${{ matrix.component }}'
           severity: 'HIGH,CRITICAL'
           exit-code: '1'
+          format: 'table'
 
-      # 3. Build and Push directly to the registry for ARM64 using GitHub Actions Cache
       - name: Build and Push ARM64 Image
         uses: docker/build-push-action@v6
         with:
