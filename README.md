@@ -1,3 +1,9 @@
+# Portfolio Website
+
+[![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
+[![CI Status](https://github.com/notseekeru/portfolio_website/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/notseekeru/portfolio_website/actions)
+[![CD Status](https://github.com/notseekeru/portfolio_website/actions/workflows/cd-pipeline.yml/badge.svg)](https://github.com/notseekeru/portfolio_website/actions)
+
 ## TechStack
 
 - TypeScript (for frontend and backend development)
