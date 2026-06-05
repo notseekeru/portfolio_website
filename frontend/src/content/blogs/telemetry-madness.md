@@ -179,3 +179,9 @@ This failure proved that observability is not just about measuring static, healt
 Dropping back to the bare essentials of the OpenTelemetry transport protocol taught me that complex monitoring templates mean nothing if you cannot track a single payload through your pipeline.
 
 Relying on abstract, pre-packaged AI layouts created a false sense of security that crumbled under the first sign of network friction. True architectural confidence is built by executing manual curl assertions, reading raw configuration specs, and intentionally breaking your database infrastructure to see where the telemetry breaks. The absolute clarity of my operational dashboard did not come from elegant visualization layers—it was forged by completely dismantling the blackbox from the bottom up.
+
+---
+
+## Update (June 5, 2026)
+
+You can check the others blogs I wrote about the follow up iterations and updates related to this current project. Link at [SRE Steps](https://portfolio.seekeru.tech/blog/sre-steps).
