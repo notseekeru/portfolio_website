@@ -70,7 +70,7 @@ const personalData: PersonalData = {
   title: "Site Reliability Engineer | DevOps Engineer | Platform Engineer",
   location: "Pampanga, Philippines",
   email: "stpmacabulos@gmail.com",
-  linkedin: "https://www.linkedin.com/in/stephen-macabulos-521a6b406/",
+  linkedin: "https://www.linkedin.com/in/stephen-macabulos",
   github: "https://github.com/notseekeru",
   facebook: "https://www.facebook.com/notseekeru",
   instagram: "https://www.instagram.com/notseekeru/",
