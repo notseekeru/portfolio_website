@@ -24,23 +24,12 @@ export interface Skills {
   tools: SkillItem[];
 }
 
-export interface InfrastructureItem {
-  role: string;
-  description: string;
-  focus: string[];
-  icon: string;
-  summary: string;
-  implementation: string;
-  favorite?: boolean;
-  github?: string;
-}
-
 export interface ProjectItem {
   title: string;
   description: string;
   techStack: string[];
-  link: string;
-  image: string;
+  link?: string;
+  image?: string;
   favorite?: boolean;
   github?: string;
 }
@@ -63,7 +52,6 @@ export interface PersonalData {
   experience: ExperienceItem[];
   education: EducationItem[];
   skills: Skills;
-  infrastructure: InfrastructureItem[];
   projects: ProjectItem[];
 }
 
@@ -295,48 +283,6 @@ const personalData: PersonalData = {
     ],
   },
 
-  infrastructure: [
-    {
-      role: "Self-Hosted Infrastructure (RPi5 Lab)",
-      description: "Architected and secured a production-grade environment.",
-      focus: [
-        "Ansible and Terraform(IaC)",
-        "Docker Compose (Orchestration)",
-        "Network Security (UFW/Tailscale)",
-        "Observability (Prometheus/Loki/Grafana)",
-      ],
-      icon: "FaServer",
-      summary: "Homelab cluster for self-hosted applications.",
-      implementation:
-        "Managed via Docker Compose and Ansible over Tailscale VPN.",
-      favorite: true,
-    },
-    {
-      role: "Cloudflared + Nginx Reverse Proxy",
-      description:
-        "Configured and optimized a reverse proxy for load balancing and SSL termination.",
-      focus: [
-        "CSP and Security Headers",
-        "Nginx payload optimization",
-        "SSL/TLS Management",
-      ],
-      icon: "SiCloudflare",
-      summary: "Web server for routing requests.",
-      implementation:
-        "Managed via Cloudflared and Nginx configuration files to securely route traffic to personal websites.",
-    },
-    {
-      role: "Tailscale and UFW Firewall",
-      description:
-        "Configured and managed a secure network infrastructure with Tailscale VPN and UFW firewall.",
-      focus: ["Tailscale VPN", "UFW Firewall", "Server Security"],
-      icon: "SiTailscale",
-      summary: "Secure network connectivity and firewall management.",
-      implementation:
-        "Managed via Tailscale for secure remote access and UFW for local network security.",
-    },
-  ],
-
   projects: [
     {
       title: "Portfolio Website (This Website)",
@@ -356,6 +302,34 @@ const personalData: PersonalData = {
       link: "https://shop.seekeru.tech",
       image: "/2.png",
       github: "https://github.com/notseekeru/portfolio_website",
+    },
+    {
+      title: "Self-Hosted Infrastructure (RPi5 Lab)",
+      description:
+        "Homelab cluster for self-hosted applications. Managed via Docker Compose and Ansible over Tailscale VPN.",
+      techStack: [
+        "Ansible",
+        "Terraform",
+        "Docker Compose",
+        "UFW",
+        "Tailscale",
+        "Prometheus",
+        "Loki",
+        "Grafana",
+      ],
+      favorite: true,
+    },
+    {
+      title: "Cloudflared + Nginx Reverse Proxy",
+      description:
+        "Configured and optimized a reverse proxy for load balancing and SSL termination.",
+      techStack: ["Cloudflare", "Nginx", "SSL/TLS", "CSP Headers"],
+    },
+    {
+      title: "Tailscale and UFW Firewall",
+      description:
+        "Configured and managed a secure network infrastructure with Tailscale VPN and UFW firewall.",
+      techStack: ["Tailscale", "UFW", "Server Security"],
     },
   ],
 };

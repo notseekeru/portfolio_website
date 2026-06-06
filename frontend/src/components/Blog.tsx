@@ -5,7 +5,7 @@ import { loadBlogs, type BlogPost } from "../utils/blogLoader";
 import type { SyntheticEvent } from "react";
 
 const blogs: BlogPost[] = loadBlogs();
-const POSTS_PER_PAGE = 9;
+const POSTS_PER_PAGE = 6;
 
 export default function Blog() {
   const [currentPage, setCurrentPage] = useState(1);

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import personalData, { type ProjectItem } from "../data/personalData";
-import type { SyntheticEvent } from "react";
+import type { SyntheticEvent, MouseEvent } from "react";
 
 const allProjects: ProjectItem[] = [...personalData.projects];
 
@@ -50,15 +50,26 @@ interface ProjectCardProps {
 }
 
 function ProjectCard({ project, index }: ProjectCardProps) {
+  const CardWrapper = project.link ? motion.a : motion.div;
+  const wrapperProps = project.link
+    ? {
+        href: project.link,
+        target: "_blank" as const,
+        rel: "noopener noreferrer" as const,
+      }
+    : {};
+
   return (
-    <motion.a
-      href={project.link || "#"}
-      target={project.link && project.link !== "#" ? "_blank" : undefined}
-      rel="noopener noreferrer"
+    <CardWrapper
+      {...wrapperProps}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.07, duration: 0.4 }}
-      className="group relative flex flex-col border border-border bg-surface rounded-2xl overflow-hidden hover:border-accent/30 glow-accent-hover transition-all duration-300"
+      className={`group relative flex flex-col border border-border bg-surface rounded-2xl overflow-hidden transition-all duration-300 ${
+        project.link
+          ? "hover:border-accent/30 glow-accent-hover cursor-pointer"
+          : "cursor-default"
+      }`}
     >
       <div className="relative h-40 bg-gradient-to-br from-zinc-800 to-zinc-900 overflow-hidden">
         {project.image ? (
@@ -104,7 +115,7 @@ function ProjectCard({ project, index }: ProjectCardProps) {
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e: MouseEvent) => e.stopPropagation()}
                 className="text-zinc-500 hover:text-accent transition-colors"
                 title="GitHub repository"
               >
@@ -151,6 +162,6 @@ function ProjectCard({ project, index }: ProjectCardProps) {
           </svg>
         </div>
       </div>
-    </motion.a>
+    </CardWrapper>
   );
 }

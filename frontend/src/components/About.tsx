@@ -112,8 +112,7 @@ export default function About() {
   const stats = useMemo(
     () => [
       {
-        value:
-          personalData.projects.length + personalData.infrastructure.length,
+        value: personalData.projects.length,
         label: "Projects & Infrastructure",
         accent: true,
         items: [
@@ -122,12 +121,6 @@ export default function About() {
             icon: "FaCode",
             summary: p.description,
             implementation: "Stack: " + p.techStack.join(", "),
-          })),
-          ...personalData.infrastructure.map((i) => ({
-            name: i.role,
-            icon: i.icon || "FaServer",
-            summary: i.summary,
-            implementation: i.implementation,
           })),
         ],
       },

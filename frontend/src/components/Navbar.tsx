@@ -6,6 +6,7 @@ import personalData from "../data/personalData";
 const navLinks = [
   { label: "Home", path: "/#home" },
   { label: "Projects", path: "/#projects" },
+  { label: "Infrastructure", path: "/#infrastructure-diagram" },
   { label: "Blog", path: "/#blog" },
   { label: "Contact", path: "/#contact" },
 ];
@@ -24,6 +25,33 @@ export default function Navbar() {
   useEffect(() => {
     setMenuOpen(false);
   }, [location]);
+
+  // IntersectionObserver: update URL hash when a section scrolls into view
+  useEffect(() => {
+    const sectionIds = navLinks
+      .map((l) => l.path.replace("/#", ""))
+      .filter((id) => id !== "");
+    const observers: IntersectionObserver[] = [];
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              window.history.replaceState({}, "", `/#${id}`);
+            }
+          });
+        },
+        { rootMargin: "-40% 0px -55% 0px", threshold: 0 },
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
 
   return (
     <header

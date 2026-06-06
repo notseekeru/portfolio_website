@@ -42,15 +42,15 @@ export default function Home() {
       <div className="max-w-6xl mx-auto">
         <Divider />
       </div>
-      <Education />
-      <div className="max-w-6xl mx-auto">
-        <Divider />
-      </div>
       <InfrastructureDiagram />
       <div className="max-w-6xl mx-auto">
         <Divider />
       </div>
       <Projects />
+      <div className="max-w-6xl mx-auto">
+        <Divider />
+      </div>
+      <Education />
       <div className="max-w-6xl mx-auto">
         <Divider />
       </div>
