@@ -31,6 +31,8 @@ export interface InfrastructureItem {
   icon: string;
   summary: string;
   implementation: string;
+  favorite?: boolean;
+  github?: string;
 }
 
 export interface ProjectItem {
@@ -39,6 +41,8 @@ export interface ProjectItem {
   techStack: string[];
   link: string;
   image: string;
+  favorite?: boolean;
+  github?: string;
 }
 
 export interface PersonalData {
@@ -305,6 +309,7 @@ const personalData: PersonalData = {
       summary: "Homelab cluster for self-hosted applications.",
       implementation:
         "Managed via Docker Compose and Ansible over Tailscale VPN.",
+      favorite: true,
     },
     {
       role: "Cloudflared + Nginx Reverse Proxy",
@@ -340,6 +345,8 @@ const personalData: PersonalData = {
       techStack: ["Vite", "TypeScript", "React", "Node.js", "Express"],
       link: "https://portfolio.seekeru.tech",
       image: "/1.png",
+      favorite: true,
+      github: "https://github.com/notseekeru/portfolio_website",
     },
     {
       title: "PC Building Business Website",
@@ -348,6 +355,7 @@ const personalData: PersonalData = {
       techStack: ["React", "Node.js", "Express"],
       link: "https://shop.seekeru.tech",
       image: "/2.png",
+      github: "https://github.com/notseekeru/portfolio_website",
     },
   ],
 };

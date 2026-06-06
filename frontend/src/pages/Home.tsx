@@ -5,6 +5,7 @@ import Hero from "../components/Hero";
 import About from "../components/About";
 import Education from "../components/Education";
 import Projects from "../components/Projects";
+import InfrastructureDiagram from "../components/InfrastructureDiagram";
 import Blog from "../components/Blog";
 import Contact from "../components/Contact";
 
@@ -42,6 +43,10 @@ export default function Home() {
         <Divider />
       </div>
       <Education />
+      <div className="max-w-6xl mx-auto">
+        <Divider />
+      </div>
+      <InfrastructureDiagram />
       <div className="max-w-6xl mx-auto">
         <Divider />
       </div>

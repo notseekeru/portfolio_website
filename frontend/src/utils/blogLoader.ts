@@ -9,6 +9,8 @@ export interface BlogPost {
   description: string;
   image: string;
   content: string;
+  favorite?: boolean;
+  github?: string;
 }
 
 const blogModules = import.meta.glob("../content/blogs/*.md", {
@@ -33,6 +35,8 @@ function loadBlogs(): BlogPost[] {
       date: meta.date || "",
       description: meta.description || "",
       image: meta.image || "",
+      favorite: meta.favorite === "true",
+      github: meta.github || "",
       content,
     };
   });

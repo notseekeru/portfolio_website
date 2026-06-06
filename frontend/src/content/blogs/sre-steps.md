@@ -1,8 +1,8 @@
 ---
 title: SRE Steps
 date: 2026-06-03
-description: "Here’s how I built a reliable, automated kill script to measure real MTTD and MTTR in my containerized infrastructure in my homelab."
----
+description: "Here’s how I built a reliable, automated kill script to measure real MTTD and MTTR in my containerized infrastructure in my homelab."favorite: true
+github: https://github.com/notseekeru/portfolio_website---
 
 ---
 

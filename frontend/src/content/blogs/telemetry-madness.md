@@ -2,6 +2,7 @@
 title: Telemetry Madness
 date: 2026-05-30
 description: I let AI generate my observability stack, then watched it fail silently. Here's how I rebuilt it from first principles using curl, Alloy, and a Postgres blackout experiment that exposed a hidden retry-loop disaster.
+favorite: true
 ---
 
 # Summary
