@@ -20,7 +20,7 @@ flowchart TB
     Git["GitHub Repo CI/CD"]
     ALint["Ansible Lint"]
     Molecule["Molecule Testing"]
-    CiCheck["Linter-Formatter"]
+    CiCheck["Linter/Formatter/StaticAnalysis"]
     Trivy["Trivy Security Scan"]
     GHCR["Github Registry"]
   end
@@ -35,33 +35,44 @@ flowchart TB
 
     subgraph Pi5["⚙️ Node - Raspberry Pi 5"]
       subgraph SSHD1["🔒 SSHD Configs"]
-        F2B["Fail2ban"] --> NoIP["No Local IP SSH"] --> Port22["Port 22 Only"] --> UFW["UFW Tailscale Only"] --> AKeys["No Key No Entry"] --> APerms["No Root Login"] --> Access["SSH Completed"]
+        F2B["Fail2ban"] --> NoIP["No Local IP SSH"] --> Port22["Only on Port 22"] --> UFW["Only allow Tailscale Devices"] --> AKeys["No Key, No Entry"] --> APerms["No Root Login"] --> Access["SSH Completed"]
       end
       
       subgraph Docker["🐳 Docker Containers"]
         DLogs["Docker Logs"]
         
-        subgraph AppLayer["💼 Compose - Portfolio Website Stack"]
-          Frontend["React-Vite Frontend"]
-          Backend["Node.js Backend"]
+        subgraph DiagramStack["📊 Compose - Diagram Stack"]
+          Frontend2["React/Vite Frontend (Diagram)"]
+          subgraph Backend2["Node.js Backend (Diagram)"]
+            Nodejs2["Node JS Runtime"]
+            OTLPDep["OTLP Metrics HTTP"]
+            OTLPDep2["OTLP Spans HTTP"]
+          end
+          Postgres["Postgres DB :5432"]
+          PostgresExporter["Postgres Exporter :9187"]
         end
-        
-        subgraph ObservabilityStack["📊 Compose - Observability Stack"]
-          Alloy["Grafana Alloy"]
-          Prom["Prometheus"]
-          Loki["Loki"]
-          Tempo["Tempo"]
-          Grafana["Grafana"]
-          AManager["AlertManager"]
+
+        subgraph ObservabilityStack["📊 Compose - Observability Stack (LGTM + Alloy)"]
+          Alloy["Grafana Alloy:12345"]
+          Prom["Prometheus:9090"]
+          Loki["Loki:3100"]
+          Tempo["Tempo:3200"]
+          Grafana["Grafana Visualization :3030"]
+          AManager["AlertManager:9093"]
         end
       end
     end
 
     subgraph DigitalOcean["💧 DigitalOcean Cloud"]
-      subgraph Droplet1["Debian Droplet"]
+      subgraph Droplet1[" Debian Droplet"]
         subgraph DODocker["🐳 Docker Compose - Traffic Stack"]
           DONginx["Nginx Reverse Proxy"]
           DOCfD["Cloudflared Tunnel"]
+        end
+
+        subgraph AppLayer["💼 Compose - Portfolio Website Stack"]
+          Frontend["React/Vite Frontend"]
+          Backend["Node.js Backend"]
         end
       end
     end
@@ -74,27 +85,39 @@ flowchart TB
     SSH2["SSH Keys"]
   end
 
+  %% CI/CD Flows
   Git -- CI Check --> ALint & CiCheck
   CiCheck -- Action --> Trivy
   ALint -- Deploy --> Molecule
   Molecule -- Deploy --> SSHD1
   Trivy -- Build/Push --> GHCR
 
+  %% Edge/Ingress Flows
   Users -- HTTPS --> WAF --> CFTunnel
   CFTunnel -. HTTPS .-> DOCfD
   DOCfD --> DONginx
   DONginx -- HTTP --> Frontend & Backend
   SSH1 & SSH2 -- Tailscale Tunnel --> SSHD1
 
+  %% Deployment / Registry Pulls
   Frontend & Backend -- Pull w/Token --> GHCR
-  Frontend & Backend -. OTLP .-> Alloy
-  Alloy -- Scrape --> DLogs
+  Frontend2 & Nodejs2 -- Pull w/Token --> GHCR
+
+  %% Observability Stack Internal Routing
+  Alloy -- Scrape Logs --> DLogs
   Alloy -- Remote Write --> Prom
   Alloy -- Loki Push --> Loki
   Alloy -- OTLP --> Tempo
   Prom & Loki & Tempo -- Query --> Grafana
   Prom -- Alerting Rules --> AManager --> Slack
 
+  %% --- New Telemetry Links (Diagram Stack -> Observability Stack) ---
+  Frontend2 -. Frontend Logs/Traces .-> Alloy
+  OTLPDep & OTLPDep2 -. OTLP Metrics & Spans .-> Alloy
+  PostgresExporter -- Scrapes Metrics --> Postgres
+  PostgresExporter -. Metrics :9187 .-> Alloy
+
+  %% Class Styling Assignments
   WAF:::edgeLayer
   CFTunnel:::edgeLayer
   Users:::edgeLayer
@@ -129,7 +152,16 @@ flowchart TB
   DONginx:::container
   DOCfD:::container
   Droplet1:::physical
+  
+  %% Applied Styles to Diagram Stack
+  Frontend2:::container
+  Nodejs2:::container
+  OTLPDep:::container
+  OTLPDep2:::container
+  Postgres:::container
+  PostgresExporter:::container
 
+  %% Class Definitions
   classDef edgeLayer fill:#b30000,stroke:#ff4d4d,stroke-width:2px,color:#ffffff
   classDef netLayer fill:#0059b3,stroke:#3399ff,stroke-width:2px,color:#ffffff
   classDef physical fill:#333333,stroke:#666666,stroke-width:2px,color:#ffffff
