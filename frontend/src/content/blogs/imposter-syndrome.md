@@ -14,9 +14,9 @@ This document narrates the critical architectural pivot of my portfolio infrastr
 
 # Escaping the Blackbox
 
-The architectural journey began a month prior when I migrated away from expensive, abstracted Vercel infrastructure to a self-hosted Raspberry Pi setup. To compensate for the new self-hosted infrastructure and TSX Refactoring, I relied heavily on AI to "vibe code" my networking features and complex integrations and "good" code suggestions.
+The architectural journey began a month prior when I migrated away from expensive, abstracted Vercel infrastructure to a self-hosted Raspberry Pi setup. To compensate for the new self-hosted infrastructure and TSX refactoring, I relied heavily on AI to "vibe code" my networking features, complex integrations, and "good" code suggestions.
 
-At first, AI generation genuinely felt like a superpower. Features were shipping at Fast. But the abstraction, Lack of understanding, and code quality had a hidden cost.
+At first, AI generation genuinely felt like a superpower. Features were shipping fast. But the abstraction, lack of understanding, and compromised code quality had a hidden cost.
 
 There is a profound, suffocating discomfort in not understanding your own work at the deepest level. The anxiety of taking a brittle, opaque system into production forced me to stop. I had to rip out the complex, unnecessary layers, including my neat little chatbot, and start over from the conceptual bottom.
 
@@ -30,13 +30,13 @@ But perfectionism is a double-edged sword. On one hand, it kept me in maintenanc
 
 I abandoned garbage, AI-generated proxying rules. Instead, I established a strict, linear proxy chain that I explicitly controlled. Public traffic now hits the Cloudflare Edge, tunnels securely into the internal network via `cloudflared`, lands on a dedicated `Nginx` reverse proxy acting as the edge gateway, and only then gets routed to the internal Vite/React website.
 
-Configuring this manually built my muscle memory. I enforced headers, real IPs, and strict network policies, resulting in a flawless HTTP 200 health check and an SSL Labs 'A' (Because I didn't implement all security measures needed inside the cloudflare Dashboard, I think it was that my HSTS was turned off) rating on the first try. [Update: After implementing HSTS headers, I achieved an 'A+' rating on SSL Labs.]
+Configuring this manually built muscle memory. I enforced headers, real IPs, and strict network policies, resulting in a flawless HTTP 200 health check and an SSL Labs 'A' rating on the first try. (Because I hadn't implemented all security measures needed inside the Cloudflare Dashboard, I think my HSTS was turned off) [Update: After implementing HSTS headers, I achieved an 'A+' rating on SSL Labs.]
 
 ```nginx
 # nginx.conf
 server {
-    # This is just a snippet of the specific server block for the portfolio domain (./nginx/con.f/portfolio.conf).
-    # The full configuration(./nginx.conf) and some h5bp includes additional security hardening and optimizations.
+    # This is just a snippet of the specific server block for the portfolio domain (./nginx/conf.d/portfolio.conf).
+    # The full configuration (./nginx.conf) and some h5bp includes provide additional security hardening and optimizations.
 
     listen 80;
     server_name portfolio.seekeru.tech;
@@ -70,16 +70,16 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
-    include h5bp/basic.conf; // Common security headers and optimizations. The configuration is based on the h5bp project, which provides a set of best practices for securing and optimizing web servers.
-    include h5bp/location/security_file_access.conf; // Prevent access to sensitive files
+    include h5bp/basic.conf; # Common security headers and optimizations. The configuration is based on the h5bp project, which provides a set of best practices for securing and optimizing web servers.
+    include h5bp/location/security_file_access.conf; # Prevent access to sensitive files
 }
 ```
 
 **Note: Propagating `X-Forwarded-For` explicitly allowed Express to apply `app.set('trust proxy', 1)`, preventing the internal rate limiter from mistakenly blocking the Nginx Gateway IP.**
 
-## Segmenting the Network Boundary
+## Segmenting the Network Boundaries
 
-To enforce these new routing rules, the entire application stack was re-orchestrated into a unified Docker Compose file. We implemented discrete software-defined networks: `edge`, `frontend_net`, and `backend_net`. Containers can only communicate within their assigned lanes, effectively isolating blast radius.
+To enforce these new routing rules, the entire application stack was re-orchestrated into a unified Docker Compose file. We implemented discrete software-defined networks: `edge`, `frontend_net`, and `backend_net`. Containers can only communicate within their assigned lanes, effectively isolating potential blast radius.
 
 ```yaml
 # compose.yml snippet
@@ -114,7 +114,7 @@ networks:
 
 ## Interactive Visuals of the Architecture
 
-`Diagrams` are worth a thousand words, if not more. If you can visualize the architectural flow of data and the segmentation of the network, you'll better understand the system's design. This helped me internalize the architecture and escape the blackbox. Here is a simplified diagram of the architecture using `Mermaid`:
+Diagrams are worth a thousand words. Visualizing the architectural flow of data and the segmentation of the network makes it much easier to understand the system's design. This mapping helped me internalize the architecture and escape the blackbox. Here is a simplified diagram of the architecture using Mermaid:
 
 ```mermaid
 graph TB
@@ -157,15 +157,15 @@ Furthermore, I integrated Trivy for automated CVE and secret scanning. Recognizi
 ```yml
 # Push multi-arch to GHCR, then pull and run on the Pi
 - name: Push multi-arch image to registry (amd64 + arm64)
-        uses: docker/build-push-action@v4
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: |
-            ${{ env.IMAGE }}:${{ github.sha }}
-            ${{ env.IMAGE }}:latest
+  uses: docker/build-push-action@v4
+  with:
+    context: ./backend
+    file: ./backend/Dockerfile
+    push: true
+    platforms: linux/amd64,linux/arm64
+    tags: |
+      ${{ env.IMAGE }}:${{ github.sha }}
+      ${{ env.IMAGE }}:latest
 
 # Trivy execution: High/Crit only, ignore unpatchable base image CVEs
 - name: Create .trivyignore file
