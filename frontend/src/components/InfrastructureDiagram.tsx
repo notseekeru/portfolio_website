@@ -33,6 +33,13 @@ flowchart TB
       Terraform["Master Terraform"]
     end
 
+    subgraph MainPC["🖥️ Personal Computer"]
+      Ollama["Local Ollama Models"] --> SSH1["SSH Keys"]
+    end
+    subgraph MainLaptop["💻 Personal Laptop"]
+      SSH2["SSH Keys"]
+    end
+
     subgraph Pi5["⚙️ Node - Raspberry Pi 5"]
       subgraph SSHD1["🔒 SSHD Configs"]
         F2B["Fail2ban"] --> NoIP["No Local IP SSH"] --> Port22["Only on Port 22"] --> UFW["Only allow Tailscale Devices"] --> AKeys["No Key, No Entry"] --> APerms["No Root Login"] --> Access["SSH Completed"]
@@ -41,7 +48,7 @@ flowchart TB
       subgraph Docker["🐳 Docker Containers"]
         DLogs["Docker Logs"]
         
-        subgraph DiagramStack["📊 Compose - Diagram Stack"]
+        subgraph DiagramStack["📊 Compose - Diagram Stack (Observability Experimentation Application)"]
           Frontend2["React/Vite Frontend (Diagram)"]
           subgraph Backend2["Node.js Backend (Diagram)"]
             Nodejs2["Node JS Runtime"]
@@ -65,12 +72,13 @@ flowchart TB
 
     subgraph DigitalOcean["💧 DigitalOcean Cloud"]
       subgraph Droplet1[" Debian Droplet"]
+        Falco["Falco Security"]
         subgraph DODocker["🐳 Docker Compose - Traffic Stack"]
           DONginx["Nginx Reverse Proxy"]
-          DOCfD["Cloudflared Tunnel"]
+          DOCfD["Cloudflared Container"]
         end
 
-        subgraph AppLayer["💼 Compose - Portfolio Website Stack"]
+        subgraph AppLayer["💼 Compose - Portfolio Stack (No Telemetry)"]
           Frontend["React/Vite Frontend"]
           Backend["Node.js Backend"]
         end
@@ -78,32 +86,21 @@ flowchart TB
     end
   end
 
-  subgraph SubMainPC["🖥️ Personal Computer"]
-    Ollama["Local Ollama Models"] --> SSH1["SSH Keys"]
-  end
-  subgraph SubMainLaptop["💻 Personal Laptop"]
-    SSH2["SSH Keys"]
-  end
-
-  %% CI/CD Flows
   Git -- CI Check --> ALint & CiCheck
   CiCheck -- Action --> Trivy
   ALint -- Deploy --> Molecule
   Molecule -- Deploy --> SSHD1
   Trivy -- Build/Push --> GHCR
 
-  %% Edge/Ingress Flows
   Users -- HTTPS --> WAF --> CFTunnel
   CFTunnel -. HTTPS .-> DOCfD
   DOCfD --> DONginx
   DONginx -- HTTP --> Frontend & Backend
   SSH1 & SSH2 -- Tailscale Tunnel --> SSHD1
 
-  %% Deployment / Registry Pulls
   Frontend & Backend -- Pull w/Token --> GHCR
   Frontend2 & Nodejs2 -- Pull w/Token --> GHCR
 
-  %% Observability Stack Internal Routing
   Alloy -- Scrape Logs --> DLogs
   Alloy -- Remote Write --> Prom
   Alloy -- Loki Push --> Loki
@@ -111,13 +108,11 @@ flowchart TB
   Prom & Loki & Tempo -- Query --> Grafana
   Prom -- Alerting Rules --> AManager --> Slack
 
-  %% --- New Telemetry Links (Diagram Stack -> Observability Stack) ---
   Frontend2 -. Frontend Logs/Traces .-> Alloy
   OTLPDep & OTLPDep2 -. OTLP Metrics & Spans .-> Alloy
   PostgresExporter -- Scrapes Metrics --> Postgres
   PostgresExporter -. Metrics :9187 .-> Alloy
 
-  %% Class Styling Assignments
   WAF:::edgeLayer
   CFTunnel:::edgeLayer
   Users:::edgeLayer
@@ -152,8 +147,6 @@ flowchart TB
   DONginx:::container
   DOCfD:::container
   Droplet1:::physical
-  
-  %% Applied Styles to Diagram Stack
   Frontend2:::container
   Nodejs2:::container
   OTLPDep:::container
@@ -161,7 +154,6 @@ flowchart TB
   Postgres:::container
   PostgresExporter:::container
 
-  %% Class Definitions
   classDef edgeLayer fill:#b30000,stroke:#ff4d4d,stroke-width:2px,color:#ffffff
   classDef netLayer fill:#0059b3,stroke:#3399ff,stroke-width:2px,color:#ffffff
   classDef physical fill:#333333,stroke:#666666,stroke-width:2px,color:#ffffff
@@ -169,7 +161,7 @@ flowchart TB
   classDef vmLayer fill:#6a0db2,stroke:#b366ff,stroke-width:2px,color:#ffffff
   classDef storage fill:#b37400,stroke:#ffbf4d,stroke-width:2px,color:#ffffff
   classDef gha fill:#3d802e,stroke:#b2ffa1,stroke-width:2px,color:#ffffff
-`;
+  `;
 
 export default function InfrastructureDiagram() {
   return (
