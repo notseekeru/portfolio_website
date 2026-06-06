@@ -292,7 +292,6 @@ const personalData: PersonalData = {
       link: "https://portfolio.seekeru.tech",
       image: "/1.png",
       favorite: true,
-      github: "https://github.com/notseekeru/portfolio_website",
     },
     {
       title: "PC Building Business Website",
@@ -301,7 +300,6 @@ const personalData: PersonalData = {
       techStack: ["React", "Node.js", "Express"],
       link: "https://shop.seekeru.tech",
       image: "/2.png",
-      github: "https://github.com/notseekeru/portfolio_website",
     },
     {
       title: "Self-Hosted Infrastructure (RPi5 Lab)",

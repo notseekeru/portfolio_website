@@ -2,7 +2,6 @@
 title: Observing the Lab
 date: 2026-05-18
 description: Architecting an observability stack with LGTM + Alloy on RPi5 for achieving full system monitoring across logs, metrics, and traces.
-favorite: true
 ---
 
 # Summary

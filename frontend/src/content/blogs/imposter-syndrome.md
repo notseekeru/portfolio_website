@@ -3,7 +3,6 @@ title: Imposter Syndrome
 date: 2026-04-25
 description: Escaping the AI-generated "blackbox" to build a deterministic, hardened proxy chain and segmented network on a Raspberry Pi 5.
 favorite: true
-github: https://github.com/notseekeru/portfolio_website
 ---
 
 ---
