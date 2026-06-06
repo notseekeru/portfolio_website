@@ -16,7 +16,7 @@ The project began with a clear objective: implement the "Four Golden Signals" (L
 
 On the surface, it looked complete. Code was injected, and an intricate dashboard template was provisioned. But the moment the infrastructure was spun up, the entire system went completely dark.
 
-There is a distinct anxiety that comes with looking at an empty dashboard, realizing you don't actually understand the syntax or the underlying telemetry lifecycle of the language you are trying to monitor. I was treating observability as a magic blackbox—expecting data to seamlessly flow without understanding the explicit pipes, serialization, or transport protocols handling the payloads. The AI-generated code obscured the fundamental truth of how context propagation and span lifecycles actually work. To fix the network, I had to drop back down to an MVP environment where every dependency and configuration line was explicitly accounted for.
+There is a distinct anxiety that comes with looking at an empty dashboard, realizing you don't actually understand the syntax or the underlying telemetry lifecycle of the language you are trying to monitor. I was treating observability as a magic blackbox, expecting data to seamlessly flow without understanding the explicit pipes, serialization, or transport protocols handling the payloads. The AI-generated code obscured the fundamental truth of how context propagation and span lifecycles actually work. To fix the network, I had to drop back down to an MVP environment where every dependency and configuration line was explicitly accounted for.
 
 ## Shifting to a Lean MVP
 
@@ -184,4 +184,4 @@ Relying on abstract, pre-packaged AI layouts created a false sense of security t
 
 ## Update (June 5, 2026)
 
-You can check the others blogs I wrote about the follow up iterations and updates related to this current project. Link at [SRE Steps](https://portfolio.seekeru.tech/blog/sre-steps).
+You can check the other blogs that I wrote about, including the following iterations and updates related to this current project. Link at [SRE Steps](https://portfolio.seekeru.tech/blog/sre-steps).

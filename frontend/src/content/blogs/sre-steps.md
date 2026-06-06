@@ -1,7 +1,9 @@
 ---
-title: "SRE Steps"
+title: SRE Steps
 date: 2026-06-3
 description: "Here’s how I built a reliable, automated kill script to measure real MTTD and MTTR in my containerized infrastructure in my homelab."
+---
+
 ---
 
 ## Summary
@@ -16,7 +18,7 @@ I killed a live database container and measured exactly 5.8 seconds of total out
   for: 0s # <-- Unrealistically aggressive for production, but necessary for this experiment
 ```
 
-Still, If you want to follow along with the code and implementation, you can check out the full code in my github repo [here](https://github.com/notseekeru/diagram_website):
+Still, if you want to follow along with the code and implementation, you can check out the full code in my Github repo [here](https://github.com/notseekeru/diagram_website):
 
 ---
 
@@ -57,7 +59,7 @@ graph TD
     end
 ```
 
-My initial attempts ran into immediate environmental friction. Operating across Windows, Windows Subsystem for Linux (WSL), and Docker introduced subtle routing failures. Webhooks dropped into network problems, and graceful container shutdowns hid true detection. The experiment forced me to truly double check and debug instead of praying and guessing the configs and code will work.
+My initial attempts ran into immediate environmental friction. Operating across Windows, Windows Subsystem for Linux (WSL), and Docker introduced subtle routing failures. Webhooks dropped into network problems, and graceful container shutdowns hid true detection. The experiment forced me to truly verify and debug instead of guessing if the configs will work.
 
 ---
 
@@ -89,7 +91,7 @@ Total Service Outage:     5876 ms
 
 Standard administrative commands like `docker stop` send a `SIGTERM` signal, allowing a containerized application up to 10 seconds to flush buffers, close connections, and exit cleanly. In a production crisis, systems rarely fail gracefully.
 
-The script run `docker kill`. This sends an immediate `SIGKILL` to the container process. By cutting exporter connectivity instantly, I ensure the calculated MTTD reflects pure observation latency without the inflation.
+The script ran `docker kill`. This sends an immediate `SIGKILL` to the container process. By cutting exporter connectivity instantly, I ensure the calculated MTTD reflects pure observation latency without the inflation.
 
 ### Cross-Bridge Network Binding
 
@@ -103,7 +105,7 @@ To bridge this gap, the script binds its internal HTTP listener to `0.0.0.0`. Co
 
 ### Docker Compose Network Routing
 
-On non-Linux architectures like WSL, containers cannot resolve the host machine via standard internal IPs. I append an explicit routing directive to our infrastructure definition to expose the virtual network gateway:
+On non-Linux architectures like WSL, containers cannot resolve the host machine via standard internal IPs. I appended an explicit routing directive to our infrastructure definition to expose the virtual network gateway:
 
 ```yaml
 services:
@@ -127,4 +129,4 @@ I plan to do more research and reading on this topic and hopefully expand upon i
 
 ## Conclusion
 
-By establishing an automated observation layer, addressing cross-subsystem networking gaps, and failures, I eliminate guessing from metrics. I'll run this same experiment under 50%/100% CPU load. Locust Concurrent Users Simulation, Database Synthetic Load Testing, Realistic Prometheus and AlertManager configuration. I will give then another blog and I'll publish the results in part 2.
+By establishing an automated observation layer, addressing cross-subsystem networking gaps, and failures, I eliminate guessing from metrics. I'll run this same experiment under 50%/100% CPU load. Locust Concurrent Users Simulation, Database Synthetic Load Testing, Realistic Prometheus and AlertManager configuration. I will make another blog, and I'll publish the results in part 2.

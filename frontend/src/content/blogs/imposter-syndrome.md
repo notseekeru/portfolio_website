@@ -4,6 +4,8 @@ date: 2026-04-25
 description: Escaping the AI-generated "blackbox" to build a deterministic, hardened proxy chain and segmented network on a Raspberry Pi 5.
 ---
 
+---
+
 # Summary
 
 This document narrates the critical architectural pivot of my portfolio infrastructure—from an abstracted, AI-generated "blackbox" to a deterministic, self-hosted proxy chain on a Raspberry Pi 5. Driven by the paralyzing realization that I did not understand my own production environment, I executed a complete teardown. By manually reconstructing Docker network segmentations, CI/CD pipelines, and raw Nginx configurations, I eradicated my imposter syndrome, replacing it with the hardened confidence of a Systems Architect.
@@ -22,13 +24,13 @@ There is a profound, suffocating discomfort in not understanding your own work a
 
 This teardown triggered my old nemesis: perfectionism. I wanted the network to be flawless. I wanted my Ansible playbooks and Pi deployments to be bulletproof. I spent days rigoring my QA process, manually testing rate limits, testing maximum payload sizes, and implementing UFW rules until I was paralyzed by the sheer volume of "what-ifs."
 
-But perfectionism is a double-edged sword. On one hand, it kept me in maintenance mode, endlessly polishing configurations instead of shipping content. On the other hand, it was precisely that paranoia.that obsessive need to thoroughly understand the `why` and `how` behind Nginx configs and Docker segmentations. It forced me to learn the very networking foundations that AI had so conveniently fed to me.
+But perfectionism is a double-edged sword. On one hand, it kept me in maintenance mode, endlessly polishing configurations instead of shipping content. On the other hand, it was precisely that paranoia that obsessive need to thoroughly understand the `why` and `how` behind Nginx configs and Docker segmentations. It forced me to learn the very networking foundations that AI had so conveniently fed to me.
 
 ## The Proxy Chain
 
 I abandoned garbage, AI-generated proxying rules. Instead, I established a strict, linear proxy chain that I explicitly controlled. Public traffic now hits the Cloudflare Edge, tunnels securely into the internal network via `cloudflared`, lands on a dedicated `Nginx` reverse proxy acting as the edge gateway, and only then gets routed to the internal Vite/React website.
 
-Configuring this manually built muscle memory. I enforced headers, real IPs, and strict network policies resulting in a flawless HTTP 200 health check and an SSL Labs 'A' (Because I didn't implement all security measures needed inside the cloudflare Dashboard, I think it was that my HSTS was turned off.) rating on the first try. [Update: After implementing HSTS headers, I achieved an 'A+' rating on SSL Labs.]
+Configuring this manually built my muscle memory. I enforced headers, real IPs, and strict network policies, resulting in a flawless HTTP 200 health check and an SSL Labs 'A' (Because I didn't implement all security measures needed inside the cloudflare Dashboard, I think it was that my HSTS was turned off) rating on the first try. [Update: After implementing HSTS headers, I achieved an 'A+' rating on SSL Labs.]
 
 ```nginx
 # nginx.conf
@@ -75,9 +77,9 @@ server {
 
 **Note: Propagating `X-Forwarded-For` explicitly allowed Express to apply `app.set('trust proxy', 1)`, preventing the internal rate limiter from mistakenly blocking the Nginx Gateway IP.**
 
-## Segmenting the Network boundaries
+## Segmenting the Network Boundary
 
-To enforce these new routing rules, the entire application stack was re-orchestrated into a unified Docker Compose file. We implemented discrete software-defined networks: `edge`, `frontend_net`, and `backend_net`. Containers can only communicate within their assigned lanes, effectively isolating potential blast radius.
+To enforce these new routing rules, the entire application stack was re-orchestrated into a unified Docker Compose file. We implemented discrete software-defined networks: `edge`, `frontend_net`, and `backend_net`. Containers can only communicate within their assigned lanes, effectively isolating blast radius.
 
 ```yaml
 # compose.yml snippet
@@ -94,12 +96,12 @@ services:
   frontend:
     image: ghcr.io/my-portfolio/frontend:latest
     networks:
-      - frontend_net # Cannot be reached directly from the host and cannot reach the backend
+      - frontend_net # Cannot be reached directly from the host, cannot reach the backend
 
   backend:
     image: ghcr.io/my-portfolio/backend:latest
     networks:
-      - backend_net # Cannot be reached directly from the host and cannot reach the frontend
+      - backend_net # Cannot be reached directly from the host, cannot reach the frontend
 
 networks:
   edge:
@@ -146,11 +148,11 @@ graph TB
 
 ## Overcoming Hardware Constraints
 
-Running production workloads on a Raspberry Pi 5 introduces severe hardware constraints—specifically storage capacity and IOPS exhaustion. Building images natively on the Pi previously resulted in bloated 1GB monsters that choked deployments.
+Running production workloads on a Raspberry Pi 5 introduces severe hardware constraints, specifically storage capacity and IOPS exhaustion. Building images natively on the Pi previously resulted in bloated 1GB monsters that choked deployments.
 
 The architectural solution was to entirely offload the Continuous Delivery process. I implemented a GitHub Container Registry (GHCR) pipeline utilizing Docker Buildx with QEMU for simultaneous multi-architecture (ARM/AMD64) compilation.
 
-Furthermore, I integrated Trivy for automated CVE and secret scanning. Recognizing that achieving "zero vulnerabilities" is an unattainable ideal that blocks production, I implemented a pragmatic blast-radius mitigation strategy. By explicitly deliberately bypassing unpatchable, low-impact base-image CVEs (e.g., `musl`, `zlib`) via a `.trivyignore` file, deployments remain rapid while fully guarded against critical application-level threats.
+Furthermore, I integrated Trivy for automated CVE and secret scanning. Recognizing that achieving "zero vulnerabilities" is an unattainable ideal that blocks production, I implemented a pragmatic blast-radius mitigation strategy. By explicitly bypassing unpatchable, low-impact base-image CVEs (e.g., `musl`, `zlib`) via a `.trivyignore` file, deployments remain rapid while fully guarded against critical application-level threats.
 
 ```yml
 # Push multi-arch to GHCR, then pull and run on the Pi
