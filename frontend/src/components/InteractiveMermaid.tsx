@@ -1,7 +1,10 @@
 import { useEffect, useState, useId } from "react";
 import mermaid from "mermaid";
+import elkLayouts from "@mermaid-js/layout-elk";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { motion, AnimatePresence } from "framer-motion";
+
+mermaid.registerLayoutLoaders(elkLayouts);
 
 interface InteractiveMermaidProps {
   chart: string;
@@ -10,14 +13,22 @@ interface InteractiveMermaidProps {
 export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
   const [svgContent, setSvgContent] = useState<string>("");
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const id = useId().replace(/:/g, ""); // Create a valid DOM ID for mermaid
+  const id = useId().replace(/:/g, "");
 
   useEffect(() => {
     let isMounted = true;
 
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "dark",
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+      },
+    });
+
     const renderDiagram = async () => {
       try {
-        // Generate a uniquely random ID per render to avoid Mermaid matching existing DOM nodes in React Strict Mode
         const renderId = `mermaid-${Math.random().toString(36).substring(2, 9)}`;
         const { svg } = await mermaid.render(renderId, chart);
         if (isMounted) {
@@ -39,7 +50,11 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
 
   const renderViewer = (isFull: boolean) => (
     <div
-      className={`relative flex items-center justify-center ${isFull ? "h-screen w-screen bg-zinc-950" : "h-96 w-full rounded-lg border border-zinc-800 bg-zinc-900/50 overflow-hidden"} bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:24px_24px]`}
+      className={`relative flex items-center justify-center ${
+        isFull
+          ? "h-screen w-screen bg-zinc-950"
+          : "h-[650px] w-full rounded-lg border border-zinc-800 bg-zinc-900/50 overflow-hidden"
+      } bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:24px_24px]`}
     >
       <button
         onClick={toggleFullscreen}
@@ -78,7 +93,7 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
       {svgContent ? (
         <TransformWrapper
           initialScale={1}
-          minScale={0.1}
+          minScale={0.05}
           maxScale={5}
           centerOnInit={true}
           wheel={{ step: 0.004 }}
@@ -95,7 +110,7 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
             }}
           >
             <div
-              className="flex items-center justify-center [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-w-full w-full h-full"
+              className="flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:max-w-none w-full h-full p-8"
               dangerouslySetInnerHTML={{ __html: svgContent }}
             />
           </TransformComponent>
@@ -111,7 +126,6 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
   return (
     <>
       <div className="my-8">{renderViewer(false)}</div>
-
       <AnimatePresence>
         {isFullscreen && (
           <motion.div

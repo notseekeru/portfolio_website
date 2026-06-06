@@ -20,7 +20,7 @@ flowchart TB
     Git["GitHub Repo CI/CD"]
     ALint["Ansible Lint"]
     Molecule["Molecule Testing"]
-    CiCheck["Linter/Formatter/StaticAnalysis"]
+    CiCheck["Linter-Formatter"]
     Trivy["Trivy Security Scan"]
     GHCR["Github Registry"]
   end
@@ -35,30 +35,30 @@ flowchart TB
 
     subgraph Pi5["⚙️ Node - Raspberry Pi 5"]
       subgraph SSHD1["🔒 SSHD Configs"]
-        F2B["Fail2ban"] --> NoIP["No Local IP SSH"] --> Port22["Only on Port 22"] --> UFW["Only allow Tailscale Devices"] --> AKeys["No Key, No Entry"] --> APerms["No Root Login"] --> Access["SSH Completed"]
+        F2B["Fail2ban"] --> NoIP["No Local IP SSH"] --> Port22["Port 22 Only"] --> UFW["UFW Tailscale Only"] --> AKeys["No Key No Entry"] --> APerms["No Root Login"] --> Access["SSH Completed"]
       end
       
       subgraph Docker["🐳 Docker Containers"]
         DLogs["Docker Logs"]
         
         subgraph AppLayer["💼 Compose - Portfolio Website Stack"]
-          Frontend["React/Vite Frontend"]
+          Frontend["React-Vite Frontend"]
           Backend["Node.js Backend"]
         end
         
-        subgraph ObservabilityStack["📊 Compose - Observability Stack (LGTM + Alloy)"]
-          Alloy["Grafana Alloy:12345"]
-          Prom["Prometheus:9090"]
-          Loki["Loki:3100"]
-          Tempo["Tempo:3200"]
-          Grafana["Grafana Visualization 0.0.0.0:3030"]
-          AManager["AlertManager:9093"]
+        subgraph ObservabilityStack["📊 Compose - Observability Stack"]
+          Alloy["Grafana Alloy"]
+          Prom["Prometheus"]
+          Loki["Loki"]
+          Tempo["Tempo"]
+          Grafana["Grafana"]
+          AManager["AlertManager"]
         end
       end
     end
 
     subgraph DigitalOcean["💧 DigitalOcean Cloud"]
-      subgraph Droplet1[" Debian Droplet"]
+      subgraph Droplet1["Debian Droplet"]
         subgraph DODocker["🐳 Docker Compose - Traffic Stack"]
           DONginx["Nginx Reverse Proxy"]
           DOCfD["Cloudflared Tunnel"]
@@ -67,10 +67,10 @@ flowchart TB
     end
   end
 
-  subgraph MainPC["🖥️ Personal Computer"]
+  subgraph SubMainPC["🖥️ Personal Computer"]
     Ollama["Local Ollama Models"] --> SSH1["SSH Keys"]
   end
-  subgraph MainLaptop["💻 Personal Laptop"]
+  subgraph SubMainLaptop["💻 Personal Laptop"]
     SSH2["SSH Keys"]
   end
 
