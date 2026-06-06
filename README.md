@@ -52,8 +52,6 @@
 
 Todos:
 
-- add favorite and also github tag in `blogs` and `projects and infrastructure` section.
-- Add `Full Infrastructure Diagram` section for a full diagram breakdown of my whole homelab infrastructure (put a placeholder first).
-- N8N integration for contact form submissions using webhooks and secure headers.
+<!-- - N8N integration for contact form submissions using webhooks and secure headers.
 - Dependabot in GitHub for automated dependency updates and security patches.
-- Implementing a monitoring solution to track the performance and health of the backend application and the overall system.
+- Implementing a monitoring solution to track the performance and health of the backend application and the overall system. -->
