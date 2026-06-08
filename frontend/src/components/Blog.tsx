@@ -145,7 +145,7 @@ function BlogCard({ post, index }: BlogCardProps) {
             <div className="flex items-center gap-1.5 shrink-0">
               {post.favorite && (
                 <span className="text-amber-400 text-xs" title="Favorite">
-                  ⭐
+                  💎
                 </span>
               )}
               {post.github && (
