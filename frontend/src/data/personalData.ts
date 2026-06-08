@@ -48,7 +48,6 @@ export interface PersonalData {
   bio: string;
   background: string;
   profilePicture: string;
-  age: number;
   experience: ExperienceItem[];
   education: EducationItem[];
   skills: Skills;
@@ -69,22 +68,7 @@ const personalData: PersonalData = {
   bio: "Building reliable and scalable systems, I am an Engineer with a strong background in Software Engineering, SRE Principles and DevOps Practices. With experience in designing and maintaining complex infrastructures, I can thrive on securing cloud/physical environments and ensuring seamless integration experience. My skills includes cloud computing, automation, and monitoring, allowing me to proactively identify and resolve issues while continuously improving system reliability.",
   background:
     "I am a Computer Engineering undergraduate student with a obession for technology. I have a strong obsession(not just passion) for learning and exploring various fields in technology, from software to hardware. I am driven by a desire to understand how things work under the hood and to develop deep technical skills. I currently operate a self-hosted homelab infrastructure, where I experiment with various technologies and build projects that helps me learn, showcase my skills and creativity. I am always eager to take on new challenges and expand my knowledge in the fast evolving world of technology.",
-  profilePicture: "/profile2.png",
-
-  get age(): number {
-    const birthYear = 2006;
-    const birthMonth = 2; // March (0-indexed)
-    const birthDay = 18;
-    const today = new Date();
-    let age = today.getFullYear() - birthYear;
-    if (
-      today.getMonth() < birthMonth ||
-      (today.getMonth() === birthMonth && today.getDate() < birthDay)
-    ) {
-      age--;
-    }
-    return age;
-  },
+  profilePicture: "/profile3.png",
 
   experience: [
     {
@@ -292,42 +276,6 @@ const personalData: PersonalData = {
       link: "https://portfolio.seekeru.tech",
       image: "/1.png",
       favorite: true,
-    },
-    {
-      title: "PC Building Business Website",
-      description:
-        "A website for my local PC building business to showcase my services and builds.",
-      techStack: ["React", "Node.js", "Express"],
-      link: "https://shop.seekeru.tech",
-      image: "/2.png",
-    },
-    {
-      title: "Self-Hosted Infrastructure (RPi5 Lab)",
-      description:
-        "Homelab cluster for self-hosted applications. Managed via Docker Compose and Ansible over Tailscale VPN.",
-      techStack: [
-        "Ansible",
-        "Terraform",
-        "Docker Compose",
-        "UFW",
-        "Tailscale",
-        "Prometheus",
-        "Loki",
-        "Grafana",
-      ],
-      favorite: true,
-    },
-    {
-      title: "Cloudflared + Nginx Reverse Proxy",
-      description:
-        "Configured and optimized a reverse proxy for load balancing and SSL termination.",
-      techStack: ["Cloudflare", "Nginx", "SSL/TLS", "CSP Headers"],
-    },
-    {
-      title: "Tailscale and UFW Firewall",
-      description:
-        "Configured and managed a secure network infrastructure with Tailscale VPN and UFW firewall.",
-      techStack: ["Tailscale", "UFW", "Server Security"],
     },
   ],
 };

@@ -44,10 +44,12 @@ export default function Hero() {
 
           <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
             <Link
-              to="/#projects"
+              to="https://docs.google.com/document/d/1_6hDC34UwyQaLKA_WoV_Mr6Fi9pFcSeNwiuaowQ8_Fo/edit?usp=sharing"
+              rel="noopener noreferrer"
+              target="_blank"
               className="px-6 py-3 bg-accent text-[#0d0d0d] font-semibold text-sm rounded-md hover:bg-accent/90 glow-accent transition-all duration-200"
             >
-              View Projects
+              View Resume
             </Link>
             <Link
               to="/#contact"

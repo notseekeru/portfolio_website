@@ -5,7 +5,6 @@ import personalData from "../data/personalData";
 
 const navLinks = [
   { label: "Home", path: "/#home" },
-  { label: "Projects", path: "/#projects" },
   { label: "Infrastructure", path: "/#infrastructure-diagram" },
   { label: "Blog", path: "/#blog" },
   { label: "Contact", path: "/#contact" },
@@ -103,8 +102,8 @@ export default function Navbar() {
         </ul>
 
         <a
-          href={`mailto:${personalData.email}`}
-          className="hidden md:inline-flex items-center gap-2 text-xs font-mono px-4 py-2 border border-accent/30 text-accent rounded-md hover:bg-accent/10 glow-accent-hover transition-all duration-200"
+          href={`mailto:${personalData?.email}`}
+          className="inline-flex items-center gap-2 text-xs font-mono px-4 py-2 border border-accent/30 text-accent rounded-md hover:bg-accent/10 glow-accent-hover transition-all duration-200"
         >
           Hire me
         </a>
