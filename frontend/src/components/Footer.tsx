@@ -19,7 +19,8 @@ export default function Footer() {
         <nav className="flex items-center gap-6">
           {[
             { label: "Home", to: "/#home" },
-            { label: "Projects", to: "/#projects" },
+            { label: "Infrastructure", to: "/#projects" },
+            { label: "Blog", to: "/blog" },
             { label: "Contact", to: "/#contact" },
           ].map((link) => (
             <Link
