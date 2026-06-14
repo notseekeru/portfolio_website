@@ -79,11 +79,6 @@ export default function Hero() {
               >
                 <MailIcon />
               </a>
-              <a
-                href={`tel:${personalData.phone}`}
-                className="text-zinc-500 hover:text-zinc-100 transition-colors"
-                aria-label="Phone"
-              >
                 <PhoneIcon />
               </a>
             </div>

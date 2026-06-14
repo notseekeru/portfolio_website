@@ -47,7 +47,6 @@ export interface PersonalData {
   instagram: string;
   x: string;
   threads: string;
-  phone: string;
   bio: string;
   background: string;
   profilePicture: string;
@@ -59,12 +58,11 @@ export interface PersonalData {
 
 const personalData: PersonalData = {
   name: "Stephen Macabulos",
-  level: "Intern",
+  level: "Intern/Entry Level",
   status: "Available for Internships or Entry level roles in a Remote setting",
   title: "Site Reliability Engineer | DevOps Engineer | Platform Engineer",
   location: "Pampanga, Philippines",
   email: "stpmacabulos@gmail.com",
-  phone: "+63 939 532 6805",
   linkedin: "https://www.linkedin.com/in/stephen-macabulos",
   github: "https://github.com/notseekeru",
   facebook: "https://www.facebook.com/notseekeru",
