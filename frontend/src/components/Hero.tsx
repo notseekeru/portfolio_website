@@ -37,18 +37,18 @@ export default function Hero() {
 
           <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
             <Link
-              to="https://docs.google.com/document/d/1_6hDC34UwyQaLKA_WoV_Mr6Fi9pFcSeNwiuaowQ8_Fo/edit?usp=sharing"
-              rel="noopener noreferrer"
-              target="_blank"
+              to="/#infrastructure-diagram"
               className="px-6 py-3 bg-accent text-[#0d0d0d] font-semibold text-sm rounded-md hover:bg-accent/90 glow-accent transition-all duration-200"
             >
-              View Resume
+              Contact Me
             </Link>
             <Link
-              to="/#contact"
+              to="https://github.com/notseekeru"
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-6 py-3 border border-border text-zinc-300 font-medium text-sm rounded-md hover:border-zinc-500 hover:text-zinc-100 transition-all duration-200"
             >
-              Get In Touch
+              View Projects
             </Link>
           </div>
 
