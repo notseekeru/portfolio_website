@@ -105,7 +105,7 @@ export default function Navbar() {
           href={`mailto:${personalData?.email}`}
           className="inline-flex items-center gap-2 text-xs font-mono px-4 py-2 border border-accent/30 text-accent rounded-md hover:bg-accent/10 glow-accent-hover transition-all duration-200"
         >
-          Hire me
+          Email Me
         </a>
 
         <button
@@ -159,14 +159,6 @@ export default function Navbar() {
                   </Link>
                 </li>
               ))}
-              <li>
-                <a
-                  href={`mailto:${personalData.email}`}
-                  className="inline-flex text-xs font-mono px-4 py-2 border border-accent/30 text-accent rounded-md"
-                >
-                  Hire me
-                </a>
-              </li>
             </ul>
           </motion.div>
         )}
