@@ -32,6 +32,7 @@ export interface ProjectItem {
   image?: string;
   favorite?: boolean;
   github?: string;
+  icon?: string;
 }
 
 export interface PersonalData {
@@ -150,16 +151,10 @@ const personalData: PersonalData = {
         implementation: "Fast and minimalist REST API development.",
       },
       {
-        name: "FastAPI",
-        icon: "SiFastapi",
-        summary: "Python web framework.",
-        implementation: "High-performance APIs with async support.",
-      },
-      {
-        name: "Spring Boot",
-        icon: "SiSpringboot",
-        summary: "Java application framework.",
-        implementation: "Building robust enterprise backend systems.",
+        name: "JavaFX",
+        icon: "SiOpenjdk",
+        summary: "Java desktop framework.",
+        implementation: "Building cross-platform rich client applications.",
       },
     ],
     tools: [
@@ -268,18 +263,166 @@ const personalData: PersonalData = {
         summary: "Cloud computing platform.",
         implementation: "Hosting and managing cloud infrastructure.",
       },
+      {
+        name: "Kubernetes",
+        icon: "SiKubernetes",
+        summary: "Container orchestration.",
+        implementation: "Deploying and managing containerized applications.",
+      },
+      {
+        name: "ArgoCD",
+        icon: "SiArgo",
+        summary: "GitOps CD tool.",
+        implementation:
+          "Automated Kubernetes deployments via Git repositories.",
+      },
+      {
+        name: "Tailscale",
+        icon: "SiTailscale",
+        summary: "Zero-config VPN.",
+        implementation: "Secure overlay network for multi-node infrastructure.",
+      },
+      {
+        name: "Trivy",
+        icon: "SiTrivy",
+        summary: "Vulnerability scanner.",
+        implementation:
+          "CVE and secret scanning in container images and repos.",
+      },
+      {
+        name: "AlertManager",
+        icon: "SiPrometheus",
+        summary: "Alert routing.",
+        implementation: "Handling and deduplicating Prometheus alerts.",
+      },
+      {
+        name: "Neovim",
+        icon: "SiNeovim",
+        summary: "Terminal-first editor.",
+        implementation: "Optimized development workflow with LazyVim.",
+      },
+      {
+        name: "Tmux",
+        icon: "SiTmux",
+        summary: "Terminal multiplexer.",
+        implementation:
+          "Session persistence and multi-pane terminal management.",
+      },
+      {
+        name: "Vite",
+        icon: "SiVite",
+        summary: "Frontend build tool.",
+        implementation: "Fast HMR and optimized production builds for SPAs.",
+      },
     ],
   },
 
   projects: [
     {
-      title: "Portfolio Website (This Website)",
+      title: "Portfolio Website & Production-Grade Infrastructure",
       description:
-        "My personal portfolio website to contain blogs, projects, and resume.",
-      techStack: ["Vite", "TypeScript", "React", "Node.js", "Express"],
+        "Designed and deployed a self-hosted portfolio on RPi5 with a hardened Cloudflared → Nginx proxy-chain architecture featuring network segmentation, CSP/COOP/COEP security headers, multi-stage Docker builds, QEMU multi-arch (ARM64) support, Trivy CVE scanning in CD pipeline, and an SSL Labs A+ rating.",
+      techStack: [
+        "React",
+        "TypeScript",
+        "Vite",
+        "Node.js",
+        "Express",
+        "Nginx",
+        "Docker",
+        "Cloudflare",
+        "TLS 1.3",
+        "Trivy",
+        "ARM64",
+      ],
       link: "https://portfolio.seekeru.tech",
       image: "/1.png",
       favorite: true,
+      github: "https://github.com/notseekeru/portfolio_website",
+      icon: "SiReact",
+    },
+    {
+      title: "Cloud Infrastructure — Terraform & Kubernetes",
+      description:
+        "Provisioned DigitalOcean infrastructure with Terraform using modular .tf files and secure variable management, integrated dynamic Ansible inventories, deployed a 3-node Kubernetes cluster with ArgoCD GitOps, and hardened containers with tmpfs/readonly root filesystems.",
+      techStack: [
+        "Terraform",
+        "DigitalOcean",
+        "Kubernetes",
+        "ArgoCD",
+        "Ansible",
+        "Docker",
+        "GitHub Actions",
+      ],
+      favorite: true,
+      icon: "SiTerraform",
+    },
+    {
+      title: "Observability & SRE — LGTM Stack with OTLP Tracing",
+      description:
+        "Architected a full Loki/Grafana/Tempo/Prometheus + Alloy observability stack with unified OTLP ingestion across logs, metrics and traces. Implemented OpenTelemetry-based distributed tracing, built a Four Golden Signals dashboard, automated Docker log discovery, configured Slack alerting via AlertManager, and validated MTTR/MTTD through chaos engineering experiments (Postgres blackout).",
+      techStack: [
+        "Grafana",
+        "Prometheus",
+        "Loki",
+        "Tempo",
+        "Alloy",
+        "OpenTelemetry",
+        "AlertManager",
+        "Docker",
+        "Node.js",
+      ],
+      favorite: true,
+      icon: "SiGrafana",
+    },
+    {
+      title: "Infrastructure as Code — Ansible Automation",
+      description:
+        "Transitioned to IaC with modular Ansible roles for security hardening, user management, and Dockerization across RPi5 and cloud nodes. Implemented Ansible Vault for secrets, achieved 100% molecule-tested idempotency, enforced automated CI/CD linting via GitHub Actions, and built self-healing infrastructure using declarative state patterns.",
+      techStack: [
+        "Ansible",
+        "Molecule",
+        "Ansible Vault",
+        "GitHub Actions",
+        "Linux",
+        "IaC",
+      ],
+      favorite: true,
+      github: "https://github.com/notseekeru",
+      icon: "SiAnsible",
+    },
+    {
+      title: "Java Enterprise Architecture Project — Team Lead",
+      description:
+        "Architected a production-grade JavaFX application with layered MVC+DAO+Service architecture, CI/CD pipelines, Flyway schema migrations, Bcrypt hashing, Spotbugs/Spotless linting, JUnit integration tests, and JaCoCo code coverage. Led a non-technical team through GitHub Flow, authored Level 3 SOPs and ADRs, and automated Mermaid diagram generation via GitHub Actions for documentation.",
+      techStack: [
+        "Java",
+        "JavaFX",
+        "Maven",
+        "GitHub Actions",
+        "Flyway",
+        "JUnit",
+        "Docker",
+        "Mermaid",
+      ],
+      favorite: true,
+      github: "https://github.com/notseekeru",
+      icon: "FaJava",
+    },
+    {
+      title: "Homelab & Self-Hosted Infrastructure",
+      description:
+        "Operate a Raspberry Pi 5-based homelab running Pi-hole DNS, Plex media server, Portainer container management, game servers, and the full LGTM observability stack. Applied Linux hardening (UFW, SSH key-only, Tailscale overlay), automated apt updates, and enforced Tailscale-only access across all services with network segmentation.",
+      techStack: [
+        "Raspberry Pi",
+        "Docker",
+        "Linux",
+        "Tailscale",
+        "Pi-hole",
+        "Grafana",
+        "Networking",
+      ],
+      icon: "SiRaspberrypi",
     },
   ],
 };

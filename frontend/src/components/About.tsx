@@ -19,8 +19,17 @@ import {
   SiGrafana,
   SiPrometheus,
   SiOpentelemetry,
-  SiFastapi,
-  SiSpringboot,
+  SiTerraform,
+  SiRaspberrypi,
+  SiDigitalocean,
+  SiKubernetes,
+  SiArgo,
+  SiTailscale,
+  SiTrivy,
+  SiNeovim,
+  SiTmux,
+  SiOpenjdk,
+  SiVite,
 } from "react-icons/si";
 import {
   FaJava,
@@ -55,8 +64,17 @@ const iconMap: Record<string, IconType> = {
   SiGrafana,
   SiPrometheus,
   SiOpentelemetry,
-  SiFastapi,
-  SiSpringboot,
+  SiTerraform,
+  SiRaspberrypi,
+  SiDigitalocean,
+  SiKubernetes,
+  SiArgo,
+  SiTailscale,
+  SiTrivy,
+  SiNeovim,
+  SiTmux,
+  SiOpenjdk,
+  SiVite,
 };
 
 interface SectionLabelProps {
@@ -118,7 +136,7 @@ export default function About() {
         items: [
           ...personalData.projects.map((p) => ({
             name: p.title,
-            icon: "FaCode",
+            icon: p.icon || "FaCode",
             summary: p.description,
             implementation: "Stack: " + p.techStack.join(", "),
           })),
