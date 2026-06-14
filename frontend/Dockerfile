@@ -28,7 +28,9 @@ RUN npm run build
 # --- PROD AS NGINX UNPRIVILEGED
 FROM nginxinc/nginx-unprivileged:1.29.5-alpine AS prod
 
+USER root
 RUN apk upgrade --no-cache
+USER nginx
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
