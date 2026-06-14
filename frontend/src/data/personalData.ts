@@ -37,7 +37,6 @@ export interface ProjectItem {
 
 export interface PersonalData {
   name: string;
-  level: string;
   status: string;
   title: string;
   location: string;
@@ -59,9 +58,8 @@ export interface PersonalData {
 
 const personalData: PersonalData = {
   name: "Stephen Macabulos",
-  level: "Intern/Entry Level",
   status: "Available for Internships or Entry level roles in a Remote setting",
-  title: "Site Reliability Engineer | DevOps Engineer | Platform Engineer",
+  title: "Aspiring SRE | DevOps Engineer | Platform Engineer",
   location: "Pampanga, Philippines",
   email: "stpmacabulos@gmail.com",
   linkedin: "https://www.linkedin.com/in/stephen-macabulos",

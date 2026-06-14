@@ -24,9 +24,6 @@ export default function Hero() {
             <span className="text-zinc-100">Hi, I'm </span>
             <span className="text-gradient">{personalData.name}</span>
           </h1>
-          <h2 className="text-lg lg:text-xl font-semibold text-accent mb-4">
-            {personalData.level}
-          </h2>
           <h2 className="text-xl lg:text-2xl font-light text-zinc-400 mb-6">
             {personalData.title}
           </h2>
