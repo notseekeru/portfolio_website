@@ -78,6 +78,7 @@ export default function Hero() {
                 aria-label="Email"
               >
                 <MailIcon />
+              </a>
             </div>
             <LiveClock />
           </div>
