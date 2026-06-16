@@ -34,7 +34,7 @@ export default function Hero() {
 
           <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
             <Link
-              to="/#infrastructure-diagram"
+              to="/#contact"
               className="px-6 py-3 bg-accent text-[#0d0d0d] font-semibold text-sm rounded-md hover:bg-accent/90 glow-accent transition-all duration-200"
             >
               Contact Me
