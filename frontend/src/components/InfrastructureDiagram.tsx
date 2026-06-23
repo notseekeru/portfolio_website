@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import InteractiveMermaid from "./InteractiveMermaid";
+import InteractiveMermaid from "../utils/InteractiveMermaid";
 
 const infrastructureChart = `---
 config:

@@ -4,7 +4,7 @@ import { createRoot, Root } from "react-dom/client";
 import { motion } from "framer-motion";
 import Prism from "prismjs";
 import mermaid from "mermaid";
-import InteractiveMermaid from "../components/InteractiveMermaid";
+import InteractiveMermaid from "../utils/InteractiveMermaid";
 import { getBlogBySlug } from "../utils/blogLoader";
 import { parseMarkdown } from "../utils/markdown";
 import type { SyntheticEvent } from "react";
