@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
 import personalData from "../data/personalData";
 import {
   MailIcon,
@@ -9,6 +8,7 @@ import {
   FacebookIcon,
   InstagramIcon,
 } from "./icons/Icons";
+import { fadeIn, slideInLeft, slideInRight } from "../lib/motion";
 import type { ChangeEvent, FormEvent } from "react";
 
 interface ContactFormState {
@@ -56,14 +56,22 @@ export default function Contact() {
     setLoading(true);
     setError("");
     try {
-      await axios.post("/api/contact", form);
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `HTTP ${res.status}`);
+      }
       setSubmitted(true);
       setForm({ name: "", email: "", message: "" });
     } catch (err) {
-      const msg = axios.isAxiosError(err) ? err.response?.data?.error : "Error";
       setError(
-        msg ||
-          "Something went wrong, service might be down. Please contact using the links.",
+        err instanceof Error
+          ? err.message
+          : "Something went wrong, service might be down. Please contact using the links.",
       );
     } finally {
       setLoading(false);
@@ -117,9 +125,9 @@ export default function Contact() {
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Left Column: Header + Form */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+            variants={slideInLeft}
+            initial="initial"
+            animate="animate"
             className="space-y-8"
           >
             {/* Header Block */}
@@ -204,9 +212,9 @@ export default function Contact() {
 
           {/* Right Column: Social Links */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+            variants={slideInRight}
+            initial="initial"
+            animate="animate"
           >
             <h2 className="text-lg font-semibold text-zinc-100 mb-6">
               Connect with me
