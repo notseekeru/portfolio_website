@@ -192,6 +192,9 @@ jobs:
         run: |
           git clone git@github.com:notseekeru/gitops.git
 
+      - name: Setup Kustomize Tool
+        uses: imranismail/setup-kustomize@v2
+
       - name: Update Image Tags via Kustomize
         run: |
           cd gitops/apps/portfolio
@@ -202,7 +205,7 @@ jobs:
         run: |
           cd gitops
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@://github.com"
           git add apps/portfolio/kustomization.yaml
           git commit -m "chore(gitops): deploy portfolio images ${{ github.sha }}"
           git push origin main
