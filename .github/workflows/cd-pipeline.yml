@@ -172,3 +172,37 @@ jobs:
         run: |
           docker rm -f smoke-backend-${{ github.run_id }} || true
           docker rmi ${{ env.IMAGE }}:${{ github.sha }} || true
+
+  update-gitops-repo:
+    runs-on: ubuntu-latest
+    needs: [build-and-push-frontend, build-and-push-backend]
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.PORTFOLIO_SSH }}
+          known_hosts: "unnecessary"
+
+      - name: Add GitHub to Known Hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Clone GitOps Repository
+        run: |
+          git clone git@github.com:notseekeru/gitops.git
+
+      - name: Update Image Tags via Kustomize
+        run: |
+          cd gitops/apps/portfolio
+          kustomize edit set image ghcr.io/notseekeru/portfolio-frontend=ghcr.io/notseekeru/portfolio-frontend:${{ github.sha }}
+          kustomize edit set image ghcr.io/notseekeru/portfolio-backend=ghcr.io/notseekeru/portfolio-backend:${{ github.sha }}
+
+      - name: Commit and Push Changes
+        run: |
+          cd gitops
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/portfolio/kustomization.yaml
+          git commit -m "chore(gitops): deploy portfolio images ${{ github.sha }}"
+          git push origin main
