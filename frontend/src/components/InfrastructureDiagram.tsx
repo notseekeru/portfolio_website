@@ -6,15 +6,12 @@ config:
   layout: elk
 ---
 flowchart TB
-  subgraph PublicEdge["📡 Public Edge Layer"]
-    WAF["Cloudflare Edge"]
-    CFTunnel["Cloudflare Tunnel"]
-  end
-
   subgraph Internet["🌍 Public Internet"]
     Users["End Users"]
     Slack["Slack Channel"]
+    CloudflareEdge["Cloudflare Edge"]
   end
+
 
   subgraph CI_CD["🔄 GHA CI/CD Pipeline"]
     Git["GitHub Repo CI/CD"]
@@ -25,12 +22,14 @@ flowchart TB
     GHCR["Github Registry"]
   end
 
-  subgraph Tailscale["🌐 Tailscale Devices"]
+subgraph Tailscale["Tailscale"]
     subgraph MainDevices["🖥️💻 Main Devices"]
+      
       MainPC["MainPC"]
       MainLaptop["MainLaptop"]
       Ansible["Master Ansible"]
       Terraform["Master Terraform"]
+      Kubectl["Kubernetes Control Plane"]
     end
 
     subgraph MainPC["🖥️ Personal Computer"]
@@ -69,37 +68,33 @@ flowchart TB
         end
       end
     end
+  end
 
-    subgraph DigitalOcean["💧 DigitalOcean Cloud"]
-      subgraph Droplet1[" Debian Droplet"]
-        Falco["Falco Security"]
-        subgraph DODocker["🐳 Docker Compose - Traffic Stack"]
-          DONginx["Nginx Reverse Proxy"]
-          DOCfD["Cloudflared Container"]
-        end
+  subgraph DOKS["☸️ DOKS (3-Node Cluster)"]
+    ArgoCD["ArgoCD Operator"]
+    Ingress["Ingress-Nginx Controller"]
+    TunnelPod["Cloudflared Pod"]
 
-        subgraph AppLayer["💼 Compose - Portfolio Stack (No Telemetry)"]
-          Frontend["React/Vite Frontend"]
-          Backend["Node.js Backend"]
-        end
-      end
+    subgraph Workloads["⚙️ Namespaces"]
+      AppPod["Portfolio Pods (Frontend/Backend)"]
+      DBPod["Postgres StatefulSet"]
     end
   end
 
+  Workloads -- Kubelet pulls image --> GHCR
+  ArgoCD -- Updates Manifest --> Workloads
+  TunnelPod -- Internal K8s Service --> Ingress
+  Ingress -- Route --> AppPod
+  AppPod -- Internal Service --> DBPod
+
+  CloudflareEdge -- QUIC/HTTPS --> TunnelPod
   Git -- CI Check --> ALint & CiCheck
-  CiCheck -- Action --> Trivy
+  CiCheck --> Trivy
   ALint -- Deploy --> Molecule
   Molecule -- Deploy --> SSHD1
-  Trivy -- Build/Push --> GHCR
+  Trivy -- CD Build/Push --> GHCR
 
-  Users -- HTTPS --> WAF --> CFTunnel
-  CFTunnel -. HTTPS .-> DOCfD
-  DOCfD --> DONginx
-  DONginx -- HTTP --> Frontend & Backend
   SSH1 & SSH2 -- Tailscale Tunnel --> SSHD1
-
-  Frontend & Backend -- Pull w/Token --> GHCR
-  Frontend2 & Nodejs2 -- Pull w/Token --> GHCR
 
   Alloy -- Scrape Logs --> DLogs
   Alloy -- Remote Write --> Prom
@@ -113,54 +108,6 @@ flowchart TB
   PostgresExporter -- Scrapes Metrics --> Postgres
   PostgresExporter -. Metrics :9187 .-> Alloy
 
-  WAF:::edgeLayer
-  CFTunnel:::edgeLayer
-  Users:::edgeLayer
-  Slack:::edgeLayer
-  Git:::gha
-  ALint:::gha
-  Molecule:::gha
-  CiCheck:::gha
-  Trivy:::gha
-  GHCR:::gha
-  Ollama:::vmLayer
-  SSH1:::vmLayer
-  Terraform:::vmLayer
-  Ansible:::vmLayer
-  SSH2:::vmLayer
-  F2B:::netLayer
-  NoIP:::netLayer
-  Port22:::netLayer
-  UFW:::netLayer
-  AKeys:::netLayer
-  APerms:::netLayer
-  Access:::netLayer
-  DLogs:::container
-  Frontend:::container
-  Backend:::container
-  Alloy:::container
-  Prom:::container
-  Loki:::container
-  Tempo:::container
-  Grafana:::container
-  AManager:::container
-  DONginx:::container
-  DOCfD:::container
-  Droplet1:::physical
-  Frontend2:::container
-  Nodejs2:::container
-  OTLPDep:::container
-  OTLPDep2:::container
-  Postgres:::container
-  PostgresExporter:::container
-
-  classDef edgeLayer fill:#b30000,stroke:#ff4d4d,stroke-width:2px,color:#ffffff
-  classDef netLayer fill:#0059b3,stroke:#3399ff,stroke-width:2px,color:#ffffff
-  classDef physical fill:#333333,stroke:#666666,stroke-width:2px,color:#ffffff
-  classDef container fill:#008080,stroke:#00cbcb,stroke-width:2px,color:#ffffff
-  classDef vmLayer fill:#6a0db2,stroke:#b366ff,stroke-width:2px,color:#ffffff
-  classDef storage fill:#b37400,stroke:#ffbf4d,stroke-width:2px,color:#ffffff
-  classDef gha fill:#3d802e,stroke:#b2ffa1,stroke-width:2px,color:#ffffff
   `;
 
 export default function InfrastructureDiagram() {
