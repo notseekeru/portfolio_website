@@ -1,6 +1,5 @@
-import { motion } from "framer-motion";
 import InteractiveMermaid from "../utils/InteractiveMermaid";
-import { fadeIn } from "../lib/motion";
+import { useInView } from "../hooks/useInView";
 
 const infrastructureChart = `---
 config:
@@ -165,22 +164,20 @@ flowchart TB
   `;
 
 export default function InfrastructureDiagram() {
+  const { ref: sectionRef, inView: sectionInView } = useInView();
+  const { ref: headerRef, inView: headerInView } = useInView();
+  const { ref: chartRef, inView: chartInView } = useInView();
+
   return (
-    <motion.div
+    <div
       id="infrastructure-diagram"
-      variants={fadeIn}
-      initial="initial"
-      whileInView="animate"
-      viewport={{ once: true }}
-      className="py-24"
+      ref={sectionRef}
+      className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}
     >
       <div className="max-w-6xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mb-16"
+        <div
+          ref={headerRef}
+          className={`mb-16 transition-all duration-500 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}
         >
           <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase">
             Architecture
@@ -192,17 +189,16 @@ export default function InfrastructureDiagram() {
             End-to-end homelab infrastructure breakdown — from Cloudflare edge
             to Raspberry Pi 5 and monitoring stack.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.15, duration: 0.5 }}
+        <div
+          ref={chartRef}
+          className={`transition-all duration-500 ${chartInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}
+          style={{ transitionDelay: "0.15s" }}
         >
           <InteractiveMermaid chart={infrastructureChart} />
-        </motion.div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

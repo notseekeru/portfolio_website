@@ -2,7 +2,6 @@ import { useEffect, useState, useId } from "react";
 import mermaid from "mermaid";
 import elkLayouts from "@mermaid-js/layout-elk";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { motion, AnimatePresence } from "framer-motion";
 
 mermaid.registerLayoutLoaders(elkLayouts);
 
@@ -126,18 +125,11 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
   return (
     <>
       <div className="my-8">{renderViewer(false)}</div>
-      <AnimatePresence>
-        {isFullscreen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-zinc-950/95 backdrop-blur-sm"
-          >
-            {renderViewer(true)}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isFullscreen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-zinc-950/95 backdrop-blur-sm animate-fade-in">
+          {renderViewer(true)}
+        </div>
+      )}
     </>
   );
 }

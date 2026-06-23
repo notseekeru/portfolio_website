@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+
 import personalData from "../data/personalData";
-import { fadeIn } from "../lib/motion";
+
 import {
   SiJavascript,
   SiPython,
@@ -167,13 +167,7 @@ export default function About() {
 
   return (
     <section className="py-24 max-w-6xl mx-auto px-6 relative">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="grid md:grid-cols-2 gap-16 items-center relative z-10"
-      >
+      <div className="grid md:grid-cols-2 gap-16 items-center relative z-10 animate-fade-in-up">
         <div>
           <SectionLabel text="About" />
           <h2 className="text-3xl font-bold text-zinc-100 mt-2 mb-6">
@@ -207,18 +201,14 @@ export default function About() {
 
         <div className="grid grid-cols-2 gap-4">
           {stats.map((stat) => (
-            <motion.div
+            <div
               key={stat.label}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4 }}
               onMouseEnter={() =>
                 !activeCategory && handleMouseEnter(stat.label)
               }
               onMouseLeave={handleMouseLeave}
               onClick={() => !activeCategory && setActiveCategory(stat.label)}
-              className={`border border-border bg-surface rounded-xl p-6 transition-colors duration-300 group ${
+              className={`border border-border bg-surface rounded-xl p-6 transition-colors duration-300 group animate-fade-in-up ${
                 activeCategory
                   ? "cursor-default opacity-50"
                   : "hover:border-accent/40 cursor-pointer"
@@ -232,101 +222,90 @@ export default function About() {
               <div className="text-xs text-zinc-500 font-medium group-hover:text-accent transition-colors">
                 {stat.label}
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
-      </motion.div>
+      </div>
 
-      <AnimatePresence>
-        {activeCategory && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm"
-              aria-label="Modal background"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-4xl p-6 border border-zinc-800 bg-zinc-950 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] max-h-[85vh] overflow-y-auto overflow-x-hidden pointer-events-auto"
-              onMouseEnter={handleModalMouseEnter}
-              onMouseLeave={handleModalMouseLeave}
-              onClick={(e: React.MouseEvent) => e.stopPropagation()}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="modal-title"
-            >
-              <div className="flex justify-between items-center mb-6 sticky top-0 bg-zinc-950/90 backdrop-blur-[2px] py-2 z-10 border-b border-zinc-800/50">
-                <h3
-                  id="modal-title"
-                  className="text-2xl font-bold text-zinc-100"
-                >
-                  {activeCategory} Details
-                </h3>
-                <button
-                  onClick={() => setActiveCategory(null)}
-                  className="p-2 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
-                  aria-label="Close details"
-                ></button>
-              </div>
+      {activeCategory && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
+          <div
+            className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm animate-fade-in"
+            aria-label="Modal background"
+          />
+          <div
+            className="relative w-full max-w-4xl p-6 border border-zinc-800 bg-zinc-950 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] max-h-[85vh] overflow-y-auto overflow-x-hidden pointer-events-auto animate-fade-in-up"
+            onMouseEnter={handleModalMouseEnter}
+            onMouseLeave={handleModalMouseLeave}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+          >
+            <div className="flex justify-between items-center mb-6 sticky top-0 bg-zinc-950/90 backdrop-blur-[2px] py-2 z-10 border-b border-zinc-800/50">
+              <h3 id="modal-title" className="text-2xl font-bold text-zinc-100">
+                {activeCategory} Details
+              </h3>
+              <button
+                onClick={() => setActiveCategory(null)}
+                className="p-2 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                aria-label="Close details"
+              ></button>
+            </div>
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {stats
-                  .find((s) => s.label === activeCategory)
-                  ?.items.map(
-                    (
-                      item: {
-                        name: string;
-                        icon: string;
-                        summary: string;
-                        implementation: string;
-                      },
-                      idx: number,
-                    ) => {
-                      const Icon =
-                        item.icon && iconMap[item.icon]
-                          ? iconMap[item.icon]
-                          : FaCode;
-                      return (
-                        <div
-                          key={idx}
-                          className="p-4 border border-zinc-800/60 rounded-lg bg-zinc-900/40 hover:border-accent/30 transition-colors flex flex-col gap-2"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="text-accent text-xl">
-                              <Icon />
-                            </div>
-                            <h4 className="font-semibold text-zinc-200">
-                              {item.name}
-                            </h4>
-                          </div>
-                          {item.summary && (
-                            <p className="text-xs text-zinc-400">
-                              {item.summary}
-                            </p>
-                          )}
-                          {item.implementation && (
-                            <div className="mt-1 pt-2 border-t border-zinc-800/60">
-                              <p className="text-xs text-zinc-500">
-                                <span className="text-zinc-600 font-mono mr-1">
-                                  Impl:
-                                </span>
-                                {item.implementation}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      );
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {stats
+                .find((s) => s.label === activeCategory)
+                ?.items.map(
+                  (
+                    item: {
+                      name: string;
+                      icon: string;
+                      summary: string;
+                      implementation: string;
                     },
-                  )}
-              </div>
-            </motion.div>
+                    idx: number,
+                  ) => {
+                    const Icon =
+                      item.icon && iconMap[item.icon]
+                        ? iconMap[item.icon]
+                        : FaCode;
+                    return (
+                      <div
+                        key={idx}
+                        className="p-4 border border-zinc-800/60 rounded-lg bg-zinc-900/40 hover:border-accent/30 transition-colors flex flex-col gap-2"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="text-accent text-xl">
+                            <Icon />
+                          </div>
+                          <h4 className="font-semibold text-zinc-200">
+                            {item.name}
+                          </h4>
+                        </div>
+                        {item.summary && (
+                          <p className="text-xs text-zinc-400">
+                            {item.summary}
+                          </p>
+                        )}
+                        {item.implementation && (
+                          <div className="mt-1 pt-2 border-t border-zinc-800/60">
+                            <p className="text-xs text-zinc-500">
+                              <span className="text-zinc-600 font-mono mr-1">
+                                Impl:
+                              </span>
+                              {item.implementation}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  },
+                )}
+            </div>
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </section>
   );
 }

@@ -16,43 +16,43 @@ export interface BlogPost {
 const blogModules = import.meta.glob("../content/blogs/*.md", {
   query: "?raw",
   import: "default",
-  eager: true,
-}) as Record<string, string>;
+}) as Record<string, () => Promise<string>>;
 
 function getSlugFromPath(path: string): string {
   const filename = path.split("/").pop() ?? "";
   return filename.replace(/\.md$/, "");
 }
 
-function loadBlogs(): BlogPost[] {
-  const blogs = Object.entries(blogModules).map(([path, raw]) => {
-    const { meta, content } = parseFrontmatter(raw);
-    const slug = getSlugFromPath(path);
+async function loadBlogs(): Promise<BlogPost[]> {
+  const entries = await Promise.all(
+    Object.entries(blogModules).map(async ([path, loader]) => {
+      const raw = await loader();
+      const { meta, content } = parseFrontmatter(raw);
+      const slug = getSlugFromPath(path);
 
-    return {
-      slug,
-      title: meta.title || slug,
-      date: meta.date || "",
-      description: meta.description || "",
-      image: meta.image || "",
-      favorite: meta.favorite === "true",
-      github: meta.github || "",
-      content,
-    };
-  });
+      return {
+        slug,
+        title: meta.title || slug,
+        date: meta.date || "",
+        description: meta.description || "",
+        image: meta.image || "",
+        favorite: meta.favorite === "true",
+        github: meta.github || "",
+        content,
+      };
+    }),
+  );
 
-  blogs.sort((a, b) => {
+  entries.sort((a, b) => {
     if (!a.date || !b.date) return 0;
-    const bTime = new Date(b.date).getTime();
-    const aTime = new Date(a.date).getTime();
-    return bTime - aTime;
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
 
-  return blogs;
+  return entries;
 }
 
-function getBlogBySlug(slug: string): BlogPost | null {
-  const blogs = loadBlogs();
+async function getBlogBySlug(slug: string): Promise<BlogPost | null> {
+  const blogs = await loadBlogs();
   return blogs.find((b) => b.slug === slug) || null;
 }
 

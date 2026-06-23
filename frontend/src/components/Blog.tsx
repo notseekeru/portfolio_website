@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { loadBlogs, type BlogPost } from "../utils/blogLoader";
 import { GitHubIcon } from "./icons/Icons";
-import { fadeIn, fadeInUp } from "../lib/motion";
+import { useInView } from "../hooks/useInView";
 import type { SyntheticEvent } from "react";
 
 const POSTS_PER_PAGE = 6;
@@ -20,22 +19,19 @@ export default function Blog() {
   const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
   const visibleBlogs = blogs.slice(startIndex, startIndex + POSTS_PER_PAGE);
 
+  const { ref: sectionRef, inView: sectionInView } = useInView();
+  const { ref: headerRef, inView: headerInView } = useInView();
+
   return (
-    <motion.div
+    <div
       id="blog"
-      variants={fadeIn}
-      initial="initial"
-      whileInView="animate"
-      viewport={{ once: true }}
-      className="py-24"
+      ref={sectionRef}
+      className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}
     >
       <div className="max-w-6xl mx-auto px-6">
-        <motion.div
-          variants={fadeInUp}
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
-          className="mb-16"
+        <div
+          ref={headerRef}
+          className={`transition-all duration-500 mb-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}
         >
           <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase">
             Writing
@@ -46,7 +42,7 @@ export default function Blog() {
           <p className="text-zinc-500 max-w-lg">
             Thoughts, guides, and things I've learned along the way.
           </p>
-        </motion.div>
+        </div>
 
         {blogs.length === 0 ? (
           <p className="text-zinc-500 text-center py-20">
@@ -87,12 +83,12 @@ export default function Blog() {
           </>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 // ------------------------------------------------------------------
-// BlogCard Component (unchanged)
+// BlogCard Component
 // ------------------------------------------------------------------
 interface BlogCardProps {
   post: BlogPost;
@@ -114,10 +110,9 @@ function BlogCard({ post, index }: BlogCardProps) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.07, duration: 0.4 }}
+    <div
+      className="animate-fade-in-up"
+      style={{ animationDelay: `${index * 0.07}s` }}
     >
       <div className="group relative flex flex-col border border-border bg-surface rounded-2xl overflow-hidden hover:border-accent/30 glow-accent-hover transition-all duration-300 h-full cursor-pointer">
         {/* Clickable area (everything except the top-right icons) */}
@@ -204,6 +199,6 @@ function BlogCard({ post, index }: BlogCardProps) {
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

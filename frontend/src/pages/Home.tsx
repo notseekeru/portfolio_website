@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useEffect, Fragment } from "react";
 import { useLocation } from "react-router-dom";
 import Hero from "../components/Hero";
@@ -6,7 +5,6 @@ import About from "../components/About";
 import InfrastructureDiagram from "../components/InfrastructureDiagram";
 import Blog from "../components/Blog";
 import Contact from "../components/Contact";
-import { fadeIn } from "../lib/motion";
 
 const sections = [
   { id: "home", Component: Hero },
@@ -39,12 +37,7 @@ export default function Home() {
   }, [location]);
 
   return (
-    <motion.div
-      variants={fadeIn}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-    >
+    <div className="animate-fade-in">
       {sections.map(({ id, Component }, i) => (
         <Fragment key={id}>
           {i > 0 && <Divider />}
@@ -53,6 +46,6 @@ export default function Home() {
           </div>
         </Fragment>
       ))}
-    </motion.div>
+    </div>
   );
 }

@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import personalData from "../data/personalData";
 import { GitHubIcon, LinkedInIcon, MailIcon } from "./icons/Icons";
-import { heroFadeIn } from "../lib/motion";
 import type { SyntheticEvent } from "react";
 
 export default function Hero() {
@@ -16,13 +14,7 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0d0d0d]/50 to-[#0d0d0d]" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 pb-16 flex flex-col lg:flex-row items-center gap-16">
-        <motion.div
-          className="flex-1 text-center lg:text-left"
-          variants={heroFadeIn}
-          initial="initial"
-          animate="animate"
-          transition={{ duration: 0.7, ease: "easeOut" }}
-        >
+        <div className="flex-1 text-center lg:text-left animate-hero-in">
           <h1 className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight mb-4">
             <span className="text-zinc-100">Hi, I'm </span>
             <span className="text-gradient">{personalData.name}</span>
@@ -82,13 +74,11 @@ export default function Hero() {
             </div>
             <LiveClock />
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          className="flex-shrink-0"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+        <div
+          className="flex-shrink-0 animate-fade-in-up"
+          style={{ animationDelay: "0.2s" }}
         >
           <div className="relative w-56 h-56 lg:w-72 lg:h-72">
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/20 to-accentPurple/20 blur-xl" />
@@ -119,7 +109,7 @@ export default function Hero() {
               <img className="w-12 h-12" src="/ph.png" alt="PH" />
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

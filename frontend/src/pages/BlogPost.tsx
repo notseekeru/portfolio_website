@@ -1,10 +1,8 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
 import { getBlogBySlug, type BlogPost } from "../utils/blogLoader";
 import { parseMarkdown } from "../utils/markdown";
 import { ArrowLeftIcon } from "../components/icons/Icons";
-import { fadeInUp } from "../lib/motion";
 import MermaidRenderer from "../components/MermaidRenderer";
 import SyntaxHighlighter from "../components/SyntaxHighlighter";
 import type { SyntheticEvent } from "react";
@@ -29,29 +27,17 @@ export default function BlogPost() {
 
   if (loading) {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        className="min-h-screen pt-28 pb-24"
-      >
+      <div className="min-h-screen pt-28 pb-24 animate-fade-in">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
-      </motion.div>
+      </div>
     );
   }
 
   if (!post) {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        className="min-h-screen pt-28 pb-24"
-      >
+      <div className="min-h-screen pt-28 pb-24 animate-fade-in">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h1 className="text-4xl font-bold text-zinc-100 mb-4">
             Post Not Found
@@ -67,7 +53,7 @@ export default function BlogPost() {
             Back to Blog
           </Link>
         </div>
-      </motion.div>
+      </div>
     );
   }
 
@@ -82,13 +68,7 @@ export default function BlogPost() {
   const htmlContent = parseMarkdown(post.content);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      className="min-h-screen pt-28 pb-24"
-    >
+    <div className="min-h-screen pt-28 pb-24 animate-fade-in">
       <div className="max-w-3xl mx-auto px-6">
         <Link
           to="/#blog"
@@ -98,7 +78,7 @@ export default function BlogPost() {
           Back to Blog
         </Link>
 
-        <motion.div variants={fadeInUp} initial="initial" animate="animate">
+        <div className="animate-fade-in-up">
           {formattedDate && (
             <span className="font-mono text-xs text-accent/70 tracking-wider uppercase">
               {formattedDate}
@@ -129,10 +109,16 @@ export default function BlogPost() {
             className="blog-prose"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
-          <SyntaxHighlighter containerRef={contentRef} deps={[slug, post?.content]} />
-          <MermaidRenderer containerRef={contentRef} deps={[slug, post?.content]} />
-        </motion.div>
+          <SyntaxHighlighter
+            containerRef={contentRef}
+            deps={[slug, post?.content]}
+          />
+          <MermaidRenderer
+            containerRef={contentRef}
+            deps={[slug, post?.content]}
+          />
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import personalData from "../data/personalData";
 import {
   MailIcon,
@@ -8,7 +7,7 @@ import {
   FacebookIcon,
   InstagramIcon,
 } from "./icons/Icons";
-import { fadeIn, slideInLeft, slideInRight } from "../lib/motion";
+import { useInView } from "../hooks/useInView";
 import type { ChangeEvent, FormEvent } from "react";
 
 interface ContactFormState {
@@ -111,25 +110,19 @@ export default function Contact() {
     },
   ].filter((link) => link.href && link.href !== "mailto:");
 
+  const { ref: sectionRef, inView: sectionInView } = useInView();
+
   return (
-    <motion.div
+    <div
       id="contact"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.3 }}
-      className="py-24"
+      ref={sectionRef}
+      className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}
     >
       <div className="max-w-6xl mx-auto px-6">
         {/* Main Grid Wrapper starts above the header now */}
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Left Column: Header + Form */}
-          <motion.div
-            variants={slideInLeft}
-            initial="initial"
-            animate="animate"
-            className="space-y-8"
-          >
+          <div className="space-y-8 animate-slide-in-left">
             {/* Header Block */}
             <div>
               <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase">
@@ -208,13 +201,12 @@ export default function Contact() {
                 </form>
               )}
             </div>
-          </motion.div>
+          </div>
 
           {/* Right Column: Social Links */}
-          <motion.div
-            variants={slideInRight}
-            initial="initial"
-            animate="animate"
+          <div
+            className="animate-slide-in-right"
+            style={{ animationDelay: "0.2s" }}
           >
             <h2 className="text-lg font-semibold text-zinc-100 mb-6">
               Connect with me
@@ -265,10 +257,10 @@ export default function Contact() {
                 {personalData.location}
               </p>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 

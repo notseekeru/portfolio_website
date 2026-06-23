@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
 import { lazy, Suspense } from "react";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Navbar from "./components/Navbar";
@@ -22,12 +21,10 @@ export default function App() {
                 </div>
               }
             >
-              <AnimatePresence mode="wait">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/blog/:slug" element={<BlogPost />} />
-                </Routes>
-              </AnimatePresence>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+              </Routes>
             </Suspense>
           </main>
           <Footer />

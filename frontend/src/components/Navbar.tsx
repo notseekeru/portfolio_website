@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+
 import personalData from "../data/personalData";
 
 const navLinks = [
@@ -125,44 +125,34 @@ export default function Navbar() {
         </button>
       </nav>
 
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[#0d0d0d]/95 backdrop-blur-md border-b border-border"
-          >
-            <ul className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <li key={link.path}>
-                  <Link
-                    to={link.path}
-                    onClick={(e) => {
-                      if (
-                        link.path.startsWith("/#") &&
-                        location.pathname === "/"
-                      ) {
-                        e.preventDefault();
-                        const targetId = link.path.substring(2);
-                        const el = document.getElementById(targetId);
-                        if (el) {
-                          el.scrollIntoView({ behavior: "smooth" });
-                          window.history.pushState({}, "", link.path);
-                        }
-                        setMenuOpen(false);
-                      }
-                    }}
-                    className={`block text-sm font-medium transition-colors text-zinc-400 hover:text-zinc-100`}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div
+        className={`md:hidden bg-[#0d0d0d]/95 backdrop-blur-md border-b border-border overflow-hidden transition-all duration-200 ${menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+      >
+        <ul className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4">
+          {navLinks.map((link) => (
+            <li key={link.path}>
+              <Link
+                to={link.path}
+                onClick={(e) => {
+                  if (link.path.startsWith("/#") && location.pathname === "/") {
+                    e.preventDefault();
+                    const targetId = link.path.substring(2);
+                    const el = document.getElementById(targetId);
+                    if (el) {
+                      el.scrollIntoView({ behavior: "smooth" });
+                      window.history.pushState({}, "", link.path);
+                    }
+                    setMenuOpen(false);
+                  }
+                }}
+                className={`block text-sm font-medium transition-colors text-zinc-400 hover:text-zinc-100`}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
     </header>
   );
 }
