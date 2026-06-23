@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { loadBlogs, type BlogPost } from "../utils/blogLoader";
 import { GitHubIcon } from "./icons/Icons";
+import { fadeIn, fadeInUp } from "../lib/motion";
 import type { SyntheticEvent } from "react";
 
-const blogs: BlogPost[] = loadBlogs();
 const POSTS_PER_PAGE = 6;
 
 export default function Blog() {
+  const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    loadBlogs().then(setBlogs);
+  }, []);
+
   const totalPages = Math.ceil(blogs.length / POSTS_PER_PAGE);
   const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
   const visibleBlogs = blogs.slice(startIndex, startIndex + POSTS_PER_PAGE);
@@ -17,18 +23,18 @@ export default function Blog() {
   return (
     <motion.div
       id="blog"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
+      variants={fadeIn}
+      initial="initial"
+      whileInView="animate"
       viewport={{ once: true }}
-      transition={{ duration: 0.3 }}
       className="py-24"
     >
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          variants={fadeInUp}
+          initial="initial"
+          whileInView="animate"
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
           className="mb-16"
         >
           <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase">

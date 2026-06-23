@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import InteractiveMermaid from "../utils/InteractiveMermaid";
+import { fadeIn } from "../lib/motion";
 
 const infrastructureChart = `---
 config:
@@ -167,10 +168,10 @@ export default function InfrastructureDiagram() {
   return (
     <motion.div
       id="infrastructure-diagram"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
+      variants={fadeIn}
+      initial="initial"
+      whileInView="animate"
       viewport={{ once: true }}
-      transition={{ duration: 0.3 }}
       className="py-24"
     >
       <div className="max-w-6xl mx-auto px-6">

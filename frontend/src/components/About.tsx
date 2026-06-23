@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import personalData from "../data/personalData";
+import { fadeIn } from "../lib/motion";
 import {
   SiJavascript,
   SiPython,

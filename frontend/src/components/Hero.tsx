@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import personalData from "../data/personalData";
 import { GitHubIcon, LinkedInIcon, MailIcon } from "./icons/Icons";
+import { heroFadeIn } from "../lib/motion";
 import type { SyntheticEvent } from "react";
 
 export default function Hero() {
@@ -17,8 +18,9 @@ export default function Hero() {
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 pb-16 flex flex-col lg:flex-row items-center gap-16">
         <motion.div
           className="flex-1 text-center lg:text-left"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          variants={heroFadeIn}
+          initial="initial"
+          animate="animate"
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
           <h1 className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight mb-4">
