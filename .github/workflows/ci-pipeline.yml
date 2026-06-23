@@ -6,13 +6,13 @@ on:
     paths:
       - "frontend/**"
       - "backend/**"
-      - ".github/workflows/ci-pipeline.yml"
+      - ".github/workflows/**"
   push:
     branches: [main]
     paths:
       - "frontend/**"
       - "backend/**"
-      - ".github/workflows/ci-pipeline.yml"
+      - ".github/workflows/**"
   workflow_dispatch:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
