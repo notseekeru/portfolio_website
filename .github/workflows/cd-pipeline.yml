@@ -13,169 +13,111 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  build-and-push-frontend:
+  build-and-push:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - name: frontend
+            context: ./frontend
+            dockerfile: ./frontend/Dockerfile
+            image_suffix: portfolio-frontend
+            port: 8080
+            health_endpoint: /
+          - name: backend
+            context: ./backend
+            dockerfile: ./backend/Dockerfile
+            image_suffix: portfolio-backend
+            port: 5000
+            health_endpoint: /api/health
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Set image variables
-        run: echo "IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/portfolio-frontend" >> $GITHUB_ENV
+      - name: Set image name
+        run: echo "IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.service.image_suffix }}" >> $GITHUB_ENV
 
-      - name: Set up QEMU (for arm/amd64 cross-builds)
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
-      - name: Log in to registry (GHCR)
+      - name: Log in to GHCR
         uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create .trivyignore file
-        run: |
-          echo 'CVE-2026-40200' > .trivyignore # musl lib
-          echo 'CVE-2026-22184' >> .trivyignore # z lib 
-          echo 'CVE-2026-33671' >> .trivyignore # picomatch
-          echo 'CVE-2026-27135' >> .trivyignore # nghttp2
-          echo 'CVE-2026-6732' >> .trivyignore # libxml2
-
-      - name: Build local image for smoke test (single-arch, load into daemon)
+      # Build for smoke test (single‑arch, load into daemon)
+      - name: Build local image
         uses: docker/build-push-action@v4
         with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
+          context: ${{ matrix.service.context }}
+          file: ${{ matrix.service.dockerfile }}
           load: true
           push: false
           tags: ${{ env.IMAGE }}:${{ github.sha }}
-          no-cache: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Scan image with Trivy (fail on HIGH/CRITICAL)
+      - name: Scan image with Trivy
         run: |
           docker run --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
-            -v ${{ github.workspace }}/.trivyignore:/.trivyignore \
-            aquasec/trivy:0.41.0 image --severity HIGH,CRITICAL --exit-code 1 ${{ env.IMAGE }}:${{ github.sha }}
+            -v ${{ matrix.service.context }}/.trivyignore:/.trivyignore \
+            aquasec/trivy:0.41.0 image \
+            --severity HIGH,CRITICAL --exit-code 1 \
+            --ignorefile /.trivyignore \
+            ${{ env.IMAGE }}:${{ github.sha }}
 
-      - name: Run frontend smoke container
+      - name: Run smoke container
         run: |
-          docker run -d --name smoke-frontend-${{ github.run_id }} -p 127.0.0.1:8080:8080 ${{ env.IMAGE }}:${{ github.sha }}
+          docker run -d --name smoke-${{ matrix.service.name }}-${{ github.run_id }} \
+            -p 127.0.0.1:${{ matrix.service.port }}:${{ matrix.service.port }} \
+            ${{ env.IMAGE }}:${{ github.sha }}
 
-      - name: Wait for frontend
+      - name: Wait for service
         run: |
           for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:8080/ >/dev/null; then
-              echo "Frontend up"; exit 0
+            if curl -fsS http://127.0.0.1:${{ matrix.service.port }}${{ matrix.service.health_endpoint }} >/dev/null; then
+              echo "${{ matrix.service.name }} is up"; exit 0
             fi
             sleep 1
           done
-          echo "Frontend did not respond"; docker logs smoke-frontend-${{ github.run_id }} || true; exit 1
+          echo "${{ matrix.service.name }} did not respond"
+          docker logs smoke-${{ matrix.service.name }}-${{ github.run_id }} || true
+          exit 1
 
-      - name: Frontend smoke test
-        run: curl -fsS http://127.0.0.1:8080/ >/dev/null
+      - name: Smoke test
+        run: curl -fsS http://127.0.0.1:${{ matrix.service.port }}${{ matrix.service.health_endpoint }} >/dev/null
 
-      - name: Push multi-arch image to registry (amd64 + arm64)
+      - name: Push multi‑arch image
         uses: docker/build-push-action@v4
         with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
+          context: ${{ matrix.service.context }}
+          file: ${{ matrix.service.dockerfile }}
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
             ${{ env.IMAGE }}:${{ github.sha }}
             ${{ env.IMAGE }}:latest
-          no-cache: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Cleanup frontend container and local image
+      - name: Cleanup
+        if: always()
         run: |
-          docker rm -f smoke-frontend-${{ github.run_id }} || true
-          docker rmi ${{ env.IMAGE }}:${{ github.sha }} || true
-
-  build-and-push-backend:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Set image variables
-        run: echo "IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/portfolio-backend" >> $GITHUB_ENV
-
-      - name: Set up QEMU (for arm/amd64 cross-builds)
-        uses: docker/setup-qemu-action@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
-
-      - name: Log in to registry (GHCR)
-        uses: docker/login-action@v4
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build local image for smoke test (single-arch, load into daemon)
-        uses: docker/build-push-action@v4
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          load: true
-          push: false
-          tags: ${{ env.IMAGE }}:${{ github.sha }}
-          no-cache: true
-
-      - name: Create .trivyignore file
-        run: |
-          echo 'CVE-2026-33671' >> .trivyignore # picomatch vulnerability
-
-      - name: Scan image with Trivy (fail on HIGH/CRITICAL)
-        run: |
-          docker run --rm \
-            -v /var/run/docker.sock:/var/run/docker.sock \
-            -v ${{ github.workspace }}/.trivyignore:/.trivyignore \
-            aquasec/trivy:0.41.0 image --severity HIGH,CRITICAL --exit-code 1 ${{ env.IMAGE }}:${{ github.sha }}
-
-      - name: Run backend smoke container
-        run: |
-          docker run -d --name smoke-backend-${{ github.run_id }} -p 127.0.0.1:5000:5000 ${{ env.IMAGE }}:${{ github.sha }}
-
-      - name: Wait for backend
-        run: |
-          for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:5000/api/health >/dev/null; then
-              echo "Backend up"; exit 0
-            fi
-            sleep 1
-          done
-          echo "Backend did not respond"; docker logs smoke-backend-${{ github.run_id }} || true; exit 1
-
-      - name: Backend smoke test
-        run: curl -fsS http://127.0.0.1:5000/api/health >/dev/null
-
-      - name: Push multi-arch image to registry (amd64 + arm64)
-        uses: docker/build-push-action@v4
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: |
-            ${{ env.IMAGE }}:${{ github.sha }}
-            ${{ env.IMAGE }}:latest
-          no-cache: true
-
-      - name: Cleanup backend container and local image
-        run: |
-          docker rm -f smoke-backend-${{ github.run_id }} || true
+          docker rm -f smoke-${{ matrix.service.name }}-${{ github.run_id }} || true
           docker rmi ${{ env.IMAGE }}:${{ github.sha }} || true
 
   update-gitops-repo:
     runs-on: ubuntu-latest
-    needs: [build-and-push-frontend, build-and-push-backend]
+    needs: build-and-push
     steps:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
@@ -189,13 +131,12 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
 
       - name: Clone GitOps Repository
-        run: |
-          git clone git@github.com:notseekeru/gitops.git
+        run: git clone git@github.com:notseekeru/gitops.git
 
-      - name: Setup Kustomize Tool
+      - name: Setup Kustomize
         uses: imranismail/setup-kustomize@v2
 
-      - name: Update Image Tags via Kustomize
+      - name: Update Image Tags
         run: |
           cd gitops/apps/portfolio
           kustomize edit set image ghcr.io/notseekeru/portfolio-frontend=ghcr.io/notseekeru/portfolio-frontend:${{ github.sha }}
