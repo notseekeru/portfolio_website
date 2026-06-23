@@ -1,80 +1,47 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useRef } from "react";
-import { createRoot, Root } from "react-dom/client";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import Prism from "prismjs";
-import mermaid from "mermaid";
-import InteractiveMermaid from "../utils/InteractiveMermaid";
-import { getBlogBySlug } from "../utils/blogLoader";
+import { getBlogBySlug, type BlogPost } from "../utils/blogLoader";
 import { parseMarkdown } from "../utils/markdown";
+import { ArrowLeftIcon } from "../components/icons/Icons";
+import { fadeInUp } from "../lib/motion";
+import MermaidRenderer from "../components/MermaidRenderer";
+import SyntaxHighlighter from "../components/SyntaxHighlighter";
 import type { SyntheticEvent } from "react";
-
-mermaid.initialize({
-  startOnLoad: false,
-  theme: "dark",
-});
 
 export default function BlogPost() {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const { slug } = useParams<{ slug: string }>();
-  const post = getBlogBySlug(slug ?? "");
-  const mermaidRootsRef = useRef<Root[]>([]);
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Scroll to the top of the page when clicking into a new blog post
+  useEffect(() => {
+    setLoading(true);
+    getBlogBySlug(slug ?? "").then((p) => {
+      setPost(p);
+      setLoading(false);
+    });
+  }, [slug]);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [slug]);
 
-  useEffect(() => {
-    if (!contentRef.current) return;
-
-    // Clean up previous dynamically inserted roots
-    mermaidRootsRef.current.forEach((root) =>
-      setTimeout(() => root.unmount(), 0),
+  if (loading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+        className="min-h-screen pt-28 pb-24"
+      >
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin mx-auto" />
+        </div>
+      </motion.div>
     );
-    mermaidRootsRef.current = [];
-
-    Prism.highlightAllUnder(contentRef.current);
-
-    // Instead of querying ".mermaid" and modifying the parent class (which breaks strict-mode double renders),
-    // query by a custom data attribute on the div that we can safely mutate contents for without losing its identity
-    const mermaidNodes = contentRef.current.querySelectorAll(
-      "div.mermaid, div[data-mermaid-processed]",
-    );
-
-    if (mermaidNodes.length > 0) {
-      mermaidNodes.forEach((node) => {
-        // Tag the node so it's found across strict-mode cleanups
-        node.setAttribute("data-mermaid-processed", "true");
-        node.classList.remove("mermaid"); // Still remove to avoid other css, but we can query by data attribute
-
-        // Read the pure unrendered text content unless we already stored it
-        let chartCode = node.getAttribute("data-mermaid-code");
-        if (!chartCode) {
-          chartCode = node.textContent || "";
-          node.setAttribute("data-mermaid-code", chartCode);
-        }
-
-        // Empty the container for the new React root
-        node.textContent = "";
-
-        // Render interactive React root inside the DOM node
-        const childContainer = document.createElement("div");
-        node.appendChild(childContainer);
-
-        const root = createRoot(childContainer);
-        mermaidRootsRef.current.push(root);
-        root.render(<InteractiveMermaid chart={chartCode} />);
-      });
-    }
-
-    return () => {
-      mermaidRootsRef.current.forEach((root) =>
-        setTimeout(() => root.unmount(), 0),
-      );
-      mermaidRootsRef.current = [];
-    };
-  }, [slug, post?.content]);
+  }
 
   if (!post) {
     return (
@@ -96,17 +63,7 @@ export default function BlogPost() {
             to="/#blog"
             className="inline-flex items-center gap-2 text-sm font-mono text-accent hover:text-accent/80 transition-colors"
           >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="12 19 5 12 12 5" />
-            </svg>
+            <ArrowLeftIcon size={14} />
             Back to Blog
           </Link>
         </div>
@@ -137,25 +94,11 @@ export default function BlogPost() {
           to="/#blog"
           className="inline-flex items-center gap-2 text-sm font-mono text-zinc-500 hover:text-accent transition-colors duration-200 mb-10"
         >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <line x1="19" y1="12" x2="5" y2="12" />
-            <polyline points="12 19 5 12 12 5" />
-          </svg>
+          <ArrowLeftIcon size={14} />
           Back to Blog
         </Link>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <motion.div variants={fadeInUp} initial="initial" animate="animate">
           {formattedDate && (
             <span className="font-mono text-xs text-accent/70 tracking-wider uppercase">
               {formattedDate}
@@ -186,6 +129,8 @@ export default function BlogPost() {
             className="blog-prose"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
+          <SyntaxHighlighter containerRef={contentRef} deps={[slug, post?.content]} />
+          <MermaidRenderer containerRef={contentRef} deps={[slug, post?.content]} />
         </motion.div>
       </div>
     </motion.div>
