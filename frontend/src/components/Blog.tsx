@@ -47,14 +47,9 @@ export default function Blog() {
           </p>
         ) : (
           <>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {visibleBlogs.map((post, i) => (
-                <BlogCard key={post.slug} post={post} index={i} />
-              ))}
-            </div>
-
+            {/* Pagination moved above the grid */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-4 mt-12">
+              <div className="flex justify-center items-center gap-4 mb-8">
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
@@ -76,6 +71,12 @@ export default function Blog() {
                 </button>
               </div>
             )}
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {visibleBlogs.map((post, i) => (
+                <BlogCard key={post.slug} post={post} index={i} />
+              ))}
+            </div>
           </>
         )}
       </div>
@@ -84,7 +85,7 @@ export default function Blog() {
 }
 
 // ------------------------------------------------------------------
-// BlogCard Component
+// BlogCard Component (unchanged)
 // ------------------------------------------------------------------
 interface BlogCardProps {
   post: BlogPost;
@@ -148,7 +149,6 @@ function BlogCard({ post, index }: BlogCardProps) {
                   {formattedDate}
                 </span>
               )}
-              {/* No favorite badge here – moved to top-right */}
             </div>
             <h3 className="font-semibold text-zinc-100 mb-2 group-hover:text-accent transition-colors duration-200 leading-snug">
               {post.title}
