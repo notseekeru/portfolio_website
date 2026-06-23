@@ -207,5 +207,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add apps/portfolio/kustomization.yaml
-          git commit -m "chore(gitops): deploy portfolio images ${{ github.sha }}"
-          git push origin main
+          if git diff --staged --quiet; then
+            echo "No changes detected. Skipping deployment commit."
+          else
+            git commit -m "chore(gitops): deploy portfolio images ${{ github.sha }}"
+            git push origin main
+          fi
