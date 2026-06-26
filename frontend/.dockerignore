@@ -11,3 +11,5 @@ CLAUDE.md
 projectStructure.md
 codesave.md
 personal.md
+tsconfig.tsbuildinfo
+*.log
