@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import personalData from "../data/personalData";
@@ -21,8 +21,13 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close mobile menu on navigation
+  const prevLocation = useRef(location);
   useEffect(() => {
-    setMenuOpen(false);
+    if (prevLocation.current !== location) {
+      setMenuOpen(false);
+      prevLocation.current = location;
+    }
   }, [location]);
 
   // IntersectionObserver: update URL hash when a section scrolls into view
