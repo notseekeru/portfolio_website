@@ -14,7 +14,6 @@ export default function BlogPost() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
     getBlogBySlug(slug ?? "").then((p) => {
       setPost(p);
       setLoading(false);
