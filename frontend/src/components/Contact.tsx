@@ -30,7 +30,7 @@ interface FormFieldProps {
   name: keyof ContactFormState;
   type: "text" | "email";
   value: string;
-  onChange: (e: FormChangeEvent) => void;
+  onChange: (_e: FormChangeEvent) => void;
   required?: boolean;
   maxLength?: number;
 }
