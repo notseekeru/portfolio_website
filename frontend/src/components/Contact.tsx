@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import personalData from "../data/personalData";
 import {
   MailIcon,
@@ -22,7 +22,7 @@ interface SocialLink {
   label: string;
   value: string;
   href: string;
-  icon: () => JSX.Element;
+  icon: () => React.ReactNode;
 }
 
 interface FormFieldProps {
