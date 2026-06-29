@@ -24,7 +24,7 @@ One node was the problem. If the Droplet died, everything died. Scaling meant du
 
 I provisioned a 3-node DOKS cluster and stared at it. The gap between having a cluster and running apps on it is wider than tutorials admit. Ingress, DNS, a deploy path that doesn't involve SSH and `docker compose up`.
 
-ArgoCD bridged that gap. Installed via `kubectl` at first, later through the Terraform Helm provider because manual downloads are tech debt. Pointed ArgoCD at a Git repo. That was the inflection point.
+ArgoCD bridged that gap. Installed via `kubectl` at first, later through the Terraform Helm provider because manual downloads are tech debt. Pointed ArgoCD at a Git repo. That was it.
 
 ---
 
@@ -52,7 +52,7 @@ Production would need cert-manager, network policies, internal PKI. My portfolio
 
 The portfolio site was easy. Already had a repo for it with the old compose stack, fully stateless. The diagram website was the hard path — Postgres locally in a container, but the managed DO PostgreSQL instance lived in a different network. No VPC peering, no direct route. Just a connection string that led nowhere.
 
-I spent eight hours researching automated migration strategies. Terraform `local-exec` to run migration scripts on apply. Cloudflare Tunnel TCP forwarding. Bastion hosts with pg_dump pipelines. VPC peering between the cluster and managed DB. Docker networks straddling local and cloud. I read the DO managed DB docs cover to cover, mapped out firewall rules and SSL modes, traced through each approach on paper. Every path added complexity. Every approach needed another moving part.
+I spent eight hours researching automated migration strategies. Terraform `local-exec` to run migration scripts on apply. Cloudflare Tunnel TCP forwarding. Bastion hosts with pg_dump pipelines. VPC peering between the cluster and managed DB. Docker networks bridging local and cloud. I read the DO managed DB docs cover to cover, mapped out firewall rules and SSL modes, traced through each approach on paper. Every path added complexity. Every approach needed another moving part.
 
 At hour seven I stopped. Closed the docs. Opened a terminal and ran one `psql` command with the connection string. It worked. The problem was never the migration. It was trying to wrap it in automation that didn't need to exist yet.
 
@@ -64,9 +64,9 @@ So I didn't automate it. I wrote `make prod-migrate-up` — a one-liner that cal
 
 ## Push-to-Deploy: The Full Loop
 
-The moment that made me smile wider than anything else: I pushed a commit to the diagram app repo, watched GitHub Actions build a multi-arch image, tag it with the commit SHA, push it to GHCR, and then — automatically — update the GitOps repo manifest. ArgoCD detected the drift and reconciled the cluster. New pods spun up with the new image. All of it, one `git push`.
+The moment that made me smile wider than anything else: I pushed a commit to the diagram app repo, watched GitHub Actions build a multi-arch image, tag it with the commit SHA, push it to GHCR, and then automatically update the GitOps repo manifest. ArgoCD detected the drift and reconciled the cluster. New pods spun up with the new image. All of it, one `git push`.
 
-**Git SHA tags.** Stopped pushing `:latest`. Deployments now pin exact commit SHAs. Every deploy is deterministic. Rollback is a Git revert.
+**Git SHA tags.** Stopped pushing `:latest`. Deployments now pin exact commit SHAs. Every deploy is reproducible. Rollback is a Git revert.
 
 **SSH Deploy Keys** between the app repos and GitOps repo. PATs expire. SSH keys don't. ArgoCD pulls manifests from GitOps, GitOps reads app repo artifacts via deploy key. No token refresh.
 
@@ -76,11 +76,11 @@ The moment that made me smile wider than anything else: I pushed a commit to the
 
 ## Dependabot
 
-Enabled on both website repos. This was almost too easy — add a `dependabot.yml` file to `.github/`, pick your package ecosystem (`npm`, `docker`), set an interval, and you're done. No SDK, no webhook config, no credentials to rotate. GitHub just gives it to you.
+Enabled on both website repos. Drop a `dependabot.yml` in `.github/`, pick your ecosystems (`npm`, `docker`), set an interval, done. No SDK, no webhook config, no credentials to rotate. GitHub just gives it to you.
 
-It scans every dependency in `package.json` and the Dockerfile, checks for known vulnerabilities against the GitHub Advisory Database, and opens focused PRs with changelog links. You review, merge, done. The grouped update feature is where it shines — instead of drowning in 20 individual PRs for minor bumps, Dependabot batches them into one. Patch Tuesday becomes a five-minute review instead of an inbox.
+It scans every dependency in `package.json` and the Dockerfile against the GitHub Advisory Database, opens PRs with version bumps and release notes. You review, merge, done. Grouped updates mean one PR instead of twenty for minor bumps. Instead of drowning in Dependabot noise you get one clean batch per week.
 
-No more manually running `npm audit` and chasing outdated transitive deps one by one. No more `npm outdated` listing packages I know I should bump but keep putting off. No more Trivy flagging a CVE and me having to dig through changelogs to find the fix — Dependabot already opened the PR. First week it caught several outdated transitive dependencies across both repos. Opened clean PRs. I merged, CI passed, deploy ran. Boring, automated, ⁠—⁠ exactly the point. For something that used to require a third-party SaaS or a custom cron job, Dependabot is embarrassingly good for being a checkbox.
+No more manually running `npm audit` and chasing outdated transitive deps. No more `npm outdated` listing packages I keep putting off. No more Trivy flagging a CVE and digging through changelogs for the fix. Dependabot opened the PR first. First week it caught several outdated transitive dependencies across both repos. Clean PRs. I merged, CI passed, deploy ran. Used to be a third-party SaaS or custom cron job. Now it ships with GitHub.
 
 ---
 
@@ -119,7 +119,7 @@ graph TD
     Diagram_Repo -.->|Dependabot| Diagram_Repo
 ```
 
-One `make apply` provisions the cluster, installs ArgoCD and Ingress NGINX via Helm, points ArgoCD at the GitOps repo, and the cluster reconciles. I've run `make destroy` more times than I can count. Every rebuild produces the same state.
+One `make apply` provisions the cluster, installs ArgoCD and Ingress NGINX via Helm, points ArgoCD at the GitOps repo, and the cluster reconciles. I've run `make destroy` more times than I can count. Every rebuild comes out identical.
 
 ---
 
