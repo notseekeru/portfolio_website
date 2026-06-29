@@ -147,4 +147,4 @@ Stack is stable. Next layer is optional:
 
 The credits expire July 31st. I'll use maybe $50 of the $200. The cluster stays up. I don't need to touch it. That's the easy part.
 
-The real thing I bought was the learning. I walked in knowing Docker Compose and walked out understanding how infrastructure converges toward a declared state. I can put "ArgoCD", "GitOps", "managed Kubernetes" on a resume now — not because I followed a tutorial, because I shipped real traffic through them. That $50 was the best tuition I'll ever pay.
+The real thing I bought was the learning. I walked in knowing Docker Compose and walked out understanding how infrastructure converges toward a declared state. I can put "ArgoCD", "GitOps", "managed Kubernetes" on a resume now, not because I followed a tutorial, because I shipped real traffic through them. That $50 was the best tuition I'll ever pay.
