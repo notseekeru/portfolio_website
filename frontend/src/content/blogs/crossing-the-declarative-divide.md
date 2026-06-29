@@ -32,7 +32,7 @@ ArgoCD bridged that gap. Installed via `kubectl` at first, later through the Ter
 
 GitOps is a reconciliation loop. The cluster pulls from Git and corrects itself, you don't push changes to it.
 
-5 manifests — Deployments, Services, Ingress — with resource limits. ArgoCD picked them up, spun replicas of both websites behind nginx. Watched the deployment lifecycle pane as the cluster aligned to the repo state. No SSH, no `docker exec`.
+5 manifests — Deployments, Services, Ingress — with resource limits. ArgoCD picked them up, spun replicas of both websites behind nginx. Watched the deployment lifecycle pane as the cluster aligned to the repo state. No SSH into nodes, no manual `kubectl apply`.
 
 Replaced the old Docker DNS records. Pointed Cloudflare from the Droplet IP to the Ingress NGINX controller DNS. Traffic flowed. Cluster live.
 
@@ -50,13 +50,13 @@ Production would need cert-manager, network policies, internal PKI. My portfolio
 
 ## Two Websites, One Cluster
 
-The portfolio site was easy. Already had a repo for it with the old compose stack, fully stateless. The diagram website was the hard path — Postgres locally in a container, but the managed DO PostgreSQL instance lived in a different network. No VPC peering, no direct route. Just a connection string that led nowhere.
+The portfolio site was easy. Already had a repo for it with the old compose stack, fully stateless. The diagram website was the hard path — Postgres locally in a container, but the managed DO PostgreSQL instance lived in a different network. No VPC peering, no direct route. The connection string existed but the firewall blocked it.
 
 I spent eight hours researching automated migration strategies. Terraform `local-exec` to run migration scripts on apply. Cloudflare Tunnel TCP forwarding. Bastion hosts with pg_dump pipelines. VPC peering between the cluster and managed DB. Docker networks bridging local and cloud. I read the DO managed DB docs cover to cover, mapped out firewall rules and SSL modes, traced through each approach on paper. Every path added complexity. Every approach needed another moving part.
 
 At hour seven I stopped. Closed the docs. Opened a terminal and ran one `psql` command with the connection string. It worked. The problem was never the migration. It was trying to wrap it in automation that didn't need to exist yet.
 
-So I didn't automate it. I wrote `make prod-migrate-up` — a one-liner that calls psql with the right flags and a GRANT statement for database permissions. Manual trigger, no abstraction, works every time.
+So I didn't automate it. I wrote `make prod-migrate-up` — a one-liner that calls psql with the right flags and applies a GRANT for database permissions. Manual trigger, no abstraction, works every time.
 
 > Knowing when to stop automating is also engineering.
 
