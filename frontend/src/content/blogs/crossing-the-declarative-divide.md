@@ -62,11 +62,15 @@ So I didn't automate it. I wrote `make prod-migrate-up` — a one-liner that cal
 
 ---
 
-## Immutable Tags and Deploy Keys
+## Push-to-Deploy: The Full Loop
+
+The moment that made me smile wider than anything else: I pushed a commit to the diagram app repo, watched GitHub Actions build a multi-arch image, tag it with the commit SHA, push it to GHCR, and then — automatically — update the GitOps repo manifest. ArgoCD detected the drift and reconciled the cluster. New pods spun up with the new image. All of it, one `git push`.
 
 **Git SHA tags.** Stopped pushing `:latest`. Deployments now pin exact commit SHAs. Every deploy is deterministic. Rollback is a Git revert.
 
 **SSH Deploy Keys** between the app repos and GitOps repo. PATs expire. SSH keys don't. ArgoCD pulls manifests from GitOps, GitOps reads app repo artifacts via deploy key. No token refresh.
+
+**GitHub Actions** builds both architectures, tags the image with the commit SHA, updates the GitOps manifest, pushes it. ArgoCD sees the change, syncs the cluster. The whole pipeline from `git push` to live traffic happens without me touching a terminal. First time it completed end-to-end I just sat back and watched.
 
 ---
 
