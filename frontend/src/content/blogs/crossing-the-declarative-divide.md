@@ -6,7 +6,7 @@ description: From Terraform to ArgoCD — burning $200 in free DigitalOcean cred
 
 # Summary
 
-I moved a static portfolio and a Mermaid diagram CRUD app from a single Docker Compose Droplet to a 3-node Kubernetes cluster orchestrated via GitOps. Terraform bootstraps everything, ArgoCD reconciles state from a Git repo, and one `make apply` is all it takes to bring both sites online.
+I had $200 in free DigitalOcean credits expiring July 31st. Two websites on a single Droplet, no redundancy, SSH-dependent deploys. I needed to move them before the money evaporated. Three weeks later I had a 3-node Kubernetes cluster, ArgoCD reconciling from Git, and zero reasons to SSH into anything ever again.
 
 ---
 
@@ -145,4 +145,4 @@ Stack is stable. Next layer is optional:
 
 # Conclusion
 
-This was never about Kubernetes. It was about infrastructure as data the cluster converges toward, not steps a human executes. The repo is truth. I stay out of the runtime loop.
+The credits expire July 31st. I'll use maybe $50 of the $200. The cluster stays up. I don't need to touch it. That's what I bought.
