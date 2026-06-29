@@ -1,7 +1,7 @@
 ---
 title: Crossing the Declarative Divide
 date: 2026-06-29
-description: From Terraform to ArgoCD — the gleeful panic of burning $200 in free DigitalOcean credits before they expired on July 31st. Two websites, one cluster, zero SSH.
+description: From Terraform to ArgoCD — burning $200 in free DigitalOcean credits before they expire July 31st. Two websites, one cluster, zero SSH.
 ---
 
 # Summary
@@ -22,7 +22,7 @@ One node was the problem. If the Droplet died, everything died. Scaling meant du
 
 ## The Kubernetes Threshold
 
-I provisioned a 3-node DOKS cluster and stared at it. The gap between having a cluster and running apps on it is wider than tutorials admit. Ingress, DNS, a deploy path that doesn't involve SSH and `docker compose up`.
+I provisioned a 3-node DOKS cluster and stared at it. Empty cluster, no apps. Needed ingress, DNS, a deploy path without SSH and `docker compose up`.
 
 ArgoCD bridged that gap. Installed via `kubectl` at first, later through the Terraform Helm provider because manual downloads are tech debt. Pointed ArgoCD at a Git repo. That was it.
 
@@ -64,7 +64,7 @@ So I didn't automate it. I wrote `make prod-migrate-up` — a one-liner that cal
 
 ## Push-to-Deploy: The Full Loop
 
-The moment that made me smile wider than anything else: I pushed a commit to the diagram app repo, watched GitHub Actions build a multi-arch image, tag it with the commit SHA, push it to GHCR, and then automatically update the GitOps repo manifest. ArgoCD detected the drift and reconciled the cluster. New pods spun up with the new image. All of it, one `git push`.
+Pushed a commit to the diagram app repo. Watched GitHub Actions build a multi-arch image, tag it with the commit SHA, push it to GHCR, then automatically update the GitOps repo manifest. ArgoCD detected the drift and reconciled the cluster. New pods spun up with the new image. All of it, one `git push`.
 
 **Git SHA tags.** Stopped pushing `:latest`. Deployments now pin exact commit SHAs. Every deploy is reproducible. Rollback is a Git revert.
 
@@ -145,6 +145,4 @@ Stack is stable. Next layer is optional:
 
 # Conclusion
 
-The migration was not about Kubernetes. It was about expressing infrastructure as data that a cluster can converge toward, instead of steps a human must execute. The Git repo is truth. The cluster converges. The engineer stays out of the runtime loop.
-
-Reduced toil. Zero manual steps between commit and traffic.
+This was never about Kubernetes. It was about infrastructure as data the cluster converges toward, not steps a human executes. The repo is truth. I stay out of the runtime loop.
