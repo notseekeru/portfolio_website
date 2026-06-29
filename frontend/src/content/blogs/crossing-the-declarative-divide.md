@@ -6,7 +6,7 @@ description: From Terraform to ArgoCD — burning $200 in free DigitalOcean cred
 
 # Summary
 
-I had $200 in free DigitalOcean credits expiring July 31st. Two websites on a single Droplet, no redundancy, SSH-dependent deploys. I needed to move them before the money evaporated. Three weeks later I had a 3-node Kubernetes cluster, ArgoCD reconciling from Git, and zero reasons to SSH into anything ever again.
+I had $200 in free DigitalOcean credits expiring. Two websites on a single Droplet, no redundancy, SSH-dependent deploys. I needed to move them before the money evaporated, and honestly? I needed an excuse to learn real infrastructure. Managed Kubernetes, GitOps, automated deployments. Three weeks later I had a 3-node cluster, ArgoCD reconciling from Git, and zero reasons to SSH into anything ever again.
 
 ---
 
