@@ -1,7 +1,7 @@
 ---
 title: Cloud Automation Veins
 date: 2026-06-29
-description: From Terraform to ArgoCD — burning $200 in free DigitalOcean credits before they expire July 31st. Two websites, one cluster, zero SSH.
+description: From Terraform to Kubernetes + ArgoCD, burning $200 in free DigitalOcean credits before they expire July 31st. Two websites, one cluster, zero SSH.
 ---
 
 # Summary
