@@ -76,7 +76,11 @@ The moment that made me smile wider than anything else: I pushed a commit to the
 
 ## Dependabot
 
-Enabled on both website repos. Scans npm packages and Dockerfile for outdated versions, opens PRs. Boring, automated, catches things before they rot.
+Enabled on both website repos. This was almost too easy — add a `dependabot.yml` file to `.github/`, pick your package ecosystem (`npm`, `docker`), set an interval, and you're done. No SDK, no webhook config, no credentials to rotate. GitHub just gives it to you.
+
+It scans every dependency in `package.json` and the Dockerfile, checks for known vulnerabilities against the GitHub Advisory Database, and opens focused PRs with changelog links. You review, merge, done. The grouped update feature is where it shines — instead of drowning in 20 individual PRs for minor bumps, Dependabot batches them into one. Patch Tuesday becomes a five-minute review instead of an inbox.
+
+No more manually running `npm audit` and chasing outdated transitive deps one by one. No more `npm outdated` listing packages I know I should bump but keep putting off. No more Trivy flagging a CVE and me having to dig through changelogs to find the fix — Dependabot already opened the PR. First week it caught several outdated transitive dependencies across both repos. Opened clean PRs. I merged, CI passed, deploy ran. Boring, automated, ⁠—⁠ exactly the point. For something that used to require a third-party SaaS or a custom cron job, Dependabot is embarrassingly good for being a checkbox.
 
 ---
 
