@@ -312,6 +312,12 @@ const personalData: PersonalData = {
         summary: "Frontend build tool.",
         implementation: "Fast HMR and optimized production builds for SPAs.",
       },
+      {
+        name: "NixOS",
+        icon: "SiNixos",
+        summary: "Declarative OS and package manager.",
+        implementation: "Reproducible system configs, Flakes, and Home-Manager for dotfiles.",
+      },
     ],
   },
 
@@ -421,6 +427,13 @@ const personalData: PersonalData = {
         "Networking",
       ],
       icon: "SiRaspberrypi",
+    },
+    {
+      title: "Raw TCP/HTTP Engine",
+      description:
+        "Built an RFC 9112-compliant HTTP/1.1 server from scratch using Go's net package — no frameworks, just raw TCP sockets, manual byte parsing, and bufio.Reader. Serves GET/POST with dynamic Content-Length, SetDeadline timeouts, and proper 200/400/404 responses.",
+      techStack: ["Go", "TCP/IP", "HTTP/1.1", "net"],
+      icon: "FaGolang",
     },
   ],
 };
