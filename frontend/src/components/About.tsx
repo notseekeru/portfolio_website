@@ -230,7 +230,7 @@ export default function About() {
       </div>
 
       {activeCategory && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6 pointer-events-none">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
           <div
             className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm animate-fade-in"
             aria-label="Modal background"
