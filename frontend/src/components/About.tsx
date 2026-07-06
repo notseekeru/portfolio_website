@@ -236,7 +236,7 @@ export default function About() {
             aria-label="Modal background"
           />
           <div
-            className="relative w-full max-w-4xl p-6 border border-zinc-800 bg-zinc-950 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] max-h-[85vh] overflow-y-auto overflow-x-hidden pointer-events-auto animate-fade-in-up"
+            className="relative w-full max-w-4xl border border-zinc-800 bg-zinc-950 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] max-h-[85vh] overflow-y-auto overflow-x-hidden pointer-events-auto animate-fade-in-up"
             onMouseEnter={handleModalMouseEnter}
             onMouseLeave={handleModalMouseLeave}
             onClick={(e: React.MouseEvent) => e.stopPropagation()}
@@ -244,7 +244,8 @@ export default function About() {
             aria-modal="true"
             aria-labelledby="modal-title"
           >
-            <div className="flex justify-between items-center mb-6 sticky top-0 bg-zinc-950/90 backdrop-blur-[2px] py-2 z-10 border-b border-zinc-800/50">
+            <div className="p-6">
+            <div className="flex justify-between items-center mb-6 sticky top-6 bg-zinc-950/90 backdrop-blur-[2px] py-2 z-10 border-b border-zinc-800/50 -mx-6 px-6">
               <h3 id="modal-title" className="text-2xl font-bold text-zinc-100">
                 {activeCategory} Details
               </h3>
@@ -307,6 +308,7 @@ export default function About() {
             </div>
           </div>
         </div>
+      </div>
       )}
     </section>
   );
