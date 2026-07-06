@@ -31,6 +31,7 @@ import {
   SiTmux,
   SiOpenjdk,
   SiVite,
+  SiNixos,
 } from "react-icons/si";
 import {
   FaJava,
@@ -76,6 +77,7 @@ const iconMap: Record<string, IconType> = {
   SiTmux,
   SiOpenjdk,
   SiVite,
+  SiNixos,
 };
 
 interface SectionLabelProps {
