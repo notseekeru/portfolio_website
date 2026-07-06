@@ -244,8 +244,7 @@ export default function About() {
             aria-modal="true"
             aria-labelledby="modal-title"
           >
-            <div className="p-6">
-            <div className="flex justify-between items-center mb-6 sticky top-6 bg-zinc-950/90 backdrop-blur-[2px] py-2 z-10 border-b border-zinc-800/50 -mx-6 px-6">
+            <div className="flex justify-between items-center sticky top-0 bg-zinc-950/90 backdrop-blur-[2px] py-2 px-6 z-10 border-b border-zinc-800/50">
               <h3 id="modal-title" className="text-2xl font-bold text-zinc-100">
                 {activeCategory} Details
               </h3>
@@ -256,6 +255,7 @@ export default function About() {
               ></button>
             </div>
 
+            <div className="px-6 pb-6 pt-4">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {stats
                 .find((s) => s.label === activeCategory)
