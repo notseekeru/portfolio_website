@@ -156,11 +156,9 @@ flowchart TB
     Workloads -. Pulls Validated Images .-> GHCR
     CloudflareEdge -- Secure Tunnel --> TunnelPod
     TunnelPod --> Ingress
-    Ingress --> Portfolio_Frontend_Pod & Portfolio_Backend_Pod & Frontend2 & Nodejs2
-    Nodejs2 --> DO_DB
+    Ingress --> Portfolio_Frontend_Pod & Portfolio_Backend_Pod & Frontend2 & Backend2
     AManager -- Webhook Alerts --> Slack
-
-  `;
+    `;
 
 export default function InfrastructureDiagram() {
   const { ref: sectionRef, inView: sectionInView } = useInView();
