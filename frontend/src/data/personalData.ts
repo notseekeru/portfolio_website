@@ -68,9 +68,9 @@ const personalData: PersonalData = {
   instagram: "https://www.instagram.com/notseekeru/",
   x: "https://x.com/notseekeru",
   threads: "https://www.threads.com/@notseekeru",
-  bio: "Building reliable and scalable systems, I am an Engineer with a strong background in Software Engineering, SRE Principles and DevOps Practices. With experience in designing and maintaining complex infrastructures, I can thrive on securing cloud/physical environments and ensuring seamless integration experience. My skills includes cloud computing, automation, and monitoring, allowing me to proactively identify and resolve issues while continuously improving system reliability.",
+  bio: "A Computer Engineering student who learns by building. I operate a self-hosted homelab running Kubernetes, a full LGTM observability stack, and a hardened production-grade portfolio on a Raspberry Pi. I'm drawn to infrastructure, reliability, and understanding what's under the hood. Currently seeking internships where I can contribute and keep growing.",
   background:
-    "I am a Computer Engineering undergraduate student with an obession for technology. I have a strong hunger for learning and exploring various fields in technology, from software to hardware. I am driven by a desire to understand how things work under the hood and to develop deep technical skills. I currently operate a self-hosted homelab infrastructure, where I experiment with various technologies and build projects that helps me learn, showcase my skills and creativity. I am always eager to take on new challenges and expand my knowledge in the evolving world of technology.",
+    "Computer Engineering undergraduate with an obsession for how systems work — from raw TCP sockets to Kubernetes clusters. I run a self-hosted homelab where I experiment with infrastructure, observability, and security. I've built a multi-node Kubernetes cluster with ArgoCD GitOps, deployed a full LGTM stack with OpenTelemetry tracing, and written an HTTP/1.1 server from scratch in Go. No professional experience yet — just a lot of late nights and a homelab that keeps teaching me more than any course ever could.",
   profilePicture: "/profile3.png",
 
   experience: [
