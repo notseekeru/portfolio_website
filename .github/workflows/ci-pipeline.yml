@@ -5,13 +5,11 @@ on:
     branches: [main]
     paths:
       - "frontend/**"
-      - "backend/**"
       - ".github/workflows/**"
   push:
     branches: [main]
     paths:
       - "frontend/**"
-      - "backend/**"
       - ".github/workflows/**"
   workflow_dispatch:
 
@@ -28,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [frontend, backend]
+        service: [frontend]
     defaults:
       run:
         working-directory: ${{ matrix.service }}
