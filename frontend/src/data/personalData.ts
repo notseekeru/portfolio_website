@@ -435,6 +435,28 @@ const personalData: PersonalData = {
       techStack: ["Go", "TCP/IP", "HTTP/1.1", "net"],
       icon: "FaGolang",
     },
+    {
+      title: "NixOS Declarative Workflow",
+      description:
+        "Transitioned to a fully declarative NixOS stack with Flakes, Home-Manager, and direnv for reproducible multi-node configs. Modularized host-specific configs so every machine inherits the same baseline. Replaced Tmux-Resurrect with a declarative tmux-init script. Achieved atomic, rollback-capable system rebuilds via nixos-rebuild.",
+      techStack: [
+        "NixOS",
+        "Flakes",
+        "Home-Manager",
+        "direnv",
+        "neovim",
+        "tmux",
+      ],
+      favorite: true,
+      icon: "SiNixos",
+    },
+    {
+      title: "Centralized Secrets Management with Infisical",
+      description:
+        "Migrated from fragmented secret storage (Ansible Vault, .tfvars, .env) to a single source of truth using Infisical Cloud. Designed source-of-truth and consumer folder structure with dynamic secret references. Integrated with Terraform via infisical run for injection into apply, replacing all hardcoded secrets.tfvars.",
+      techStack: ["Infisical", "Terraform", "Secrets Management", "IaC"],
+      icon: "FaLock",
+    },
   ],
 };
 

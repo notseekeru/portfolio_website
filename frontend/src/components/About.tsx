@@ -40,6 +40,7 @@ import {
   FaServer,
   FaCode,
   FaGolang,
+  FaLock,
 } from "react-icons/fa6";
 import { IconType } from "react-icons";
 
@@ -63,6 +64,7 @@ const iconMap: Record<string, IconType> = {
   FaDocker,
   FaServer,
   FaGolang,
+  FaLock,
   SiGrafana,
   SiPrometheus,
   SiOpentelemetry,
