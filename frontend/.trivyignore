@@ -3,3 +3,4 @@ CVE-2026-22184   # z lib
 CVE-2026-33671   # picomatch
 CVE-2026-27135   # nghttp2
 CVE-2026-6732    # libxml2
+CVE-2026-33630   # c-ares (use-after-free in query handling, no upstream fix in Alpine yet)
