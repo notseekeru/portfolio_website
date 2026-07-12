@@ -6,22 +6,23 @@
 
 ## TechStack
 
-- TypeScript
-- React
+- TypeScript (for frontend and backend development)
+- Node.js (for backend application)
+- React (for frontend application)
 
 ## System Stack
 
 - Cloudflare Tunnel (cloudflared)
-- Nginx Ingress Controller (cluster-level reverse proxy)
-- Tailscale (secure encrypted bridge between Raspberry Pi and local desktop)
-- Docker (for containerizing the frontend application)
+- Nginx (for reverse proxying)
+- Tailscale (for secure encrypted bridge between Raspberry Pi and local desktop)
+- Docker (for containerizing the backend application)
 
 ## Website Features
 
 - Single Page Application (SPA) for smooth navigation and fast loading times.
 - Hover interactive project and tool overview in the Infrastructure, Projects, Languages, Tools & Framework sections.
 - Interactive Mermaid Diagrams for infrastructure and CI/CD pipelines at blogposts.
-- Contact section with social links and mailto-based form.
+- Contact form with N8N integration using webhooks and secure headers.
 
 ## Testing and Security:
 
