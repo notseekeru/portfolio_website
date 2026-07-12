@@ -59,104 +59,49 @@ export default function Contact() {
       className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}
     >
       <div className="max-w-6xl mx-auto px-6">
-        {/* Main Grid Wrapper starts above the header now */}
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Left Column: Header + Form */}
-          <div className="space-y-8 animate-slide-in-left">
-            {/* Header Block */}
-            <div>
-              <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase">
-                Contact
-              </span>
-              <h1 className="text-4xl lg:text-5xl font-bold text-zinc-100 mt-2 mb-4">
-                Get In Touch
-              </h1>
-            </div>
+        <div className="animate-slide-in-left">
+          <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase">
+            Contact
+          </span>
+          <h1 className="text-4xl lg:text-5xl font-bold text-zinc-100 mt-2 mb-4">
+            Get In Touch
+          </h1>
+          <p className="text-zinc-400 text-sm mb-8">
+            Send a message
+          </p>
+        </div>
 
-            {/* Form Block */}
-            <div>
-              <h2 className="text-lg font-semibold text-zinc-100 mb-4">
-                Send a message
-              </h2>
-              <a
-                href={`mailto:${personalData.email}`}
-                className="flex items-center gap-3 p-4 border border-border bg-surface rounded-xl hover:border-accent/30 transition-all duration-200 group"
-              >
-                <div className="w-10 h-10 rounded-lg bg-zinc-800 border border-border flex items-center justify-center text-zinc-400 group-hover:text-accent group-hover:border-accent/30 transition-colors">
-                  <MailIcon />
-                </div>
-                <div>
-                  <p className="text-xs text-zinc-500">Open in email client</p>
-                  <p className="text-sm text-zinc-300 group-hover:text-accent transition-colors">
-                    {personalData.email}
-                  </p>
-                </div>
-                <svg
-                  className="ml-auto text-zinc-600 group-hover:text-accent transition-colors"
-                  width="14" height="14" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="2"
-                >
-                  <line x1="7" y1="17" x2="17" y2="7" />
-                  <polyline points="7 7 17 7 17 17" />
-                </svg>
-              </a>
-            </div>
-          </div>
-
-          {/* Right Column: Social Links */}
-          <div
-            className="animate-slide-in-right"
-            style={{ animationDelay: "0.2s" }}
-          >
-            <h2 className="text-lg font-semibold text-zinc-100 mb-6">
-              Connect with me
-            </h2>
-
-            <div className="space-y-3 mb-6">
-              {socialLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  target={link.href.startsWith("mailto") ? undefined : "_blank"}
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-4 border border-border bg-surface rounded-xl hover:border-accent/30 transition-all duration-200 group"
-                >
-                  <div className="w-10 h-10 rounded-lg bg-zinc-800 border border-border flex items-center justify-center text-zinc-400 group-hover:text-accent group-hover:border-accent/30 transition-colors">
-                    <link.icon />
-                  </div>
-                  <div>
-                    <p className="text-xs text-zinc-500 mb-0.5">{link.label}</p>
-                    <p className="text-sm text-zinc-300 group-hover:text-accent transition-colors">
-                      {link.value}
-                    </p>
-                  </div>
-                  <svg
-                    className="ml-auto text-zinc-600 group-hover:text-accent transition-colors"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <line x1="7" y1="17" x2="17" y2="7" />
-                    <polyline points="7 7 17 7 17 17" />
-                  </svg>
-                </a>
-              ))}
-            </div>
-
-            <div className="border border-border bg-surface rounded-xl p-6">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-2 h-2 rounded-full bg-green-400" />
-                <span className="text-sm text-zinc-300 font-medium">
-                  {personalData.status}
-                </span>
+        <div className="grid grid-cols-2 gap-4 animate-slide-in-right"
+             style={{ animationDelay: "0.1s" }}>
+          {socialLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              target={link.href.startsWith("mailto") ? undefined : "_blank"}
+              rel="noopener noreferrer"
+              className="flex items-center gap-4 p-4 border border-border bg-surface rounded-xl hover:border-accent/30 transition-all duration-200 group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-zinc-800 border border-border flex items-center justify-center text-zinc-400 group-hover:text-accent group-hover:border-accent/30 transition-colors shrink-0">
+                <link.icon />
               </div>
-              <p className="text-zinc-600 text-xs font-mono mt-3">
-                {personalData.location}
-              </p>
+              <div className="min-w-0">
+                <p className="text-xs text-zinc-500 mb-0.5">{link.label}</p>
+                <p className="text-sm text-zinc-300 group-hover:text-accent transition-colors truncate">
+                  {link.value}
+                </p>
+              </div>
+            </a>
+          ))}
+          <div className="border border-border bg-surface rounded-xl p-4 flex flex-col justify-center">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-2 h-2 rounded-full bg-green-400" />
+              <span className="text-sm text-zinc-300 font-medium">
+                {personalData.status}
+              </span>
             </div>
+            <p className="text-zinc-500 text-xs font-mono">
+              {personalData.location}
+            </p>
           </div>
         </div>
       </div>
