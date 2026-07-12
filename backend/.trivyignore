@@ -1,2 +1,0 @@
-CVE-2026-33671   # picomatch vulnerability
-CVE-2026-12151   # undici: Denial of Service due to unbounded memory growth via WebSocket
