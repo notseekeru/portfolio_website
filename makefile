@@ -5,9 +5,6 @@ exec:
 	@echo "**---------Checking Frontend...-----------**"
 	docker exec -t portfolio_frontend_dev sh -c "npm run lint && npm run typecheck && npm audit && npm outdated || true && npm prune"
 	
-	@echo "**---------Checking Backend...-----------**"
-	docker exec -t portfolio_backend_dev sh -c "npm run lint && npm run typecheck && npm audit && npm outdated || true && npm prune"
-	
 dev-build:
 	$(DEV_CMD) build
 

@@ -6,16 +6,15 @@
 
 ## TechStack
 
-- TypeScript (for frontend and backend development)
-- Node.js (for backend application)
-- React (for frontend application)
+- TypeScript
+- React
 
 ## System Stack
 
 - Cloudflare Tunnel (cloudflared)
-- Nginx (for reverse proxying)
-- Tailscale (for secure encrypted bridge between Raspberry Pi and local desktop)
-- Docker (for containerizing the backend application)
+- Nginx Ingress Controller (cluster-level reverse proxy)
+- Tailscale (secure encrypted bridge between Raspberry Pi and local desktop)
+- Docker (for containerizing the frontend application)
 
 ## Website Features
 
