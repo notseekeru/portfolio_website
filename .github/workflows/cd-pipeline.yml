@@ -47,7 +47,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Build for smoke test (single‑arch, load into daemon)
+      # Build for smoke test (single‑arch, load into daemon, read-only cache)
       - name: Build local image
         uses: docker/build-push-action@v4
         with:
@@ -57,7 +57,6 @@ jobs:
           push: false
           tags: ${{ env.IMAGE }}:${{ github.sha }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Scan image with Trivy
         run: |
@@ -102,6 +101,7 @@ jobs:
             ${{ env.IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          # Single cache writer — keeps layers for all platforms
 
       - name: Cleanup
         if: always()
