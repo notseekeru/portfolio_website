@@ -27,12 +27,6 @@ jobs:
             image_suffix: portfolio-frontend
             port: 8080
             health_endpoint: /
-          - name: backend
-            context: ./backend
-            dockerfile: ./backend/Dockerfile
-            image_suffix: portfolio-backend
-            port: 5000
-            health_endpoint: /api/health
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -140,7 +134,6 @@ jobs:
         run: |
           cd gitops/apps/portfolio
           kustomize edit set image ghcr.io/notseekeru/portfolio-frontend=ghcr.io/notseekeru/portfolio-frontend:${{ github.sha }}
-          kustomize edit set image ghcr.io/notseekeru/portfolio-backend=ghcr.io/notseekeru/portfolio-backend:${{ github.sha }}
 
       - name: Commit and Push Changes
         run: |
