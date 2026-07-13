@@ -68,7 +68,7 @@ const personalData: PersonalData = {
   instagram: "https://www.instagram.com/notseekeru/",
   x: "https://x.com/notseekeru",
   threads: "https://www.threads.com/@notseekeru",
-  bio: "A Computer Engineering student who learns by building. I operate a self-hosted homelab running Kubernetes, a full LGTM observability stack, and a hardened production-grade portfolio on a Raspberry Pi. I'm drawn to infrastructure, reliability, and understanding what's under the hood. Currently seeking internships where I can contribute and keep growing.",
+  bio: "A Computer Engineering student who learns by building. I operate a self-hosted homelab running Kubernetes, a full LGTM observability stack, and a self-hosted portfolio on a Raspberry Pi. I'm drawn to infrastructure, reliability, and understanding what's under the hood. Currently seeking internships where I can contribute and keep growing.",
   background:
     "Computer Engineering undergraduate with an obsession for how systems work — from raw TCP sockets to Kubernetes clusters. I run a self-hosted homelab where I experiment with infrastructure, observability, and security. I've built a multi-node Kubernetes cluster with ArgoCD GitOps, deployed a full LGTM stack with OpenTelemetry tracing, and written an HTTP/1.1 server from scratch in Go. No professional experience yet — just a lot of late nights and a homelab that keeps teaching me more than any course ever could.",
   profilePicture: "/profile3.png",
@@ -323,7 +323,7 @@ const personalData: PersonalData = {
 
   projects: [
     {
-      title: "Portfolio Website & Production-Grade Infrastructure",
+      title: "Portfolio Website & Self-Hosted Infrastructure",
       description:
         "Designed and deployed a self-hosted portfolio on RPi5 with a hardened Cloudflared → Nginx proxy-chain architecture featuring network segmentation, CSP/COOP/COEP security headers, multi-stage Docker builds, QEMU multi-arch (ARM64) support, Trivy CVE scanning in CD pipeline, and an SSL Labs A+ rating.",
       techStack: [
@@ -398,7 +398,7 @@ const personalData: PersonalData = {
     {
       title: "Java Enterprise Architecture Project — Team Lead",
       description:
-        "Architected a production-grade JavaFX application with layered MVC+DAO+Service architecture, CI/CD pipelines, Flyway schema migrations, Bcrypt hashing, Spotbugs/Spotless linting, JUnit integration tests, and JaCoCo code coverage. Led a non-technical team through GitHub Flow, authored Level 3 SOPs and ADRs, and automated Mermaid diagram generation via GitHub Actions for documentation.",
+        "Architected a JavaFX application with layered MVC+DAO+Service architecture, CI/CD pipelines, Flyway schema migrations, Bcrypt hashing, Spotbugs/Spotless linting, JUnit integration tests, and JaCoCo code coverage. Led a non-technical team through GitHub Flow, authored Level 3 SOPs and ADRs, and automated Mermaid diagram generation via GitHub Actions for documentation.",
       techStack: [
         "Java",
         "JavaFX",
