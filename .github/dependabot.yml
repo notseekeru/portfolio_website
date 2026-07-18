@@ -1,23 +1,16 @@
 version: 2
 updates:
-<<<<<<< HEAD
-=======
   # Backend npm packages
   - package-ecosystem: "npm"
     directory: "/backend"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
->>>>>>> 3c3cdc4 (feat: dependabot.yml in github repo)
   # Frontend npm packages
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
       interval: "weekly"
-<<<<<<< HEAD
-    open-pull-requests-limit: 10
-  # Docker dependencies
-=======
     open-pull-requests-limit: 5
   # Docker dependencies (keeps base images in your Dockerfiles secure)
   - package-ecosystem: "docker"
@@ -25,13 +18,8 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 3
->>>>>>> 3c3cdc4 (feat: dependabot.yml in github repo)
   - package-ecosystem: "docker"
     directory: "/frontend"
     schedule:
       interval: "weekly"
-<<<<<<< HEAD
-    open-pull-requests-limit: 5
-=======
     open-pull-requests-limit: 3
->>>>>>> 3c3cdc4 (feat: dependabot.yml in github repo)
