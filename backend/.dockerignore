@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+.env
+.dockerignore
+Dockerfile
+.git
+.gitignore
+README.md
+CLAUDE.md
+projectStructure.md
+codesave.md
+personal.md

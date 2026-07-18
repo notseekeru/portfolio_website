@@ -1,0 +1,42 @@
+DEV_CMD  = docker compose -p portfolio-dev -f compose.yml -f compose.dev.yml
+PROD_CMD = docker compose -p portfolio-prod -f compose.yml -f compose.prod.yml
+
+exec:
+	@echo "**---------Checking Frontend...-----------**"
+	docker exec -t portfolio_frontend_dev sh -c "npm run lint && npm run typecheck && npm audit && npm outdated || true && npm prune"
+	
+	@echo "**---------Checking Backend...-----------**"
+	docker exec -t portfolio_backend_dev sh -c "npm run lint && npm run typecheck && npm audit && npm outdated || true && npm prune"
+	
+dev-build:
+	$(DEV_CMD) build
+
+dev-buildcache:
+	$(DEV_CMD) build --no-cache
+
+dev-down:
+	$(DEV_CMD) down
+
+dev-logs:
+	$(DEV_CMD) logs -f
+
+dev-up:
+	$(DEV_CMD) up -d
+
+dev-down:
+	$(DEV_CMD) down -v --rmi local
+
+prod-build:
+	$(PROD_CMD) build
+
+prod-buildcache:
+	$(PROD_CMD) build --no-cache
+
+prod-logs:
+	$(PROD_CMD) logs -f
+
+prod-down:
+	$(PROD_CMD) down -v --rmi local
+
+prod-up:
+	$(PROD_CMD) up -d
