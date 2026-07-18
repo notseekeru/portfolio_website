@@ -26,11 +26,15 @@
         "react-zoom-pan-pinch": "4.0.3"
     },
     "devDependencies": {
+<<<<<<< HEAD
         "@biomejs/biome": "^1.9.4",
 <<<<<<< HEAD
         "@tailwindcss/postcss": "4.3.3",
         "@types/node": "26.0.1",
 =======
+=======
+        "@biomejs/biome": "1.9.4",
+>>>>>>> 887b599 (fix(frontend): pin @biomejs/biome to exact version, sync lockfile)
         "@tailwindcss/postcss": "4.3.1",
         "@types/node": "26.1.1",
 >>>>>>> af0bd19 (chore(deps-dev): bump @types/node from 26.0.1 to 26.1.1 in /frontend)
