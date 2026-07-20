@@ -201,7 +201,7 @@ export default function About() {
             {activeCategory && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
                     <div className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm animate-fade-in" aria-label="Modal background" />
-                    <dialog
+                    <div
                         className="relative w-full max-w-4xl border border-zinc-800 bg-zinc-950 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] max-h-[85vh] overflow-y-auto overflow-x-hidden pointer-events-auto animate-fade-in-up"
                         onMouseEnter={handleModalMouseEnter}
                         onMouseLeave={handleModalMouseLeave}
@@ -209,7 +209,6 @@ export default function About() {
                         onKeyDown={(e) => {
                             if (e.key === "Escape") setActiveCategory(null);
                         }}
-                        aria-labelledby="modal-title"
                     >
                         <div className="flex justify-between items-center sticky top-0 bg-zinc-950/90 backdrop-blur-[2px] py-2 px-6 z-10 border-b border-zinc-800/50">
                             <h3 id="modal-title" className="text-2xl font-bold text-zinc-100">
@@ -255,7 +254,7 @@ export default function About() {
                                     )}
                             </div>
                         </div>
-                    </dialog>
+                    </div>
                 </div>
             )}
         </section>
