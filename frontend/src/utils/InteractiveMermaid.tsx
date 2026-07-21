@@ -13,7 +13,7 @@ interface InteractiveMermaidProps {
 export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
     const [svgContent, setSvgContent] = useState<string>("");
     const [isFullscreen, setIsFullscreen] = useState(false);
-    const id = useId().replace(/:/g, "");
+    const _id = useId().replace(/:/g, "");
 
     useEffect(() => {
         let isMounted = true;

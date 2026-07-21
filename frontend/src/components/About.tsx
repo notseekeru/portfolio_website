@@ -200,9 +200,13 @@ export default function About() {
 
             {activeCategory && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
-                    <div className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm animate-fade-in" aria-label="Modal background" />
+                    <div className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm animate-fade-in" />
                     <div
                         className="relative w-full max-w-4xl border border-zinc-800 bg-zinc-950 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] max-h-[85vh] overflow-y-auto overflow-x-hidden pointer-events-auto animate-fade-in-up"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Category details"
+                        tabIndex={-1}
                         onMouseEnter={handleModalMouseEnter}
                         onMouseLeave={handleModalMouseLeave}
                         onClick={(e: React.MouseEvent) => e.stopPropagation()}
@@ -223,12 +227,7 @@ export default function About() {
                                     .find((s) => s.label === activeCategory)
                                     ?.items.map(
                                         (
-                                            item: {
-                                                name: string;
-                                                icon: string;
-                                                summary: string;
-                                                implementation: string;
-                                            }, // AI HERE: using idx as key since items are static; if items are mutable, use a stable unique id
+                                            item: { name: string; icon: string; summary: string; implementation: string }, // AI HERE: using idx as key since items are static; if items are mutable, use a stable unique id
                                         ) => {
                                             const Icon = item.icon && iconMap[item.icon] ? iconMap[item.icon] : FaCode;
                                             return (
