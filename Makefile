@@ -4,7 +4,11 @@ PROD_CMD = docker compose -p portfolio-prod -f compose.yml -f compose.prod.yml
 exec:
 	@echo "**---------Checking Frontend...-----------**"
 	docker exec -t portfolio_frontend_dev sh -c "(npm run lint && npm run typecheck && npm audit) && npm outdated || true && npm prune"
-	
+
+lint:
+	docker exec -t auth_frontend_dev sh -c "npm run lint"
+	docker exec -t auth_backend_dev sh -c "npm run lint"
+
 build:
 	$(DEV_CMD) build
 
