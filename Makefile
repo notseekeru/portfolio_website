@@ -22,7 +22,7 @@ up:
 	$(DEV_CMD) up -d
 
 down:
-	$(DEV_CMD) down -v --rmi local
+	$(DEV_CMD) down -v
 
 prod-build:
 	$(PROD_CMD) build
