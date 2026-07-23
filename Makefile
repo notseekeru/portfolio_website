@@ -1,5 +1,7 @@
-DEV_CMD  = docker compose -p portfolio-dev -f compose.yml -f compose.dev.yml
-PROD_CMD = docker compose -p portfolio-prod -f compose.yml -f compose.prod.yml
+DEV_CMD   = docker compose -p portfolio-dev -f compose.yml -f compose.dev.yml
+PROD_CMD  = docker compose -p portfolio-prod -f compose.yml -f compose.prod.yml
+DEV_PROJECT = portfolio-dev
+PROD_PROJECT = portfolio-prod
 
 exec:
 	@echo "**---------Checking Frontend...-----------**"
@@ -18,7 +20,12 @@ buildcache:
 logs:
 	$(DEV_CMD) logs -f
 
-up:
+PORTS = 5173
+
+check-ports:
+	@scripts/port-claimer.sh --self $(DEV_PROJECT) $(PORTS)
+
+up: check-ports
 	$(DEV_CMD) up -d
 
 down:
