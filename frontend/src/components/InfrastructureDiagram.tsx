@@ -175,7 +175,9 @@ export default function InfrastructureDiagram() {
                 </div>
 
                 <div ref={chartRef} className={`transition-all duration-500 ${chartInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`} style={{ transitionDelay: "0.15s" }}>
-                    <InteractiveMermaid chart={infrastructureChart} />
+                    <div className="flex flex-col h-[750px]">
+                        <InteractiveMermaid chart={infrastructureChart} />
+                    </div>
                 </div>
             </div>
         </div>
