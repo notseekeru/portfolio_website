@@ -144,17 +144,22 @@ function BlogCard({ post, index }: BlogCardProps) {
                     </div>
                 </button>
 
-                {/* Top‑right icon group: Favorite badge + GitHub link */}
-                <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-                    {post.favorite && (
-                        <span className="text-amber-400 text-sm bg-surface/80 backdrop-blur-sm p-1.5 rounded-full" title="Favorite">
-                            💎
-                        </span>
-                    )}
+                {/* Top‑left icon group: GitHub link + Favorite badge */}
+                <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
                     {post.github && (
-                        <a href={post.github} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-zinc-500 hover:text-accent transition-colors bg-surface/80 backdrop-blur-sm p-1.5 rounded-full" title="GitHub repository">
-                            <GitHubIcon />
-                        </a>
+                        <>
+                            <a href={post.github} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 text-zinc-500 hover:text-accent transition-colors bg-surface/80 backdrop-blur-sm px-2.5 py-1.5 rounded-full group/link" title="GitHub repository link">
+                                <GitHubIcon />
+                                <span className="text-[10px] font-mono font-medium underline-offset-2 decoration-zinc-600/50 group-hover/link:decoration-accent/70">Source</span>
+                            </a>
+                        </>
+                    )}
+                    {post.favorite && (
+                        <span className="text-amber-400 text-sm bg-surface/80 backdrop-blur-sm px-2 py-1.5 rounded-full flex items-center gap-1" title="Personal Favorite">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </span>
                     )}
                 </div>
             </div>
