@@ -3,6 +3,7 @@ title: Cloud Automation Veins
 date: 2026-07-29
 description: From Terraform to Kubernetes + ArgoCD, burning $200 in free DigitalOcean credits before they expire July 31st. Two websites, one cluster, zero SSH.
 favorite: true
+github: https://github.com/notseekeru/terraform
 ---
 
 # Summary
