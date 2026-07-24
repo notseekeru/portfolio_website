@@ -1,10 +1,79 @@
-import { useEffect, useState, useId } from "react";
-import { createPortal } from "react-dom";
-import mermaid from "mermaid";
 import elkLayouts from "@mermaid-js/layout-elk";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import mermaid from "mermaid";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import type { ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
+import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
 mermaid.registerLayoutLoaders(elkLayouts);
+
+const PAN_STEP = 80;
+
+function PanControls({ transformRef }: { transformRef: React.RefObject<ReactZoomPanPinchRef | null> }) {
+    const pan = useCallback(
+        (dx: number, dy: number) => {
+            const ctx = transformRef.current;
+            if (!ctx) return;
+            const { positionX, positionY, scale } = ctx.state;
+            ctx.setTransform(positionX + dx, positionY + dy, scale, 150);
+        },
+        [transformRef],
+    );
+
+    const btn = "flex items-center justify-center w-7 h-7 rounded-md bg-zinc-900/80 border border-zinc-700/60 text-zinc-400 hover:text-white hover:bg-zinc-800 hover:border-zinc-500 transition-colors focus:outline-none focus:ring-1 focus:ring-zinc-500 select-none";
+
+    return (
+        <div className="absolute bottom-3 right-3 z-20 grid grid-cols-3 gap-0.5">
+            <button type="button" className={btn} onClick={() => transformRef.current?.zoomIn(0.5, 200)} aria-label="Zoom in" tabIndex={-1}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <title>Zoom in</title>
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.35-4.35M11 8v6M8 11h6" />
+                </svg>
+            </button>
+            <button type="button" className={btn} onClick={() => pan(0, PAN_STEP)} aria-label="Pan up" tabIndex={-1}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <title>Pan up</title>
+                    <path d="m18 15-6-6-6 6" />
+                </svg>
+            </button>
+            <button type="button" className={btn} onClick={() => transformRef.current?.zoomOut(0.5, 200)} aria-label="Zoom out" tabIndex={-1}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <title>Zoom out</title>
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.35-4.35M8 11h6" />
+                </svg>
+            </button>
+            <button type="button" className={btn} onClick={() => pan(PAN_STEP, 0)} aria-label="Pan left" tabIndex={-1}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <title>Pan left</title>
+                    <path d="m15 18-6-6 6-6" />
+                </svg>
+            </button>
+            <button type="button" className={`${btn} bg-zinc-900/90`} onClick={() => transformRef.current?.centerView(1, 200)} aria-label="Reset view" tabIndex={-1}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <title>Reset view</title>
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M12 2v4m0 12v4m10-10h-4M6 12H2" />
+                </svg>
+            </button>
+            <button type="button" className={btn} onClick={() => pan(-PAN_STEP, 0)} aria-label="Pan right" tabIndex={-1}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <title>Pan right</title>
+                    <path d="m9 18 6-6-6-6" />
+                </svg>
+            </button>
+            <div />
+            <button type="button" className={btn} onClick={() => pan(0, -PAN_STEP)} aria-label="Pan down" tabIndex={-1}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <title>Pan down</title>
+                    <path d="m6 9 6 6 6-6" />
+                </svg>
+            </button>
+            <div />
+        </div>
+    );
+}
 
 interface InteractiveMermaidProps {
     chart: string;
@@ -13,7 +82,7 @@ interface InteractiveMermaidProps {
 export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
     const [svgContent, setSvgContent] = useState<string>("");
     const [isFullscreen, setIsFullscreen] = useState(false);
-    const _id = useId().replace(/:/g, "");
+    const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
 
     useEffect(() => {
         let isMounted = true;
@@ -46,50 +115,74 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
         };
     }, [chart]);
 
+    useEffect(() => {
+        const ctx = transformRef.current;
+        if (!ctx) return;
+
+        const onKeyDown = (e: KeyboardEvent) => {
+            const { positionX, positionY, scale } = ctx.state;
+            const step = PAN_STEP;
+            switch (e.key) {
+                case "ArrowUp":
+                    e.preventDefault();
+                    ctx.setTransform(positionX, positionY + step, scale, 120);
+                    break;
+                case "ArrowDown":
+                    e.preventDefault();
+                    ctx.setTransform(positionX, positionY - step, scale, 120);
+                    break;
+                case "ArrowLeft":
+                    e.preventDefault();
+                    ctx.setTransform(positionX + step, positionY, scale, 120);
+                    break;
+                case "ArrowRight":
+                    e.preventDefault();
+                    ctx.setTransform(positionX - step, positionY, scale, 120);
+                    break;
+            }
+        };
+
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, []);
+
     const toggleFullscreen = () => setIsFullscreen(!isFullscreen);
 
     const viewer = (
         <div className="relative flex items-center justify-center w-full h-full [&>svg]:max-w-none [&>svg]:w-full [&>svg]:h-full">
-            {/* biome-ignore lint/security/noDangerouslySetInnerHtml: mermaid renders SVG strings that must be inserted as raw HTML */}
-            <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: svgContent }} />
+            {/* biome-ignore lint/security/noDangerouslySetInnerHtml: mermaid renders raw SVG */}
+            <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: svgContent }} role="img" aria-label="Diagram preview" />
         </div>
     );
 
-    return (
-        <>
-            {/* inline viewer */}
-            <div className="my-8">
-                <div className="relative h-[650px] w-full rounded-lg border border-zinc-800 bg-zinc-900/50 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:24px_24px] overflow-hidden">
-                    <TransformWrapper initialScale={1} minScale={0.05} maxScale={5} centerOnInit={true} wheel={{ step: 0.004 }} pinch={{ step: 3 }}>
-                        <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }} contentStyle={{ width: "100%", height: "100%" }}>
-                            {viewer}
-                        </TransformComponent>
-                    </TransformWrapper>
-                    <button type="button" onClick={toggleFullscreen} className="absolute top-4 right-4 z-10 rounded bg-zinc-800/80 p-2 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors" aria-label="Enter fullscreen">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
-                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+    const fsIconPath = isFullscreen ? "M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" : "M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3";
 
-            {/* fullscreen overlay — portaled to body to escape ancestor transforms */}
-            {isFullscreen &&
-                createPortal(
-                    <div className="fixed inset-0 z-[100] bg-zinc-950 overflow-hidden bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:24px_24px]">
-                        <TransformWrapper initialScale={1} minScale={0.05} maxScale={5} centerOnInit={true} limitToBounds={false} wheel={{ step: 0.004 }} pinch={{ step: 3 }}>
-                            <TransformComponent wrapperStyle={{ width: "100vw", height: "100vh" }} contentStyle={{ width: "100vw", height: "100vh" }}>
-                                {viewer}
-                            </TransformComponent>
-                        </TransformWrapper>
-                        <button type="button" onClick={toggleFullscreen} className="absolute top-4 right-4 z-50 rounded bg-zinc-800/80 p-2 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors" aria-label="Exit fullscreen">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
-                                <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
-                            </svg>
-                        </button>
-                    </div>,
-                    document.body,
-                )}
-        </>
+    const diagramView = (
+        <TransformWrapper ref={transformRef} initialScale={1} minScale={0.05} maxScale={5} centerOnInit={true} wheel={{ step: 0.004 }} pinch={{ step: 3 }} panning={{ velocityDisabled: true }} zoomAnimation={{ animationTime: 150 }}>
+            <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }} contentStyle={{ width: "100%", height: "100%" }}>
+                {viewer}
+            </TransformComponent>
+        </TransformWrapper>
+    );
+
+    const shell = (
+        <div className="relative flex-1 min-h-0 w-full overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/50 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:24px_24px]">
+            {diagramView}
+            <PanControls transformRef={transformRef} />
+            <button type="button" onClick={toggleFullscreen} className="absolute top-4 right-4 z-10 rounded bg-zinc-800/80 p-2 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors" aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d={fsIconPath} />
+                </svg>
+            </button>
+        </div>
+    );
+
+    if (!isFullscreen) return shell;
+
+    return createPortal(
+        <div className="fixed inset-0 z-[100] flex flex-col" style={{ backgroundColor: "#0a0a0a" }}>
+            {shell}
+        </div>,
+        document.body,
     );
 }
