@@ -19,6 +19,7 @@ export default function Footer() {
                     {[
                         { label: "Home", to: "/#home" },
                         { label: "Infrastructure", to: "/#infrastructure-diagram" },
+                        { label: "Projects", to: "/#projects" },
                         { label: "Blog", to: "/#blog" },
                         { label: "Contact", to: "/#contact" },
                     ].map((link) => (
