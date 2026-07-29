@@ -34,7 +34,7 @@ export default function Projects() {
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     {personalData.projects.map((project, i) => (
-                        <ProjectCard key={i} project={project} index={i} />
+                        <ProjectCard key={project.title} project={project} index={i} />
                     ))}
                 </div>
             </div>
