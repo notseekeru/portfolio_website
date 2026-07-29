@@ -4,3 +4,8 @@ CVE-2026-33671   # picomatch
 CVE-2026-27135   # nghttp2
 CVE-2026-6732    # libxml2
 CVE-2026-33630   # c-ares (use-after-free in query handling, no upstream fix in Alpine yet)
+CVE-2026-42211   # react-router: turbo-stream deserialization RCE (not exploitable in SPA)
+CVE-2026-55685   # react-router: DoS via route matching (no unauthenticated exposure)
+CVE-2026-33245   # react-router: XSS in RSC redirect (RSC not used)
+CVE-2026-34077   # react-router: DoS in single-fetch (single-fetch not used)
+GHSA-qwww-vcr4-c8h2   # react-router: RSC CSRF bypass (RSC not used)
