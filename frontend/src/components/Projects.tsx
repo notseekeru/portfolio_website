@@ -3,14 +3,7 @@ import { GitHubIcon } from "./icons/Icons";
 import { useInView } from "../hooks/useInView";
 import type { ProjectItem } from "../data/personalData";
 
-import {
-    SiReact,
-    SiTerraform,
-    SiGrafana,
-    SiAnsible,
-    SiRaspberrypi,
-    SiNixos,
-} from "react-icons/si";
+import { SiReact, SiTerraform, SiGrafana, SiAnsible, SiRaspberrypi, SiNixos } from "react-icons/si";
 import { FaJava, FaGolang, FaLock } from "react-icons/fa6";
 import type { IconType } from "react-icons";
 
@@ -59,27 +52,15 @@ function ProjectCard({ project, index }: ProjectCardProps) {
         <article className="animate-fade-in-up" style={{ animationDelay: `${index * 0.07}s` }}>
             <div className="group relative flex flex-col border border-border bg-surface rounded-2xl overflow-hidden hover:border-accent/30 glow-accent-hover transition-all duration-300 h-full">
                 {/* Clickable card body (when there's a link) */}
-                <a
-                    href={project.link}
-                    target={project.link ? "_blank" : undefined}
-                    rel={project.link ? "noopener noreferrer" : undefined}
-                    className={`flex flex-col h-full w-full text-left ${project.link ? "cursor-pointer" : "cursor-default"}`}
-                >
-                    {/* Header area — video preview or icon fallback */}
+                <a href={project.link} target={project.link ? "_blank" : undefined} rel={project.link ? "noopener noreferrer" : undefined} className={`flex flex-col h-full w-full text-left ${project.link ? "cursor-pointer" : "cursor-default"}`}>
+                    {/* Header area — video / image / icon fallback */}
                     <div className="relative h-40 bg-gradient-to-br from-zinc-800 to-zinc-900 overflow-hidden flex items-center justify-center">
                         {project.video ? (
-                            <video
-                                src={project.video}
-                                autoPlay
-                                muted
-                                loop
-                                playsInline
-                                className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300"
-                            />
+                            <video src={project.video} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
+                        ) : project.image ? (
+                            <img src={project.image} alt={project.title} className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
                         ) : (
-                            <div className="text-5xl text-zinc-700 group-hover:text-accent/40 transition-colors duration-300 select-none">
-                                {project.icon ? <ProjectIcon icon={project.icon} /> : <span className="text-5xl font-bold text-gradient opacity-30">{project.title.charAt(0)}</span>}
-                            </div>
+                            <div className="text-5xl text-zinc-700 group-hover:text-accent/40 transition-colors duration-300 select-none">{project.icon ? <ProjectIcon icon={project.icon} /> : <span className="text-5xl font-bold text-gradient opacity-30">{project.title.charAt(0)}</span>}</div>
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
                     </div>
@@ -96,9 +77,7 @@ function ProjectCard({ project, index }: ProjectCardProps) {
                                         {tech}
                                     </span>
                                 ))}
-                                {project.techStack.length > 4 && (
-                                    <span className="text-[10px] font-mono text-zinc-600">+{project.techStack.length - 4}</span>
-                                )}
+                                {project.techStack.length > 4 && <span className="text-[10px] font-mono text-zinc-600">+{project.techStack.length - 4}</span>}
                             </div>
                         )}
 
@@ -116,7 +95,14 @@ function ProjectCard({ project, index }: ProjectCardProps) {
                 {/* Top‑left icon group: GitHub link + Favorite badge */}
                 <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
                     {project.github && (
-                        <a href={project.github} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 text-zinc-500 hover:text-accent transition-colors bg-surface/80 backdrop-blur-sm px-2.5 py-1.5 rounded-full group/link" title="GitHub repository — Open Source">
+                        <a
+                            href={project.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex items-center gap-1.5 text-zinc-500 hover:text-accent transition-colors bg-surface/80 backdrop-blur-sm px-2.5 py-1.5 rounded-full group/link"
+                            title="GitHub repository — Open Source"
+                        >
                             <GitHubIcon />
                             <span className="text-[10px] font-mono font-medium underline underline-offset-2 decoration-zinc-600/50 group-hover/link:decoration-accent/70">Open Source</span>
                         </a>
@@ -124,7 +110,7 @@ function ProjectCard({ project, index }: ProjectCardProps) {
                     {project.favorite && (
                         <span className="text-amber-400 text-sm bg-surface/80 backdrop-blur-sm px-2 py-1.5 rounded-full flex items-center gap-1" title="Personal Favorite">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                             </svg>
                         </span>
                     )}
