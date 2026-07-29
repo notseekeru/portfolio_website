@@ -30,6 +30,7 @@ export interface ProjectItem {
     techStack: string[];
     link?: string;
     image?: string;
+    video?: string;
     favorite?: boolean;
     github?: string;
     icon?: string;
