@@ -137,4 +137,4 @@ Interpreting these metrics in a production context requires rigorous load testin
 
 # Conclusion
 
-By establishing an automated observation layer, addressing cross-subsystem networking gaps, and failures, I eliminate guessing from metrics. I'll run this same experiment under 50%/100% CPU load. Locust Concurrent Users Simulation, Database Synthetic Load Testing, Realistic Prometheus and AlertManager configuration. I will give then another blog and I'll publish the results in part 2.
+By establishing an automated observation layer, addressing cross-subsystem networking gaps, and failures, I eliminate guessing from metrics. I'll run this same experiment under 50%/100% CPU load. Locust Concurrent Users Simulation, Database Synthetic Load Testing, Realistic Prometheus and AlertManager configuration. I will give them another blog and I'll publish the results in part 2.

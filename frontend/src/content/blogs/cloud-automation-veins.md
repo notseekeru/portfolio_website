@@ -130,7 +130,7 @@ One `make apply` provisions the cluster, installs ArgoCD and Ingress NGINX via H
 - **DigitalOcean sooner.** They gave me $200 through GitHub Education. I sat on it for months. The credits expire July 31st and now I'm cramming cloud work on a deadline because I don't want to waste free money. Should've started day one.
 - **Helm from day one.** Manual `kubectl` + apply before switching to the Terraform Helm provider was wasted iteration.
 - **SSH deploy keys sooner.** PAT expiration is a silent failure mode. Deploy keys are set-and-forget.
-- **Dependabot.** Having dependabot managing your npm packages is a Simple integration with high upsides.
+- **Dependabot.** Having Dependabot managing your npm packages is a simple integration with high upsides.
 
 ---
 

@@ -118,4 +118,4 @@ This project was a significant learning experience in managing infrastructure, d
 
 ## Update (April 25, 2026)
 
-You can check the others blogs I wrote about the follow up iterations and updates related to this current project. Link at [Imposter Syndrome](https://portfolio.seekeru.tech/blog/imposter-syndrome).
+You can check the other blogs I wrote about the follow up iterations and updates related to this current project. Link at [Imposter Syndrome](https://portfolio.seekeru.tech/blog/imposter-syndrome).

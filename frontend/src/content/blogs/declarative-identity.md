@@ -1,5 +1,5 @@
 ---
-title: Declarative Indentity
+title: Declarative Identity
 date: 2026-06-30
 description: What I learned moving to NixOS. The philosophy, the nightmare, the lessons, and why I'll never go back to imperative configs.
 favorite: true
@@ -90,7 +90,7 @@ Home-Manager kills that entire class of problems. It's NixOS for your home direc
 
 No more symlink spaghetti. Every dotfile is version-controlled alongside my system config, rebuilt atomically with everything else.
 
-I even ditched tmux-ressurect and continuum. Instead of saving and restoring sessions, I wrote scripts using tmux-init to declare sessions upfront. My dev environment is defined in config, not recovered from a save file.
+I even ditched tmux-resurrect and continuum. Instead of saving and restoring sessions, I wrote scripts using tmux-init to declare sessions upfront. My dev environment is defined in config, not recovered from a save file.
 
 ## MangoWM and the Linux TikTok Hype
 

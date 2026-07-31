@@ -23,7 +23,7 @@ There is a profound, suffocating discomfort in not understanding your own work a
 
 ## The Paradox of Perfectionism
 
-This teardown triggered my old nemesis: perfectionism. I wanted the network to be flawless. I wanted my Ansible playbooks and Pi deployments to be bulletproof. I spent days rigoring my QA process, manually testing rate limits, testing maximum payload sizes, and implementing UFW rules until I was paralyzed by the sheer volume of "what-ifs."
+This teardown triggered my old nemesis: perfectionism. I wanted the network to be flawless. I wanted my Ansible playbooks and Pi deployments to be bulletproof. I spent days rigorously reviewing my QA process, manually testing rate limits, testing maximum payload sizes, and implementing UFW rules until I was paralyzed by the sheer volume of "what-ifs."
 
 But perfectionism is a double-edged sword. On one hand, it kept me in maintenance mode, endlessly polishing configurations instead of shipping content. On the other hand, it was precisely that paranoia that obsessive need to thoroughly understand the `why` and `how` behind Nginx configs and Docker segmentations. It forced me to learn the very networking foundations that AI had so conveniently fed to me.
 
