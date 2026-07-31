@@ -318,7 +318,7 @@ const personalData: PersonalData = {
 
     projects: [
         {
-            title: "Self-Hosted Infrastructure & Website Self Hosting",
+            title: "Website Hosting Pipeline Security Infrastructure",
             description:
                 "Designed and deployed a self-hosted websites on RPi5 with a hardened Cloudflared → Nginx proxy-chain architecture featuring network segmentation, CSP/COOP/COEP security headers, multi-stage Docker builds, QEMU multi-arch (ARM64) support, Trivy CVE scanning in CD pipeline, and an SSL Labs A+ rating.",
             techStack: ["React", "TypeScript", "Vite", "Node.js", "Express", "Nginx", "Docker", "Cloudflare", "TLS 1.3", "Trivy", "ARM64"],
@@ -366,7 +366,7 @@ const personalData: PersonalData = {
             icon: "SiRaspberrypi",
         },
         {
-            title: "Raw L7 TCP/HTTP Engine & L7 Reverse Proxy + Load Balancer",
+            title: "Raw L7 TCP/HTTP 1.1 Engine & L7 Reverse Proxy + Load Balancer",
             description:
                 "Built an RFC 9112-compliant HTTP/1.1 server + L4 Reverse Proxy + Load Balancer from scratch using Go's net package — no frameworks, just raw TCP sockets, manual byte parsing, and bufio.Reader. Serves GET/POST with dynamic Content-Length, SetDeadline timeouts, and proper 200/400/404 responses.",
             techStack: ["Go", "TCP/IP", "HTTP/1.1", "net"],
