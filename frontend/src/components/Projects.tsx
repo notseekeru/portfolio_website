@@ -104,7 +104,7 @@ function ProjectCard({ project, index }: ProjectCardProps) {
                             title="GitHub repository — Open Source"
                         >
                             <GitHubIcon />
-                            <span className="text-[10px] font-mono font-medium underline underline-offset-2 decoration-zinc-600/50 group-hover/link:decoration-accent/70">Open Source</span>
+                            <span className="text-[10px] font-mono font-medium decoration-zinc-600/50 group-hover/link:decoration-accent/70">Source</span>
                         </a>
                     )}
                     {project.favorite && (
