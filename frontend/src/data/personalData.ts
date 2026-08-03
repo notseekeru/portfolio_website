@@ -330,6 +330,7 @@ const personalData: PersonalData = {
             description: "Provisioned DigitalOcean infrastructure with Terraform using modular .tf files and secure variable management, integrated dynamic Ansible inventories, deployed a 3-node Kubernetes cluster with ArgoCD GitOps, and hardened containers with tmpfs/readonly root filesystems.",
             techStack: ["Terraform", "DigitalOcean", "Kubernetes", "ArgoCD", "Ansible", "Docker", "GitHub Actions"],
             favorite: true,
+            video: "/project2.webm",
             github: "https://github.com/notseekeru/terraform",
             icon: "SiTerraform",
         },
