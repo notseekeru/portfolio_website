@@ -22,7 +22,6 @@ export default function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Close mobile menu on navigation
     const prevLocation = useRef(location);
     useEffect(() => {
         if (prevLocation.current !== location) {
@@ -31,7 +30,6 @@ export default function Navbar() {
         }
     }, [location]);
 
-    // IntersectionObserver: update URL hash when a section scrolls into view
     useEffect(() => {
         const sectionIds = navLinks.map((l) => l.path.replace("/#", "")).filter((id) => id !== "");
         const observers: IntersectionObserver[] = [];

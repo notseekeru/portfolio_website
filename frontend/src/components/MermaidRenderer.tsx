@@ -13,7 +13,6 @@ export default function MermaidRenderer({ containerRef, deps = [] }: MermaidRend
     useEffect(() => {
         if (!containerRef.current) return;
 
-        // Clean up previous dynamically inserted roots
         for (const root of mermaidRootsRef.current) {
             setTimeout(() => root.unmount(), 0);
         }

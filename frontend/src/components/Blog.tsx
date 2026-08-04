@@ -35,7 +35,6 @@ export default function Blog() {
                     <p className="text-zinc-500 text-center py-20">No posts yet. Check back soon.</p>
                 ) : (
                     <>
-                        {/* Pagination moved above the grid */}
                         {totalPages > 1 && (
                             <div className="flex justify-center items-center gap-4 mb-8">
                                 <button
@@ -72,9 +71,6 @@ export default function Blog() {
     );
 }
 
-// ------------------------------------------------------------------
-// BlogCard Component
-// ------------------------------------------------------------------
 interface BlogCardProps {
     post: BlogPost;
     index: number;
@@ -97,7 +93,6 @@ function BlogCard({ post, index }: BlogCardProps) {
     return (
         <article className="animate-fade-in-up" style={{ animationDelay: `${index * 0.07}s` }}>
             <div className="group relative flex flex-col border border-border bg-surface rounded-2xl overflow-hidden hover:border-accent/30 glow-accent-hover transition-all duration-300 h-full cursor-pointer">
-                {/* Clickable area (everything except the top-right icons) */}
                 <button
                     type="button"
                     onClick={handleCardClick}
@@ -109,7 +104,6 @@ function BlogCard({ post, index }: BlogCardProps) {
                     }}
                     className="flex flex-col h-full w-full text-left"
                 >
-                    {/* Image / header area */}
                     <div className="relative h-40 bg-gradient-to-br from-zinc-800 to-zinc-900 overflow-hidden">
                         {post.image ? (
                             <img
@@ -144,7 +138,6 @@ function BlogCard({ post, index }: BlogCardProps) {
                     </div>
                 </button>
 
-                {/* Top‑left icon group: GitHub link + Favorite badge */}
                 <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
                     {post.github && (
                         <a href={post.github} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 text-zinc-500 hover:text-accent transition-colors bg-surface/80 backdrop-blur-sm px-2.5 py-1.5 rounded-full group/link" title="GitHub repository link">

@@ -150,12 +150,7 @@ export default function About() {
 
                 <div className="grid grid-cols-2 gap-4">
                     {stats.map((stat) => (
-                        <button
-                            key={stat.label}
-                            type="button"
-                            onClick={() => setActiveCategory(stat.label)}
-                            className="relative w-full text-left border border-border bg-surface rounded-xl p-6 transition-colors duration-300 group animate-fade-in-up hover:border-accent/40 cursor-pointer"
-                        >
+                        <button key={stat.label} type="button" onClick={() => setActiveCategory(stat.label)} className="relative w-full text-left border border-border bg-surface rounded-xl p-6 transition-colors duration-300 group animate-fade-in-up hover:border-accent/40 cursor-pointer">
                             <span className="absolute top-4 right-4 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900/60 text-zinc-500 transition-all duration-300 group-hover:text-accent group-hover:rotate-90">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                                     <line x1="12" y1="5" x2="12" y2="19" />
@@ -170,17 +165,9 @@ export default function About() {
             </div>
 
             {activeCategory && (
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-zinc-950/80 backdrop-blur-sm animate-fade-in"
-                    onClick={() => setActiveCategory(null)}
-                    role="dialog"
-                    aria-modal="true"
-                    aria-label="Category details"
-                >
-                    <div
-                        className="relative w-full max-w-4xl border border-zinc-800 bg-zinc-950 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] max-h-[85vh] overflow-y-auto overflow-x-hidden animate-fade-in-up"
-                        onClick={(e: React.MouseEvent) => e.stopPropagation()}
-                    >
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+                    <button type="button" aria-label="Close" onClick={() => setActiveCategory(null)} className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm animate-fade-in cursor-default" />
+                    <div className="relative w-full max-w-4xl border border-zinc-800 bg-zinc-950 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] max-h-[85vh] overflow-y-auto overflow-x-hidden animate-fade-in-up" role="dialog" aria-modal="true" aria-label="Category details">
                         <div className="flex justify-between items-center sticky top-0 bg-zinc-950/90 backdrop-blur-[2px] py-2 px-6 z-10 border-b border-zinc-800/50">
                             <h3 id="modal-title" className="text-2xl font-bold text-zinc-100">
                                 {activeCategory} Details
@@ -197,32 +184,28 @@ export default function About() {
                             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                 {stats
                                     .find((s) => s.label === activeCategory)
-                                    ?.items.map(
-                                        (
-                                            item: { name: string; icon: string; summary: string; implementation: string }, // AI HERE: using idx as key since items are static; if items are mutable, use a stable unique id
-                                        ) => {
-                                            const Icon = item.icon && iconMap[item.icon] ? iconMap[item.icon] : FaCode;
-                                            return (
-                                                <div key={item.name} className="p-4 border border-zinc-800/60 rounded-lg bg-zinc-900/40 hover:border-accent/30 transition-colors flex flex-col gap-2">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="text-accent text-xl">
-                                                            <Icon />
-                                                        </div>
-                                                        <h4 className="font-semibold text-zinc-200">{item.name}</h4>
+                                    ?.items.map((item: { name: string; icon: string; summary: string; implementation: string }) => {
+                                        const Icon = item.icon && iconMap[item.icon] ? iconMap[item.icon] : FaCode;
+                                        return (
+                                            <div key={item.name} className="p-4 border border-zinc-800/60 rounded-lg bg-zinc-900/40 hover:border-accent/30 transition-colors flex flex-col gap-2">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="text-accent text-xl">
+                                                        <Icon />
                                                     </div>
-                                                    {item.summary && <p className="text-xs text-zinc-400">{item.summary}</p>}
-                                                    {item.implementation && (
-                                                        <div className="mt-1 pt-2 border-t border-zinc-800/60">
-                                                            <p className="text-xs text-zinc-500">
-                                                                <span className="text-zinc-600 font-mono mr-1">Impl:</span>
-                                                                {item.implementation}
-                                                            </p>
-                                                        </div>
-                                                    )}
+                                                    <h4 className="font-semibold text-zinc-200">{item.name}</h4>
                                                 </div>
-                                            );
-                                        },
-                                    )}
+                                                {item.summary && <p className="text-xs text-zinc-400">{item.summary}</p>}
+                                                {item.implementation && (
+                                                    <div className="mt-1 pt-2 border-t border-zinc-800/60">
+                                                        <p className="text-xs text-zinc-500">
+                                                            <span className="text-zinc-600 font-mono mr-1">Impl:</span>
+                                                            {item.implementation}
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                             </div>
                         </div>
                     </div>

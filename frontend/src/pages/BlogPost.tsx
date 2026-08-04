@@ -22,7 +22,7 @@ export default function BlogPost() {
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "instant" });
-    }, []); // AI HERE: scroll to top only on mount; no dependencies needed
+    }, []);
 
     if (loading) {
         return (

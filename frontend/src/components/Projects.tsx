@@ -56,11 +56,20 @@ interface ProjectCardProps {
 
 function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
     return (
-        <article className="animate-fade-in-up" style={{ animationDelay: `${index * 0.07}s` }} onClick={onOpen}>
+        <article
+            className="animate-fade-in-up cursor-pointer"
+            style={{ animationDelay: `${index * 0.07}s` }}
+            onClick={onOpen}
+            onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onOpen();
+                }
+            }}
+            aria-label={`Open ${project.title}`}
+        >
             <div className="group relative flex flex-col border border-border bg-surface rounded-2xl overflow-hidden hover:border-accent/30 glow-accent-hover transition-all duration-300 h-full">
-                {/* Clickable card body — click opens the modal */}
                 <div className="flex flex-col h-full w-full text-left cursor-pointer">
-                    {/* Header area — video / image / icon fallback */}
                     <div className="relative h-40 bg-gradient-to-br from-zinc-800 to-zinc-900 overflow-hidden flex items-center justify-center">
                         {project.video ? (
                             <video src={project.video} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
@@ -76,7 +85,6 @@ function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
                         <ProjectTitle project={project} />
                         <p className="text-zinc-500 text-sm leading-relaxed flex-1 line-clamp-4">{project.description}</p>
 
-                        {/* Tech stack chips */}
                         {project.techStack.length > 0 && (
                             <div className="mt-4 flex flex-wrap gap-1.5">
                                 {project.techStack.slice(0, 4).map((tech) => (
@@ -99,7 +107,6 @@ function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
                     </div>
                 </div>
 
-                {/* Expand indicator — top-right, signals clickable */}
                 <div className="absolute top-4 right-4 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-surface/80 backdrop-blur-sm text-zinc-500 transition-all duration-300 group-hover:text-accent group-hover:rotate-90">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                         <line x1="12" y1="5" x2="12" y2="19" />
@@ -107,7 +114,6 @@ function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
                     </svg>
                 </div>
 
-                {/* Top‑left icon group: GitHub link + Favorite badge */}
                 <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
                     {project.github && (
                         <a
@@ -146,12 +152,9 @@ interface ProjectModalProps {
     onClose: () => void;
 }
 
-/** Centered popup overlay over the whole page. Closes on outside click or ESC. */
 function ProjectModal({ project, onClose }: ProjectModalProps) {
-    // Related blog posts
     const [relatedBlogs, setRelatedBlogs] = useState<BlogPost[]>([]);
 
-    // Close on ESC
     useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {
             if (e.key === "Escape") onClose();
@@ -160,15 +163,13 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
         return () => window.removeEventListener("keydown", handleKey);
     }, [onClose]);
 
-    // Load related blogs once
     useEffect(() => {
-        if (!project.blogs?.length) return;
+        const slugs = project.blogs;
+        if (!slugs?.length) return;
         let cancelled = false;
         loadBlogs().then((all) => {
             if (cancelled) return;
-            const ordered = project.blogs
-                .map((slug) => all.find((b) => b.slug === slug))
-                .filter((b): b is BlogPost => Boolean(b));
+            const ordered = slugs.map((slug) => all.find((b) => b.slug === slug)).filter((b): b is BlogPost => Boolean(b));
             setRelatedBlogs(ordered);
         });
         return () => {
@@ -177,27 +178,16 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
     }, [project.blogs]);
 
     return (
-        <div
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-fade-in"
-            onClick={onClose}
-            role="dialog"
-            aria-modal="true"
-            aria-label={project.title}
-        >
-            <div
-                className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-border bg-surface rounded-2xl shadow-2xl animate-fade-in-up"
-                onClick={(e) => e.stopPropagation()}
-            >
-                {/* Media header — video / image / icon fallback */}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-zinc-950/70 backdrop-blur-md animate-fade-in cursor-default" />
+            <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-border bg-surface rounded-2xl shadow-2xl animate-fade-in-up" role="dialog" aria-modal="true" aria-label={project.title}>
                 <div className="relative h-72 lg:h-96 bg-zinc-900 overflow-hidden flex items-center justify-center">
                     {project.video ? (
                         <video src={project.video} autoPlay muted loop playsInline className="w-full h-full object-cover" />
                     ) : project.image ? (
                         <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
                     ) : (
-                        <div className="text-6xl text-zinc-700 select-none">
-                            {project.icon ? <ProjectIcon icon={project.icon} size={48} /> : <span className="text-6xl font-bold text-gradient opacity-30">{project.title.charAt(0)}</span>}
-                        </div>
+                        <div className="text-6xl text-zinc-700 select-none">{project.icon ? <ProjectIcon icon={project.icon} size={48} /> : <span className="text-6xl font-bold text-gradient opacity-30">{project.title.charAt(0)}</span>}</div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
                 </div>
@@ -205,12 +195,7 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
                 <div className="p-6 lg:p-8">
                     <div className="flex items-start justify-between gap-4 mb-3">
                         <h3 className="font-semibold text-zinc-100 text-2xl leading-snug">{project.title}</h3>
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            aria-label="Close"
-                            className="shrink-0 text-zinc-500 hover:text-zinc-100 transition-colors p-1"
-                        >
+                        <button type="button" onClick={onClose} aria-label="Close" className="shrink-0 text-zinc-500 hover:text-zinc-100 transition-colors p-1">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                                 <line x1="18" y1="6" x2="6" y2="18" />
                                 <line x1="6" y1="6" x2="18" y2="18" />
@@ -220,7 +205,6 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
 
                     <p className="text-zinc-400 text-base leading-relaxed mb-6">{project.description}</p>
 
-                    {/* Full tech stack */}
                     {project.techStack.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-6">
                             {project.techStack.map((tech) => (
@@ -231,17 +215,12 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
                         </div>
                     )}
 
-                    {/* Related blog posts */}
                     {relatedBlogs.length > 0 && (
                         <div className="mb-8">
                             <h4 className="font-mono text-xs text-accent tracking-[0.3em] uppercase mb-4">Related Posts</h4>
                             <div className="flex flex-col gap-2">
                                 {relatedBlogs.map((blog) => (
-                                    <Link
-                                        key={blog.slug}
-                                        to={`/blog/${blog.slug}`}
-                                        className="group/link flex items-center justify-between gap-4 px-4 py-3 border border-zinc-800 rounded-lg bg-zinc-900/40 hover:border-accent/30 transition-colors"
-                                    >
+                                    <Link key={blog.slug} to={`/blog/${blog.slug}`} className="group/link flex items-center justify-between gap-4 px-4 py-3 border border-zinc-800 rounded-lg bg-zinc-900/40 hover:border-accent/30 transition-colors">
                                         <div>
                                             <div className="text-sm text-zinc-200 group-hover/link:text-accent transition-colors">{blog.title}</div>
                                             {blog.date && <div className="text-xs text-zinc-600 font-mono mt-0.5">{new Date(blog.date).toLocaleDateString("en-US", { year: "numeric", month: "short" })}</div>}
@@ -256,15 +235,9 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
                         </div>
                     )}
 
-                    {/* Action links */}
                     <div className="flex items-center gap-6 pt-6 border-t border-border">
                         {project.link && (
-                            <a
-                                href={project.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1.5 text-accent text-base font-mono hover:underline underline-offset-2"
-                            >
+                            <a href={project.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-accent text-base font-mono hover:underline underline-offset-2">
                                 Visit project
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                                     <path d="M7 17L17 7M17 7H7M17 7V17" />
@@ -272,12 +245,7 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
                             </a>
                         )}
                         {project.github && (
-                            <a
-                                href={project.github}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1.5 text-zinc-300 text-base font-mono hover:text-accent transition-colors"
-                            >
+                            <a href={project.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-zinc-300 text-base font-mono hover:text-accent transition-colors">
                                 <GitHubIcon size={16} />
                                 Source
                             </a>
