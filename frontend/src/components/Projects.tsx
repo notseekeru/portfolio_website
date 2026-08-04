@@ -66,14 +66,7 @@ function ProjectCard({ project, index }: ProjectCardProps) {
                     </div>
 
                     <div className="flex flex-col flex-1 p-5">
-                        <h3 className="font-semibold text-zinc-100 mb-2 group-hover:text-accent transition-colors duration-200 leading-snug flex items-start gap-2">
-                            {project.icon && (
-                                <span className="text-accent/70 group-hover:text-accent shrink-0 mt-0.5">
-                                    <ProjectIcon icon={project.icon} size={16} />
-                                </span>
-                            )}
-                            <span>{project.title}</span>
-                        </h3>
+                        <ProjectTitle project={project} />
                         <p className="text-zinc-500 text-sm leading-relaxed flex-1 line-clamp-4">{project.description}</p>
 
                         {/* Tech stack chips */}
@@ -127,9 +120,21 @@ function ProjectCard({ project, index }: ProjectCardProps) {
     );
 }
 
-/** Resolves a project icon string to a react-icons component */
 function ProjectIcon({ icon, size = 28 }: { icon: string; size?: number }) {
     const Icon = iconMap[icon];
     if (Icon) return <Icon size={size} />;
     return null;
+}
+
+function ProjectTitle({ project }: { project: ProjectItem }) {
+    return (
+        <h3 className="font-semibold text-zinc-100 mb-2 group-hover:text-accent transition-colors duration-200 leading-snug flex items-center gap-2">
+            {project.icon && (
+                <span className="text-accent/70 group-hover:text-accent shrink-0">
+                    <ProjectIcon icon={project.icon} size={22} />
+                </span>
+            )}
+            <span>{project.title}</span>
+        </h3>
+    );
 }
