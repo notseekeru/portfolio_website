@@ -156,6 +156,15 @@ interface ProjectModalProps {
 function ProjectModal({ project, onClose }: ProjectModalProps) {
     const [relatedBlogs, setRelatedBlogs] = useState<BlogPost[]>([]);
 
+    // Lock page scroll while the modal is open
+    useEffect(() => {
+        const previous = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = previous;
+        };
+    }, []);
+
     useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {
             if (e.key === "Escape") onClose();

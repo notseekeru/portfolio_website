@@ -82,6 +82,16 @@ interface SectionLabelProps {
 export default function About() {
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
+    // Lock page scroll while the modal is open
+    useEffect(() => {
+        if (!activeCategory) return;
+        const previous = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = previous;
+        };
+    }, [activeCategory]);
+
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Escape") {
