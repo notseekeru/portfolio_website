@@ -73,11 +73,11 @@ function ProjectCard({ project, index }: ProjectCardProps) {
                         {project.techStack.length > 0 && (
                             <div className="mt-4 flex flex-wrap gap-1.5">
                                 {project.techStack.slice(0, 4).map((tech) => (
-                                    <span key={tech} className="text-[10px] font-mono text-zinc-600 bg-zinc-800/50 px-2 py-0.5 rounded-full">
+                                    <span key={tech} className="text-[10px] font-mono text-accent/70 bg-zinc-800/60 border border-zinc-700/60 px-2 py-0.5 rounded-full">
                                         {tech}
                                     </span>
                                 ))}
-                                {project.techStack.length > 4 && <span className="text-[10px] font-mono text-zinc-600">+{project.techStack.length - 4}</span>}
+                                {project.techStack.length > 4 && <span className="text-[10px] font-mono text-accent/70">+{project.techStack.length - 4}</span>}
                             </div>
                         )}
 
