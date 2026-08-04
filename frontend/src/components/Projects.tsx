@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import personalData from "../data/personalData";
 import { GitHubIcon } from "./icons/Icons";
 import { useInView } from "../hooks/useInView";
+import { loadBlogs, type BlogPost } from "../utils/blogLoader";
 import type { ProjectItem } from "../data/personalData";
 
 import { SiReact, SiTerraform, SiGrafana, SiAnsible, SiRaspberrypi, SiNixos } from "react-icons/si";
@@ -146,6 +148,9 @@ interface ProjectModalProps {
 
 /** Centered popup overlay over the whole page. Closes on outside click or ESC. */
 function ProjectModal({ project, onClose }: ProjectModalProps) {
+    // Related blog posts
+    const [relatedBlogs, setRelatedBlogs] = useState<BlogPost[]>([]);
+
     // Close on ESC
     useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {
@@ -154,6 +159,22 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
         window.addEventListener("keydown", handleKey);
         return () => window.removeEventListener("keydown", handleKey);
     }, [onClose]);
+
+    // Load related blogs once
+    useEffect(() => {
+        if (!project.blogs?.length) return;
+        let cancelled = false;
+        loadBlogs().then((all) => {
+            if (cancelled) return;
+            const ordered = project.blogs
+                .map((slug) => all.find((b) => b.slug === slug))
+                .filter((b): b is BlogPost => Boolean(b));
+            setRelatedBlogs(ordered);
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, [project.blogs]);
 
     return (
         <div
@@ -201,7 +222,7 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
 
                     {/* Full tech stack */}
                     {project.techStack.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-8">
+                        <div className="flex flex-wrap gap-2 mb-6">
                             {project.techStack.map((tech) => (
                                 <span key={tech} className="text-xs font-mono text-accent/70 bg-zinc-800/60 border border-zinc-700/60 px-2.5 py-1 rounded-full">
                                     {tech}
@@ -210,8 +231,33 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
                         </div>
                     )}
 
+                    {/* Related blog posts */}
+                    {relatedBlogs.length > 0 && (
+                        <div className="mb-8">
+                            <h4 className="font-mono text-xs text-accent tracking-[0.3em] uppercase mb-4">Related Posts</h4>
+                            <div className="flex flex-col gap-2">
+                                {relatedBlogs.map((blog) => (
+                                    <Link
+                                        key={blog.slug}
+                                        to={`/blog/${blog.slug}`}
+                                        className="group/link flex items-center justify-between gap-4 px-4 py-3 border border-zinc-800 rounded-lg bg-zinc-900/40 hover:border-accent/30 transition-colors"
+                                    >
+                                        <div>
+                                            <div className="text-sm text-zinc-200 group-hover/link:text-accent transition-colors">{blog.title}</div>
+                                            {blog.date && <div className="text-xs text-zinc-600 font-mono mt-0.5">{new Date(blog.date).toLocaleDateString("en-US", { year: "numeric", month: "short" })}</div>}
+                                        </div>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-600 group-hover/link:text-accent shrink-0 transition-colors" aria-hidden="true">
+                                            <line x1="5" y1="12" x2="19" y2="12" />
+                                            <polyline points="12 5 19 12 12 19" />
+                                        </svg>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     {/* Action links */}
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-6 pt-6 border-t border-border">
                         {project.link && (
                             <a
                                 href={project.link}

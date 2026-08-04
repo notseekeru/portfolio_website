@@ -34,6 +34,7 @@ export interface ProjectItem {
     favorite?: boolean;
     github?: string;
     icon?: string;
+    blogs?: string[];
 }
 
 export interface PersonalData {
@@ -325,6 +326,7 @@ const personalData: PersonalData = {
             favorite: true,
             video: "/project1.webm",
             icon: "SiReact",
+            blogs: ["imposter-syndrome", "the-serverless-trap", "server-security-measures"],
         },
         {
             title: "Cloud Infrastructure  — Terraform & Kubernetes + ArgoCD GitOps",
@@ -334,6 +336,7 @@ const personalData: PersonalData = {
             video: "/project2.webm",
             github: "https://github.com/notseekeru/terraform",
             icon: "SiTerraform",
+            blogs: ["cloud-automation-veins"],
         },
         {
             title: "SRE — Observability Stack with LGTM Stack + OTLP Tracing",
@@ -344,6 +347,7 @@ const personalData: PersonalData = {
             video: "/project3.webm",
             github: "https://github.com/notseekeru/diagram_website",
             icon: "SiGrafana",
+            blogs: ["observing-the-lab", "sre-steps", "telemetry-madness"],
         },
         {
             title: "Infrastructure as Code — Ansible Automation & Idempotency",
@@ -354,6 +358,7 @@ const personalData: PersonalData = {
             video: "/project4.webm",
             github: "https://github.com/notseekeru/ansible",
             icon: "SiAnsible",
+            blogs: ["cloud-automation-veins", "server-security-measures"],
         },
         {
             title: "Java OOP Project featuring Production Patterns — Team Lead",
@@ -371,6 +376,7 @@ const personalData: PersonalData = {
             favorite: true,
             video: "/project6.webm",
             icon: "SiRaspberrypi",
+            blogs: ["server-security-measures", "observing-the-lab"],
         },
         {
             title: "Raw L7 TCP/HTTP 1.1 Engine & L7 Reverse Proxy + Load Balancer",
@@ -390,6 +396,7 @@ const personalData: PersonalData = {
             image: "/project8.png",
             github: "https://github.com/notseekeru/nixos-config",
             icon: "SiNixos",
+            blogs: ["declarative-identity"],
         },
         {
             title: "Centralized Secrets Management with Infisical Cloud + CLI",
