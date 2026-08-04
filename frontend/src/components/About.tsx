@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { createPortal } from "react-dom";
 
 import personalData from "../data/personalData";
 
@@ -164,8 +165,9 @@ export default function About() {
                 </div>
             </div>
 
-            {activeCategory && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+            {activeCategory &&
+                createPortal(
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
                     <button type="button" aria-label="Close" onClick={() => setActiveCategory(null)} className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm animate-fade-in cursor-default" />
                     <div className="relative w-full max-w-4xl border border-zinc-800 bg-zinc-950 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] max-h-[85vh] overflow-y-auto overflow-x-hidden animate-fade-in-up" role="dialog" aria-modal="true" aria-label="Category details">
                         <div className="flex justify-between items-center sticky top-0 bg-zinc-950/90 backdrop-blur-[2px] py-2 px-6 z-10 border-b border-zinc-800/50">
@@ -209,8 +211,9 @@ export default function About() {
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
+                    </div>,
+                    document.body,
+                )}
         </section>
     );
 }
