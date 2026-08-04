@@ -318,7 +318,7 @@ const personalData: PersonalData = {
 
     projects: [
         {
-            title: "Website Hosting Pipeline Security Infrastructure",
+            title: "Website Self-Hosting Security Pipeline Infrastructure",
             description:
                 "Designed and deployed a self-hosted websites on RPi5 with a hardened Cloudflared → Nginx proxy-chain architecture featuring network segmentation, CSP/COOP/COEP security headers, multi-stage Docker builds, QEMU multi-arch (ARM64) support, Trivy CVE scanning in CD pipeline, and an SSL Labs A+ rating.",
             techStack: ["React", "TypeScript", "Vite", "Node.js", "Express", "Nginx", "Docker", "Cloudflare", "TLS 1.3", "Trivy", "ARM64"],
@@ -327,7 +327,7 @@ const personalData: PersonalData = {
             icon: "SiReact",
         },
         {
-            title: "Cloud Infrastructure — Terraform & Kubernetes",
+            title: "Cloud Infrastructure  — Terraform & Kubernetes + ArgoCD GitOps",
             description: "Provisioned DigitalOcean infrastructure with Terraform using modular .tf files and secure variable management, integrated dynamic Ansible inventories, deployed a 3-node Kubernetes cluster with ArgoCD GitOps, and hardened containers with tmpfs/readonly root filesystems.",
             techStack: ["Terraform", "DigitalOcean", "Kubernetes", "ArgoCD", "Ansible", "Docker", "GitHub Actions"],
             favorite: true,
@@ -336,7 +336,7 @@ const personalData: PersonalData = {
             icon: "SiTerraform",
         },
         {
-            title: "Observability & SRE — LGTM Stack with OTLP Tracing",
+            title: "SRE — Observability Stack with LGTM Stack + OTLP Tracing",
             description:
                 "Designed a full Loki/Grafana/Tempo/Prometheus + Alloy observability stack with unified OTLP ingestion across logs, metrics and traces. Implemented OpenTelemetry-based distributed tracing, built a Four Golden Signals dashboard, automated Docker log discovery, configured Slack alerting via AlertManager, and validated MTTR/MTTD through chaos engineering experiments (Postgres blackout).",
             techStack: ["Grafana", "Prometheus", "Loki", "Tempo", "Alloy", "OpenTelemetry", "AlertManager", "Docker", "Node.js"],
@@ -346,7 +346,7 @@ const personalData: PersonalData = {
             icon: "SiGrafana",
         },
         {
-            title: "Infrastructure as Code — Ansible Automation",
+            title: "Infrastructure as Code — Ansible Automation & Idempotency",
             description:
                 "Transitioned to IaC with modular Ansible roles for security hardening, user management, and Dockerization across RPi5 and cloud nodes. Implemented Ansible Vault for secrets, achieved 100% molecule-tested idempotency, enforced automated CI/CD linting via GitHub Actions, and built self-healing infrastructure using declarative state patterns.",
             techStack: ["Ansible", "Molecule", "Ansible Vault", "GitHub Actions", "Linux", "IaC"],
@@ -356,7 +356,7 @@ const personalData: PersonalData = {
             icon: "SiAnsible",
         },
         {
-            title: "Java Enterprise Architecture Project — Team Lead",
+            title: "Java OOP Project featuring Production Patterns — Team Lead",
             description:
                 "Architected a JavaFX application with layered MVC+DAO+Service architecture, CI/CD pipelines, Flyway schema migrations, Bcrypt hashing, Spotbugs/Spotless linting, JUnit integration tests, and JaCoCo code coverage. Led a non-technical team through GitHub Flow, authored Level 3 SOPs and ADRs, and automated Mermaid diagram generation via GitHub Actions for documentation.",
             techStack: ["Java", "JavaFX", "Maven", "GitHub Actions", "Flyway", "JUnit", "Docker", "Mermaid"],
@@ -364,9 +364,9 @@ const personalData: PersonalData = {
             icon: "FaJava",
         },
         {
-            title: "Homelab & Self-Hosted Infrastructure",
+            title: "Self-Hosted Homelab Infrastructure for Linux, Services and Networking",
             description:
-                "Operate a Raspberry Pi 5-based homelab running Pi-hole DNS, Plex media server, Portainer container management, game servers, and the full LGTM observability stack. Applied Linux hardening (UFW, SSH key-only, Tailscale overlay), automated apt updates, and enforced Tailscale-only access across all services with network segmentation.",
+                "Operate a Raspberry Pi 5-based homelab running Pi-hole DNS, Plex media server, Portainer container management, game servers, etc. Applied Linux hardening (UFW, SSH key-only, Tailscale overlay), automated apt updates, and enforced Tailscale-only access across all services with network segmentation.",
             techStack: ["Raspberry Pi", "Docker", "Linux", "Tailscale", "Pi-hole", "Grafana", "Networking"],
             favorite: true,
             video: "/project6.webm",
@@ -382,9 +382,9 @@ const personalData: PersonalData = {
             icon: "FaGolang",
         },
         {
-            title: "NixOS Declarative Workflow",
+            title: "NixOS Declarative Workflow — Flakes + Home-Manager + Neovim",
             description:
-                "Transitioned to a fully declarative NixOS stack with Flakes, Home-Manager, and direnv for reproducible multi-node configs. Modularized host-specific configs so every machine inherits the same baseline. Replaced Tmux-Resurrect with a declarative tmux-init script. Achieved atomic, rollback-capable system rebuilds via nixos-rebuild.",
+                "Transitioned to a fully declarative NixOS stack with Flakes, Home-Manager, and direnv for reproducible multi-node configs. Modularized host-specific configs so every machine inherits the same baseline. Declarative tmux-init script and Neovim configuration. Achieved atomic, rollback-capable system rebuilds via nixos-rebuild.",
             techStack: ["NixOS", "Flakes", "Home-Manager", "direnv", "neovim", "tmux"],
             favorite: true,
             image: "/project8.png",
@@ -392,7 +392,7 @@ const personalData: PersonalData = {
             icon: "SiNixos",
         },
         {
-            title: "Centralized Secrets Management with Infisical",
+            title: "Centralized Secrets Management with Infisical Cloud + CLI",
             description:
                 "Migrated from fragmented secret storage (Ansible Vault, .tfvars, .env) to a single source of truth using Infisical Cloud. Designed source-of-truth and consumer folder structure with dynamic secret references. Integrated with Terraform via infisical run for injection into apply, replacing all hardcoded secrets.tfvars.",
             techStack: ["Infisical", "Terraform", "Secrets Management", "IaC"],
