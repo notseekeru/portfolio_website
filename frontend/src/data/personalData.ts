@@ -321,7 +321,7 @@ const personalData: PersonalData = {
             title: "Website Self-Hosting Security Pipeline Infrastructure",
             description:
                 "Designed and deployed a self-hosted websites on RPi5 with a hardened Cloudflared → Nginx proxy-chain architecture featuring network segmentation, CSP/COOP/COEP security headers, multi-stage Docker builds, QEMU multi-arch (ARM64) support, Trivy CVE scanning in CD pipeline, and an SSL Labs A+ rating.",
-            techStack: ["React", "TypeScript", "Vite", "Node.js", "Express", "Nginx", "Docker", "Cloudflare", "TLS 1.3", "Trivy", "ARM64"],
+            techStack: ["React", "TypeScript", "Vite", "Node.js", "Express", "Nginx", "Docker", "Cloudflare", "Trivy"],
             favorite: true,
             video: "/project1.webm",
             icon: "SiReact",
@@ -329,7 +329,7 @@ const personalData: PersonalData = {
         {
             title: "Cloud Infrastructure  — Terraform & Kubernetes + ArgoCD GitOps",
             description: "Provisioned DigitalOcean infrastructure with Terraform using modular .tf files and secure variable management, integrated dynamic Ansible inventories, deployed a 3-node Kubernetes cluster with ArgoCD GitOps, and hardened containers with tmpfs/readonly root filesystems.",
-            techStack: ["Terraform", "DigitalOcean", "Kubernetes", "ArgoCD", "Ansible", "Docker", "GitHub Actions"],
+            techStack: ["Terraform", "DigitalOcean", "Kubernetes", "ArgoCD", "Ansible", "GitHub Actions"],
             favorite: true,
             video: "/project2.webm",
             github: "https://github.com/notseekeru/terraform",
@@ -339,7 +339,7 @@ const personalData: PersonalData = {
             title: "SRE — Observability Stack with LGTM Stack + OTLP Tracing",
             description:
                 "Designed a full Loki/Grafana/Tempo/Prometheus + Alloy observability stack with unified OTLP ingestion across logs, metrics and traces. Implemented OpenTelemetry-based distributed tracing, built a Four Golden Signals dashboard, automated Docker log discovery, configured Slack alerting via AlertManager, and validated MTTR/MTTD through chaos engineering experiments (Postgres blackout).",
-            techStack: ["Grafana", "Prometheus", "Loki", "Tempo", "Alloy", "OpenTelemetry", "AlertManager", "Docker", "Node.js"],
+            techStack: ["Grafana", "Prometheus", "Loki", "Tempo", "Alloy", "OpenTelemetry", "AlertManager", "Docker"],
             favorite: true,
             video: "/project3.webm",
             github: "https://github.com/notseekeru/diagram_website",
@@ -349,7 +349,7 @@ const personalData: PersonalData = {
             title: "Infrastructure as Code — Ansible Automation & Idempotency",
             description:
                 "Transitioned to IaC with modular Ansible roles for security hardening, user management, and Dockerization across RPi5 and cloud nodes. Implemented Ansible Vault for secrets, achieved 100% molecule-tested idempotency, enforced automated CI/CD linting via GitHub Actions, and built self-healing infrastructure using declarative state patterns.",
-            techStack: ["Ansible", "Molecule", "Ansible Vault", "GitHub Actions", "Linux", "IaC"],
+            techStack: ["Ansible", "Molecule", "Ansible Vault", "GitHub Actions", "Docker"],
             favorite: true,
             video: "/project4.webm",
             github: "https://github.com/notseekeru/ansible",
@@ -367,7 +367,7 @@ const personalData: PersonalData = {
             title: "Self-Hosted Homelab Infrastructure for Linux, Services and Networking",
             description:
                 "Operate a Raspberry Pi 5-based homelab running Pi-hole DNS, Plex media server, Portainer container management, game servers, etc. Applied Linux hardening (UFW, SSH key-only, Tailscale overlay), automated apt updates, and enforced Tailscale-only access across all services with network segmentation.",
-            techStack: ["Raspberry Pi", "Docker", "Linux", "Tailscale", "Pi-hole", "Grafana", "Networking"],
+            techStack: ["Raspberry Pi", "Docker", "Tailscale", "Pi-hole", "Grafana"],
             favorite: true,
             video: "/project6.webm",
             icon: "SiRaspberrypi",
@@ -376,7 +376,7 @@ const personalData: PersonalData = {
             title: "Raw L7 TCP/HTTP 1.1 Engine & L7 Reverse Proxy + Load Balancer",
             description:
                 "Built an RFC 9112-compliant HTTP/1.1 server + L4 Reverse Proxy + Load Balancer from scratch using Go's net package — no frameworks, just raw TCP sockets, manual byte parsing, and bufio.Reader. Serves GET/POST with dynamic Content-Length, SetDeadline timeouts, and proper 200/400/404 responses.",
-            techStack: ["Go", "TCP/IP", "HTTP/1.1", "net"],
+            techStack: ["Go", "TCP/IP", "HTTP/1.1"],
             image: "/project7.png",
             github: "https://github.com/notseekeru/l4-l7-rproxy-lb-http-go",
             icon: "FaGolang",
@@ -394,8 +394,8 @@ const personalData: PersonalData = {
         {
             title: "Centralized Secrets Management with Infisical Cloud + CLI",
             description:
-                "Migrated from fragmented secret storage (Ansible Vault, .tfvars, .env) to a single source of truth using Infisical Cloud. Designed source-of-truth and consumer folder structure with dynamic secret references. Integrated with Terraform via infisical run for injection into apply, replacing all hardcoded secrets.tfvars.",
-            techStack: ["Infisical", "Terraform", "Secrets Management", "IaC"],
+                "Migrated from fragmented secret storage (Ansible Vault, .tfvars, .env) to a single source of truth using Infisical Cloud. Designed source-of-truth and consumer folder structure with dynamic secret references. Integrated with Terraform via infisical run for injection into apply, replacing all hardcoded secrets.tfvars. Also can be applied to various projects such as Ansible, Docker, and Node.js apps via the Infisical CLI.",
+            techStack: ["Infisical", "Terraform", "Ansible"],
             image: "/project9.png",
             icon: "FaLock",
         },
