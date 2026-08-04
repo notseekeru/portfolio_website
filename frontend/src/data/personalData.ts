@@ -358,7 +358,7 @@ const personalData: PersonalData = {
         {
             title: "Java OOP Project featuring Production Patterns — Team Lead",
             description:
-                "Architected a JavaFX application with layered MVC+DAO+Service architecture, CI/CD pipelines, Flyway schema migrations, Bcrypt hashing, Spotbugs/Spotless linting, JUnit integration tests, and JaCoCo code coverage. Led a non-technical team through GitHub Flow, authored Level 3 SOPs and ADRs, and automated Mermaid diagram generation via GitHub Actions for documentation.",
+                "Led a team of 5 Members to compose Software Development and Management Collaboration through effective communication and task delegation. Architected a JavaFX application with layered MVC+DAO+Service architecture, Github Flow, GHA CI/CD pipelines, Flyway schema migrations, Spotbugs/Spotless linting, JUnit integration tests, and JaCoCo code coverage. Documented Informal SOPs and ADRs, and automated Mermaid diagram generation via GitHub Actions for documentation.",
             techStack: ["Java", "JavaFX", "Maven", "GitHub Actions", "Flyway", "JUnit", "Docker", "Mermaid"],
             video: "/project5.webm",
             icon: "FaJava",
