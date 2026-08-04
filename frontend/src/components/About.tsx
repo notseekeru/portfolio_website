@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import personalData from "../data/personalData";
 
@@ -80,8 +80,6 @@ interface SectionLabelProps {
 
 export default function About() {
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
-    const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -90,39 +88,8 @@ export default function About() {
             }
         };
         window.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-            if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-            if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-        };
+        return () => window.removeEventListener("keydown", handleKeyDown);
     }, []);
-
-    const handleMouseEnter = (label: string) => {
-        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-        if (!activeCategory) {
-            hoverTimeoutRef.current = setTimeout(() => {
-                setActiveCategory(label);
-            }, 400);
-        }
-    };
-
-    const handleMouseLeave = () => {
-        if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-        closeTimeoutRef.current = setTimeout(() => {
-            setActiveCategory(null);
-        }, 600);
-    };
-
-    const handleModalMouseEnter = () => {
-        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-    };
-
-    const handleModalMouseLeave = () => {
-        closeTimeoutRef.current = setTimeout(() => {
-            setActiveCategory(null);
-        }, 200);
-    };
 
     const stats = useMemo(
         () => [
@@ -186,11 +153,15 @@ export default function About() {
                         <button
                             key={stat.label}
                             type="button"
-                            onMouseEnter={() => !activeCategory && handleMouseEnter(stat.label)}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => !activeCategory && setActiveCategory(stat.label)}
-                            className={`w-full text-left border border-border bg-surface rounded-xl p-6 transition-colors duration-300 group animate-fade-in-up ${activeCategory ? "cursor-default opacity-50" : "hover:border-accent/40 cursor-pointer"}`}
+                            onClick={() => setActiveCategory(stat.label)}
+                            className="relative w-full text-left border border-border bg-surface rounded-xl p-6 transition-colors duration-300 group animate-fade-in-up hover:border-accent/40 cursor-pointer"
                         >
+                            <span className="absolute top-4 right-4 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900/60 text-zinc-500 transition-all duration-300 group-hover:text-accent group-hover:rotate-90">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </span>
                             <div className={`text-3xl font-bold mb-1 ${stat.accent ? "text-gradient" : "text-zinc-100"}`}>{stat.value}</div>
                             <div className="text-xs text-zinc-500 font-medium group-hover:text-accent transition-colors">{stat.label}</div>
                         </button>
@@ -199,26 +170,27 @@ export default function About() {
             </div>
 
             {activeCategory && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
-                    <div className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm animate-fade-in" />
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-zinc-950/80 backdrop-blur-sm animate-fade-in"
+                    onClick={() => setActiveCategory(null)}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Category details"
+                >
                     <div
-                        className="relative w-full max-w-4xl border border-zinc-800 bg-zinc-950 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] max-h-[85vh] overflow-y-auto overflow-x-hidden pointer-events-auto animate-fade-in-up"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label="Category details"
-                        tabIndex={-1}
-                        onMouseEnter={handleModalMouseEnter}
-                        onMouseLeave={handleModalMouseLeave}
+                        className="relative w-full max-w-4xl border border-zinc-800 bg-zinc-950 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] max-h-[85vh] overflow-y-auto overflow-x-hidden animate-fade-in-up"
                         onClick={(e: React.MouseEvent) => e.stopPropagation()}
-                        onKeyDown={(e) => {
-                            if (e.key === "Escape") setActiveCategory(null);
-                        }}
                     >
                         <div className="flex justify-between items-center sticky top-0 bg-zinc-950/90 backdrop-blur-[2px] py-2 px-6 z-10 border-b border-zinc-800/50">
                             <h3 id="modal-title" className="text-2xl font-bold text-zinc-100">
                                 {activeCategory} Details
                             </h3>
-                            <button type="button" onClick={() => setActiveCategory(null)} className="p-2 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors" aria-label="Close details" />
+                            <button type="button" onClick={() => setActiveCategory(null)} aria-label="Close" className="shrink-0 text-zinc-500 hover:text-zinc-100 transition-colors p-1">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                            </button>
                         </div>
 
                         <div className="px-6 pb-6 pt-4">

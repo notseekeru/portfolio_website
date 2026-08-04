@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import personalData from "../data/personalData";
 import { GitHubIcon } from "./icons/Icons";
 import { useInView } from "../hooks/useInView";
@@ -22,6 +23,7 @@ const iconMap: Record<string, IconType> = {
 export default function Projects() {
     const { ref: sectionRef, inView: sectionInView } = useInView();
     const { ref: headerRef, inView: headerInView } = useInView();
+    const [activeProject, setActiveProject] = useState<ProjectItem | null>(null);
 
     return (
         <div id="projects" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
@@ -34,10 +36,12 @@ export default function Projects() {
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     {personalData.projects.map((project, i) => (
-                        <ProjectCard key={project.title} project={project} index={i} />
+                        <ProjectCard key={project.title} project={project} index={i} onOpen={() => setActiveProject(project)} />
                     ))}
                 </div>
             </div>
+
+            {activeProject && <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />}
         </div>
     );
 }
@@ -45,14 +49,15 @@ export default function Projects() {
 interface ProjectCardProps {
     project: ProjectItem;
     index: number;
+    onOpen: () => void;
 }
 
-function ProjectCard({ project, index }: ProjectCardProps) {
+function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
     return (
-        <article className="animate-fade-in-up" style={{ animationDelay: `${index * 0.07}s` }}>
+        <article className="animate-fade-in-up" style={{ animationDelay: `${index * 0.07}s` }} onClick={onOpen}>
             <div className="group relative flex flex-col border border-border bg-surface rounded-2xl overflow-hidden hover:border-accent/30 glow-accent-hover transition-all duration-300 h-full">
-                {/* Clickable card body (when there's a link) */}
-                <a href={project.link} target={project.link ? "_blank" : undefined} rel={project.link ? "noopener noreferrer" : undefined} className={`flex flex-col h-full w-full text-left ${project.link ? "cursor-pointer" : "cursor-default"}`}>
+                {/* Clickable card body — click opens the modal */}
+                <div className="flex flex-col h-full w-full text-left cursor-pointer">
                     {/* Header area — video / image / icon fallback */}
                     <div className="relative h-40 bg-gradient-to-br from-zinc-800 to-zinc-900 overflow-hidden flex items-center justify-center">
                         {project.video ? (
@@ -90,10 +95,18 @@ function ProjectCard({ project, index }: ProjectCardProps) {
                             </div>
                         )}
                     </div>
-                </a>
+                </div>
+
+                {/* Expand indicator — top-right, signals clickable */}
+                <div className="absolute top-4 right-4 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-surface/80 backdrop-blur-sm text-zinc-500 transition-all duration-300 group-hover:text-accent group-hover:rotate-90">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                </div>
 
                 {/* Top‑left icon group: GitHub link + Favorite badge */}
-                <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
+                <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
                     {project.github && (
                         <a
                             href={project.github}
@@ -124,6 +137,110 @@ function ProjectIcon({ icon, size = 28 }: { icon: string; size?: number }) {
     const Icon = iconMap[icon];
     if (Icon) return <Icon size={size} />;
     return null;
+}
+
+interface ProjectModalProps {
+    project: ProjectItem;
+    onClose: () => void;
+}
+
+/** Centered popup overlay over the whole page. Closes on outside click or ESC. */
+function ProjectModal({ project, onClose }: ProjectModalProps) {
+    // Close on ESC
+    useEffect(() => {
+        const handleKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") onClose();
+        };
+        window.addEventListener("keydown", handleKey);
+        return () => window.removeEventListener("keydown", handleKey);
+    }, [onClose]);
+
+    return (
+        <div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-fade-in"
+            onClick={onClose}
+            role="dialog"
+            aria-modal="true"
+            aria-label={project.title}
+        >
+            <div
+                className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-border bg-surface rounded-2xl shadow-2xl animate-fade-in-up"
+                onClick={(e) => e.stopPropagation()}
+            >
+                {/* Media header — video / image / icon fallback */}
+                <div className="relative h-72 lg:h-96 bg-zinc-900 overflow-hidden flex items-center justify-center">
+                    {project.video ? (
+                        <video src={project.video} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+                    ) : project.image ? (
+                        <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                    ) : (
+                        <div className="text-6xl text-zinc-700 select-none">
+                            {project.icon ? <ProjectIcon icon={project.icon} size={48} /> : <span className="text-6xl font-bold text-gradient opacity-30">{project.title.charAt(0)}</span>}
+                        </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
+                </div>
+
+                <div className="p-6 lg:p-8">
+                    <div className="flex items-start justify-between gap-4 mb-3">
+                        <h3 className="font-semibold text-zinc-100 text-2xl leading-snug">{project.title}</h3>
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            aria-label="Close"
+                            className="shrink-0 text-zinc-500 hover:text-zinc-100 transition-colors p-1"
+                        >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <p className="text-zinc-400 text-base leading-relaxed mb-6">{project.description}</p>
+
+                    {/* Full tech stack */}
+                    {project.techStack.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-8">
+                            {project.techStack.map((tech) => (
+                                <span key={tech} className="text-xs font-mono text-accent/70 bg-zinc-800/60 border border-zinc-700/60 px-2.5 py-1 rounded-full">
+                                    {tech}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Action links */}
+                    <div className="flex items-center gap-6">
+                        {project.link && (
+                            <a
+                                href={project.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 text-accent text-base font-mono hover:underline underline-offset-2"
+                            >
+                                Visit project
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                                </svg>
+                            </a>
+                        )}
+                        {project.github && (
+                            <a
+                                href={project.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 text-zinc-300 text-base font-mono hover:text-accent transition-colors"
+                            >
+                                <GitHubIcon size={16} />
+                                Source
+                            </a>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 function ProjectTitle({ project }: { project: ProjectItem }) {
