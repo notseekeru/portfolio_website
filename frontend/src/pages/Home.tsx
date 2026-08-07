@@ -1,7 +1,6 @@
 import { useEffect, Fragment } from "react";
 import { useLocation } from "react-router-dom";
 import Hero from "../components/Hero";
-import About from "../components/About";
 import InfrastructureDiagram from "../components/InfrastructureDiagram";
 import Blog from "../components/Blog";
 import Projects from "../components/Projects";
@@ -9,7 +8,6 @@ import Contact from "../components/Contact";
 
 const sections = [
     { id: "home", Component: Hero },
-    { id: "about", Component: About },
     { id: "infrastructure-diagram", Component: InfrastructureDiagram },
     { id: "projects", Component: Projects },
     { id: "blog", Component: Blog },

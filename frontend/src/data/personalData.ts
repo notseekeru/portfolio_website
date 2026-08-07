@@ -50,7 +50,6 @@ export interface PersonalData {
     x: string;
     threads: string;
     bio: string;
-    background: string;
     profilePicture: string;
     experience: ExperienceItem[];
     education: EducationItem[];
@@ -70,9 +69,7 @@ const personalData: PersonalData = {
     instagram: "https://www.instagram.com/notseekeru/",
     x: "https://x.com/notseekeru",
     threads: "https://www.threads.com/@notseekeru",
-    bio: "A Computer Engineering student who learns by building. I operate a self-hosted homelab running Kubernetes, a full LGTM observability stack, and a self-hosted portfolio on a Raspberry Pi. I'm drawn to infrastructure, reliability, and understanding what's under the hood. Currently seeking internships where I can contribute and keep growing.",
-    background:
-        "Computer Engineering undergraduate with an obsession for how systems work — from raw TCP sockets to Kubernetes clusters. I run a self-hosted homelab where I experiment with infrastructure, observability, and security. I've built a multi-node Kubernetes cluster with ArgoCD GitOps, deployed a full LGTM stack with OpenTelemetry tracing, and written an HTTP/1.1 server from scratch in Go. No professional experience yet — just a lot of late nights and a homelab that keeps teaching me more than any course ever could.",
+    bio: "Computer Engineering undergraduate with an obsession for how systems work — from raw TCP sockets to Kubernetes clusters. I learn by building: I operate a self-hosted homelab running a multi-node Kubernetes cluster with ArgoCD GitOps, a full LGTM observability stack with OpenTelemetry tracing, and a self-hosted portfolio on a Raspberry Pi. I also wrote an HTTP/1.1 server from scratch in Go. No professional experience yet — just a lot of late nights and a homelab that keeps teaching me more than any course ever could. Currently seeking internships where I can contribute and keep growing.",
     profilePicture: "/profile3.png",
 
     experience: [
