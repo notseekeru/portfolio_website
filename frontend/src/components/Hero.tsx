@@ -105,6 +105,7 @@ export default function Hero() {
                 value: personalData.projects.length,
                 label: "Projects & Infrastructure",
                 shortLabel: "Projects",
+                icon: "FaServer",
                 accent: true,
                 items: [
                     ...personalData.projects.map((p) => ({
@@ -119,6 +120,7 @@ export default function Hero() {
                 value: personalData.skills.tools.length,
                 label: "Tools",
                 shortLabel: "Tools",
+                icon: "SiGnubash",
                 accent: true,
                 items: personalData.skills.tools,
             },
@@ -126,6 +128,7 @@ export default function Hero() {
                 value: personalData.skills.frameworks.length,
                 label: "Frameworks",
                 shortLabel: "Frameworks",
+                icon: "SiReact",
                 accent: true,
                 items: personalData.skills.frameworks,
             },
@@ -133,6 +136,7 @@ export default function Hero() {
                 value: personalData.skills.languages.length,
                 label: "Languages",
                 shortLabel: "Languages",
+                icon: "SiTypescript",
                 accent: true,
                 items: personalData.skills.languages,
             },
@@ -157,12 +161,17 @@ export default function Hero() {
                         <span className="text-zinc-100">Hi, I'm </span>
                         <span className="text-gradient">{personalData.name}</span>
                     </h1>
-                    <h2 className="text-xl lg:text-2xl font-light text-zinc-400 mb-6">{personalData.title}</h2>
+                    <h2 className="text-xl lg:text-2xl font-light text-zinc-400 mb-4">{personalData.title}</h2>
+
+                    <div className="flex items-center justify-center lg:justify-start gap-2 mb-8">
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.6),0_0_14px_rgba(0,217,255,0.6)]" />
+                        <span className="text-xs font-mono text-zinc-400 tracking-wide">{personalData.status}</span>
+                    </div>
 
                     <p className="text-zinc-500 max-w-lg mx-auto lg:mx-0 leading-relaxed mb-10">{personalData.bio}</p>
 
                     <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-                        <Link to="/#contact" className="px-6 py-3 bg-accent text-[#0d0d0d] font-semibold text-sm rounded-md hover:bg-accent/90 glow-accent transition-all duration-200">
+                        <Link to="/#contact" className="px-6 py-3 bg-accent text-[#0d0d0d] font-semibold text-sm rounded-md hover:bg-accent/90 transition-all duration-200">
                             Contact Me
                         </Link>
                         <Link to="https://github.com/notseekeru" target="_blank" rel="noopener noreferrer" className="px-6 py-3 border border-border text-zinc-300 font-medium text-sm rounded-md hover:border-zinc-500 hover:text-zinc-100 transition-all duration-200">
@@ -188,9 +197,7 @@ export default function Hero() {
 
                 <div className="flex-shrink-0 animate-fade-in-up flex flex-col items-center gap-8" style={{ animationDelay: "0.2s" }}>
                     <div className="relative w-56 h-56 lg:w-72 lg:h-72">
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/20 to-accentPurple/20 blur-xl" />
                         <div className="relative w-full h-full rounded-2xl border border-gradient overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-accentPurple/5" />
                             <img
                                 src={personalData.profilePicture}
                                 alt={personalData.name}
@@ -214,7 +221,9 @@ export default function Hero() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-3 w-full max-w-[300px]">
-                        {stats.map((stat) => (
+                        {stats.map((stat) => {
+                            const StatIcon = stat.icon && iconMap[stat.icon] ? iconMap[stat.icon] : FaCode;
+                            return (
                             <button key={stat.label} type="button" onClick={() => setActiveCategory(stat.label)} className="relative w-full text-left border border-border bg-surface rounded-xl p-4 transition-colors duration-300 group hover:border-accent/40 cursor-pointer">
                                 <span className="absolute top-3 right-3 flex h-4 w-4 items-center justify-center rounded-full bg-zinc-900/60 text-zinc-500 transition-all duration-300 group-hover:text-accent group-hover:rotate-90">
                                     <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -222,12 +231,25 @@ export default function Hero() {
                                         <line x1="5" y1="12" x2="19" y2="12" />
                                     </svg>
                                 </span>
-                                <div className={`text-2xl font-bold mb-1 ${stat.accent ? "text-gradient" : "text-zinc-100"}`}>{stat.value}</div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-accent text-base"><StatIcon /></span>
+                                    <div className="text-2xl font-bold text-accent">{stat.value}</div>
+                                </div>
                                 <div className="text-[11px] text-zinc-500 font-medium leading-snug group-hover:text-accent transition-colors">{stat.shortLabel}</div>
                             </button>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
+            </div>
+
+            <div className="relative z-10 flex justify-center pb-8 -mt-4">
+                <Link to="/#infrastructure-diagram" className="flex flex-col items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500 hover:text-zinc-300 transition-colors">
+                    Scroll
+                    <svg className="animate-bounce" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </Link>
             </div>
 
             {activeCategory &&
