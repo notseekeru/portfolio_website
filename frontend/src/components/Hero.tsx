@@ -244,7 +244,7 @@ export default function Hero() {
             </div>
 
             <div className="relative z-10 flex justify-center pb-8 -mt-4">
-                <Link to="/#infrastructure-diagram" className="flex flex-col items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500 hover:text-zinc-300 transition-colors">
+                <Link to="/#projects" className="flex flex-col items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500 hover:text-zinc-300 transition-colors">
                     Scroll
                     <svg className="animate-bounce" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M6 9l6 6 6-6" />

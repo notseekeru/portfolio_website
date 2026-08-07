@@ -8,8 +8,8 @@ import Contact from "../components/Contact";
 
 const sections = [
     { id: "home", Component: Hero },
-    { id: "infrastructure-diagram", Component: InfrastructureDiagram },
     { id: "projects", Component: Projects },
+    { id: "infrastructure-diagram", Component: InfrastructureDiagram },
     { id: "blog", Component: Blog },
     { id: "contact", Component: Contact },
 ] as const;

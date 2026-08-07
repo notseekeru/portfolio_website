@@ -5,8 +5,8 @@ import personalData from "../data/personalData";
 
 const navLinks = [
     { label: "Home", path: "/#home" },
-    { label: "Infrastructure", path: "/#infrastructure-diagram" },
     { label: "Projects", path: "/#projects" },
+    { label: "Infrastructure", path: "/#infrastructure-diagram" },
     { label: "Blog", path: "/#blog" },
     { label: "Contact", path: "/#contact" },
 ];
