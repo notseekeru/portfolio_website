@@ -104,6 +104,7 @@ export default function Hero() {
             {
                 value: personalData.projects.length,
                 label: "Projects & Infrastructure",
+                shortLabel: "Projects",
                 accent: true,
                 items: [
                     ...personalData.projects.map((p) => ({
@@ -117,18 +118,21 @@ export default function Hero() {
             {
                 value: personalData.skills.tools.length,
                 label: "Tools",
+                shortLabel: "Tools",
                 accent: true,
                 items: personalData.skills.tools,
             },
             {
                 value: personalData.skills.frameworks.length,
                 label: "Frameworks",
+                shortLabel: "Frameworks",
                 accent: true,
                 items: personalData.skills.frameworks,
             },
             {
                 value: personalData.skills.languages.length,
                 label: "Languages",
+                shortLabel: "Languages",
                 accent: true,
                 items: personalData.skills.languages,
             },
@@ -219,7 +223,7 @@ export default function Hero() {
                                     </svg>
                                 </span>
                                 <div className={`text-2xl font-bold mb-1 ${stat.accent ? "text-gradient" : "text-zinc-100"}`}>{stat.value}</div>
-                                <div className="text-[11px] text-zinc-500 font-medium leading-snug group-hover:text-accent transition-colors">{stat.label}</div>
+                                <div className="text-[11px] text-zinc-500 font-medium leading-snug group-hover:text-accent transition-colors">{stat.shortLabel}</div>
                             </button>
                         ))}
                     </div>

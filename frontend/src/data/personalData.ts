@@ -59,7 +59,7 @@ export interface PersonalData {
 
 const personalData: PersonalData = {
     name: "Stephen Macabulos",
-    status: "Available for Internships or Entry level roles in a Remote setting",
+    status: "Available for remote part-time roles and internships",
     title: "Aspiring SRE | DevOps Engineer | Platform Engineer",
     location: "Pampanga, Philippines",
     email: "stpmacabulos@gmail.com",
@@ -69,7 +69,7 @@ const personalData: PersonalData = {
     instagram: "https://www.instagram.com/notseekeru/",
     x: "https://x.com/notseekeru",
     threads: "https://www.threads.com/@notseekeru",
-    bio: "Computer Engineering undergraduate with an obsession for how systems work — from raw TCP sockets to Kubernetes clusters. I learn by building: I operate a self-hosted homelab running a multi-node Kubernetes cluster with ArgoCD GitOps, a full LGTM observability stack with OpenTelemetry tracing, and a self-hosted portfolio on a Raspberry Pi. I also wrote an HTTP/1.1 server from scratch in Go. No professional experience yet — just a lot of late nights and a homelab that keeps teaching me more than any course ever could. Currently seeking internships where I can contribute and keep growing.",
+    bio: "Computer Engineering undergraduate who learns by building. I run a self-hosted homelab: a local Kubernetes cluster with ArgoCD GitOps, a full LGTM observability stack with OpenTelemetry, and a self-hosted service infrastructure. I've also written an HTTP/1.1 server from scratch in Go. Currently seeking internships where I can contribute and keep growing.",
     profilePicture: "/profile3.png",
 
     experience: [
