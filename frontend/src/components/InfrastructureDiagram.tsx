@@ -174,7 +174,7 @@ export default function InfrastructureDiagram() {
                 <div ref={headerRef} className={`mb-16 transition-all duration-500 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
                     <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase">Architecture</span>
                     <h1 className="text-4xl lg:text-5xl font-bold text-zinc-100 mt-2 mb-4">Full Infrastructure Diagram</h1>
-                    <p className="text-zinc-500 max-w-lg">End-to-end homelab infrastructure breakdown — from Cloudflare edge to Raspberry Pi 5, Managed Cloud Kubernetes Clusters and monitoring stack.</p>
+                    <p className="text-zinc-500 max-w-lg">End-to-end homelab infrastructure breakdown — from Cloudflare edge to Raspberry Pi 5, Local Clusters, Websites, and experimental monitoring stack.</p>
                 </div>
 
                 <div ref={chartRef} className={`transition-all duration-500 ${chartInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`} style={{ transitionDelay: "0.15s" }}>
