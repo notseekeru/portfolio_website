@@ -70,7 +70,7 @@ Pushed a commit to the diagram app repo. Watched GitHub Actions build a multi-ar
 
 **Git SHA tags.** Stopped pushing `:latest`. Deployments now pin exact commit SHAs. Every deploy is reproducible. Rollback is a Git revert.
 
-**SSH Deploy Keys** between the app repos and GitOps repo. PATs expire. SSH keys don't. ArgoCD pulls manifests from GitOps, GitOps reads app repo artifacts via deploy key. No token refresh.
+**SSH Deploy Keys** between the app repos and GitOps repo. PATs expire. SSH keys don't. ArgoCD pulls manifests from GitOps, GitOps reads app repo artifacts via deploy key. No token refresh. Disclaimer: In a corporate environment, deploy keys are a security risk. For a personal project, they are a convenience that I am willing to accept the risk for.
 
 **GitHub Actions** builds both architectures, tags the image with the commit SHA, updates the GitOps manifest, pushes it. ArgoCD sees the change, syncs the cluster. The whole pipeline from `git push` to live traffic happens without me touching a terminal. First time it completed end-to-end I just sat back and watched.
 
