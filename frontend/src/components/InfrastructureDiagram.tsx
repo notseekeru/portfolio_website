@@ -1,3 +1,4 @@
+import { useState } from "react";
 import InteractiveMermaid from "../utils/InteractiveMermaid";
 import { useInView } from "../hooks/useInView";
 
@@ -167,6 +168,17 @@ export default function InfrastructureDiagram() {
     const { ref: sectionRef, inView: sectionInView } = useInView();
     const { ref: headerRef, inView: headerInView } = useInView();
     const { ref: chartRef, inView: chartInView } = useInView();
+    const [copied, setCopied] = useState(false);
+
+    const copyMermaid = async () => {
+        try {
+            await navigator.clipboard.writeText(infrastructureChart);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch {
+            /* clipboard unavailable (non-secure context) */
+        }
+    };
 
     return (
         <div id="infrastructure-diagram" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
@@ -182,6 +194,25 @@ export default function InfrastructureDiagram() {
                         <InteractiveMermaid chart={infrastructureChart} />
                     </div>
                 </div>
+
+                <details className="group mt-4 rounded-lg border border-zinc-800 bg-zinc-900/40">
+                    <summary className="flex items-center justify-between list-none cursor-pointer px-4 py-3 text-sm text-zinc-400 hover:text-zinc-200 transition-colors">
+                        <span className="font-mono">Mermaid source</span>
+                        <span className="text-xs font-mono text-zinc-600 group-open:hidden">expand</span>
+                    </summary>
+                    <div className="relative px-4 pb-4">
+                        <button
+                            type="button"
+                            onClick={copyMermaid}
+                            className="absolute top-2 right-4 rounded bg-zinc-800/80 px-3 py-1.5 text-xs font-mono text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
+                        >
+                            {copied ? "Copied ✓" : "Copy"}
+                        </button>
+                        <pre className="overflow-x-auto rounded-md border border-zinc-800 bg-zinc-950 p-4 text-xs text-zinc-400 font-mono leading-relaxed">
+                            <code>{infrastructureChart}</code>
+                        </pre>
+                    </div>
+                </details>
             </div>
         </div>
     );
