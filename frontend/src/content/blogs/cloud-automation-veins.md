@@ -42,7 +42,7 @@ Replaced the old Docker DNS records. Pointed Cloudflare from the Droplet IP to t
 
 ## Architectural Simplifications
 
-- **No cert-manager.** Cloudflare Tunnel handles ingress. SSL/TLS terminates at the Cloudflare edge. I'll revisit when I need pod-to-pod mTLS. Not today.
+- **No cert-manager.** Cloudflare Tunnel handles ingress. SSL/TLS terminates at the Cloudflare edge. I'll revisit when I need pod-to-pod mTLS. Not today. Analyzed threat model, decided the risk is acceptable.
 - **No open ports.** Everything through Cloudflare Tunnel. Attack surface is one encrypted tunnel.
 - **No Traefik.** Ingress NGINX is simpler, better documented, known failure modes.
 
@@ -73,6 +73,8 @@ Pushed a commit to the diagram app repo. Watched GitHub Actions build a multi-ar
 **SSH Deploy Keys** between the app repos and GitOps repo. PATs expire. SSH keys don't. ArgoCD pulls manifests from GitOps, GitOps reads app repo artifacts via deploy key. No token refresh.
 
 **GitHub Actions** builds both architectures, tags the image with the commit SHA, updates the GitOps manifest, pushes it. ArgoCD sees the change, syncs the cluster. The whole pipeline from `git push` to live traffic happens without me touching a terminal. First time it completed end-to-end I just sat back and watched.
+
+**Prune old images.** GitHub Actions cleans up old images in GHCR.
 
 ---
 
