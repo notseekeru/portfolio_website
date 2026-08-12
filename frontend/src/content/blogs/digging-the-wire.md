@@ -8,25 +8,23 @@ github: https://github.com/notseekeru/l4-l7-rproxy-lb-http-go
 
 # Summary
 
-This is the story of a deliberately inconvenient project: a monorepo of networking components built from scratch in Go, using nothing but the standard library, begun June 30, 2026. The real focus was a minimal HTTP/1.1 engine I hand-rolled directly on `net.Listen`, `net.Accept`, and `net.Conn`. A Layer 4 reverse proxy and load balancer came later, added to sit in front of it and give the whole thing some room to breathe. No frameworks, no `net/http`, no third-party dependencies. The point was never to build production software — it was to answer a question I'd been carrying for a long time about whether I actually understood the network stack, or whether I'd just been polite to it my whole career.
+A networking stack I built by hand — the project I'm most proud of. Started June 30, 2026, it's a monorepo of components written from scratch in Go with nothing but the standard library. The core is a minimal HTTP/1.1 engine hand-rolled on `net.Listen`, `net.Accept`, and `net.Conn`; a Layer 4 reverse proxy/load balancer sits in front of it. No frameworks, no `net/http`, no third-party deps. It's a learning repo, not something I'd run in prod — that was never the goal. The goal was answering whether I actually understood the network stack, or had just been polite to it my whole career. It turned out I could build it, byte by byte.
 
 ---
 
 ## The Everywhere Abstraction
 
-Every project I'd shipped up to that point ran on someone else's invisible rails. `net/http`, Vercel, Cloudflare tunnels, Nginx as a black-box gateway — they all worked, and I never once resented them for it. They were fast, reliable, and they let me focus on the parts I actually cared about.
+Every project I'd shipped ran on someone else's invisible rails — `net/http`, Vercel, Cloudflare tunnels, Nginx as a black-box gateway. They worked, and I never resented them for it. But underneath sat a quiet discomfort: I could describe what a load balancer did in a sentence, but if you pressed me on what happened to a single byte crossing a connection, I'd have struggled. The abstractions weren't wrong — they were just hiding, and I'd never once looked.
 
-But there was a quiet, long-standing discomfort underneath all that convenience. I could describe what a load balancer did in a sentence, but if you'd pressed me on what actually happened to a single byte as it crossed a connection, I would have struggled. What did `net/http` hide from me? What was a reverse proxy really doing at the TCP layer? The abstractions weren't wrong — they were just *hiding*, and I'd never once bothered to look.
-
-This wasn't a sudden storm or a dramatic failure that pushed me over the edge. It was the opposite — a slow, patient itch that had been building for months. The same pattern I'd come to recognize in myself: reach for the tool, trust the blackbox, and call it engineering. Eventually I decided to do the opposite of everyone else. Instead of climbing higher up the stack, I'd dig all the way down — and on June 30, 2026, I opened the repo that would become this monorepo and started building it by hand.
+So instead of climbing higher up the stack, I decided to dig down. On June 30, 2026, I opened the repo and started building it by hand.
 
 ## Why Go, and Why Nothing Else
 
-Go was the obvious choice for one reason: the standard library gives you the raw socket primitives and then gets the hell out of the way. `net.Listen`, `net.Accept`, `net.Conn`, `io.Copy` — every byte crosses my own code before it hits the wire, and no framework is there to hand me a `ResponseWriter` and hide the parsing. I wanted to see the pipeline, and Go was the thinnest curtain I could find.
+Go's standard library hands you the raw socket primitives and gets out of the way. `net.Listen`, `net.Accept`, `net.Conn`, `io.Copy` — every byte crosses my own code before the wire, no `ResponseWriter` to hide the parsing. Go was the thinnest curtain I could find.
 
-I set myself a hard rule that became the soul of the project: **standard library only**. No routing framework, no middleware, no HTTP/2, no connection pooling. Not oversights, but deliberate omissions — the features I refused to hide behind so I could understand the layer beneath them.
+My one hard rule: **standard library only**. No routing framework, no middleware, no HTTP/2, no connection pooling. Deliberate omissions, so I could understand the layer beneath them.
 
-The architecture was simple and honest. A client opens a TCP connection to the Layer 4 load balancer on `:9000`. The balancer round-robins that connection to one of two backend HTTP engines, on `:8080` and `:8081`, and then does nothing clever at all — it just relays bytes in both directions. Protocol-agnostic by design. It balances raw TCP streams, not HTTP requests, because it has no business knowing what HTTP is.
+The architecture was simple. A client opens a TCP connection to the Layer 4 balancer on `:9000`, which round-robins it to one of two backend HTTP engines on `:8080` and `:8081`, then just relays bytes both ways. Protocol-agnostic by design — it balances raw TCP streams, not HTTP requests, because it has no business knowing what HTTP is.
 
 ```mermaid
 flowchart LR
@@ -60,21 +58,21 @@ flowchart LR
        BE2 -.-> L7
 ```
 
-That diagram is the whole project in one picture, and looking at it I knew exactly what I was signing up for. Every box in it was something I was about to build with my own hands, and for the first time a load balancer wasn't a mystery box on a slide — it was a shape I could see myself wiring together.
+That diagram is the whole project in one picture — every box something I'd wire together by hand. For the first time a load balancer wasn't a mystery box on a slide; it was a shape I could see.
 
 ## Writing an HTTP Engine Without `net/http`
 
-The L7 engine was the heart of this project, and where I truly had to dig. A raw HTTP/1.1 server built directly on `net.Listen`, `net.Accept`, and `net.Conn` — a per-connection goroutine, a keep-alive request loop, `bufio`-buffered parsing. I had to read the request line, the headers, the query string, and validate every piece of it, because there was no framework to do it for me.
+The L7 engine was the heart — a raw HTTP/1.1 server on `net.Listen`/`net.Accept`/`net.Conn`: per-connection goroutines, a keep-alive request loop, `bufio`-buffered parsing. No framework to validate anything, so I had to decide what malformed meant.
 
-- Raw TCP listener with per-connection goroutines and a 5-second connection deadline
+- Raw TCP listener with per-connection goroutines and a 5-second deadline
 - Keep-alive request loop with buffered parsing
 - Request-line / header / query-string parsing with validation
-- `GET` and `POST` only, rejecting everything else with a `405`; HTTP/1.1 only, rejecting anything else with a `400`
+- `GET`/`POST` only (`405` otherwise); HTTP/1.1 only (`400` otherwise)
 - Static file serving with MIME detection and directory-traversal protection
-- Hand-built response builder and file server
-- POST body reads capped at roughly 10 MB via `io.LimitReader`
+- Hand-built response builder
+- POST bodies capped at ~10 MB via `io.LimitReader`
 
-The parsing was the unglamorous part I'd always taken for granted. The request line gets split on spaces and checked: exactly three parts, `HTTP/1.1` in the third position, and only `GET` or `POST`. Then the query string gets cut at the `?`, split on `&`, validated, and dumped into a map. Headers follow the same pattern, keyed by name. No framework whispered any of this to me — I had to decide what malformed even meant.
+The parsing was the unglamorous part I'd always taken for granted. The request line splits on spaces and must have exactly three parts, `HTTP/1.1` in the third slot, and only `GET` or `POST`. The query string gets cut at `?`, split on `&`, validated, dumped into a map. Headers follow, keyed by name.
 
 ```go
 // l7-http-engine — the request line, untangled by hand
@@ -96,7 +94,7 @@ if requestParts[0] != "GET" && requestParts[0] != "POST" {
 }
 ```
 
-And the response was just as naked — a hand-assembled string reported as a `Content-Length`, with `Server: GoLang NixOS TCP/HTTP Engine` signed at the bottom. (Yes, I shipped my distro in my server header. It felt honest.)
+The response was just as naked — a hand-assembled string with a dynamic `Content-Length`, signed at the bottom with `Server: GoLang NixOS TCP/HTTP Engine`. Every byte crossed my own code before the socket.
 
 ```go
 // l7-http-engine — what an HTTP response looks like when you write it yourself
@@ -112,41 +110,33 @@ serverResponse := "HTTP/1.1 " + statusCode + " " + statusPhrase + "\r\n" +
 myConnection.Write([]byte(serverResponse))
 ```
 
-Every byte crossed my own code before it hit the socket. That sentence from the README isn't marketing — it was the entire contract I'd made with myself.
-
 ## The Case of the Vanishing POST Body
 
-There's a bug buried in this engine that taught me more than any of the features, and it starts with that `io.LimitReader` bullet. I capped POST bodies at roughly 10 MB for safety's sake, and one afternoon I was verifying it with a `curl` — a body larger than the cap, and then a normal one, just to see the boundary behave.
+The bug that taught me the most starts with that `io.LimitReader` bullet. I capped POST bodies at ~10 MB and was verifying it with `curl` — a big body, then a normal one. The big one got rejected as designed. Then I fired the small one again and its body came back truncated. Half a JSON body, then nothing. Same spot every time — not a race, structural.
 
-The small payload fine. The large payload got rejected, exactly as designed. But then I fired the small one again, the same one that had just worked, and something was wrong. The body arrived truncated. Half a JSON body, then nothing. I ran it again — cut in the same place. I hadn't changed a thing.
+The trap: I parsed the request line and headers through a `bufio.Reader` wrapped around the raw `net.Conn` — the same shared, buffered reader for the whole connection. `bufio` doesn't read byte-by-byte; it pulls big chunks into its internal buffer and hands them out piecemeal. So by the time I'd read the headers, the reader had very likely already pre-fetched a chunk of the POST body into that buffer — counted as "read" from the socket's view, not yet consumed by my code.
 
-I started poking. The truncation wasn't random; it was in the same spot every time, which told me it wasn't a race or a bit flip — it was structural. Somewhere, bytes were being read off the socket and then simply never making it into my handler. I'd spent long enough looking at this pipeline that I had a suspicion, and it was the kind that only exists if you actually know what `bufio` is doing. That's the thing about using raw primitives: you're not just writing the code, you're inheriting the behavior of every layer you stack on top of the socket.
-
-Here was the trap. I was parsing the request line and headers through a `bufio.Reader` wrapped around the raw `net.Conn` — the same shared, buffered reader I used for the whole connection. That reader doesn't read byte-by-byte from the socket; it pulls in big chunks and hands them out a piece at a time from its internal buffer. So by the time I'd read the headers, the reader had very likely already pre-fetched a chunk of the POST body into that buffer, sitting there waiting, counted as "read" from the socket's point of view but not yet consumed by my code.
-
-And exactly there, at that seam, I'd made the mistake. When I wanted to cap the body, my first instinct was the one everyone has: wrap the limit around the raw socket.
+And there I'd made the mistake. When I capped the body, my first instinct was to wrap the limit around the raw socket:
 
 ```go
 // l7-http-engine — the naive cap, and where the bytes went to die
 body, _ := io.ReadAll(io.LimitReader(conn, maxBody+1))
 ```
 
-`io.LimitReader(conn, ...)` reads straight off the network socket — not through my `bufio.Reader`. So whatever the user had sent had already been slurped into the buffered reader's cache, and this new, separate reader over the socket could only see whatever came next on the wire. The buffered bytes — genuine, real, already-delivered user data — were effectively orphaned. My proxy had eaten them and my limit-reader would never open that cache again. The truncation wasn't the data being lost on the network. It was me throwing away bytes I'd already received, because I'd put the cap on the wrong side of the buffer.
+`io.LimitReader(conn, ...)` reads straight off the socket, *not* through my `bufio.Reader`. The bytes already slurped into the buffer were orphaned — my code could never reach that cache again. The truncation wasn't data lost on the network; it was me throwing away bytes I'd already received, because I'd put the cap on the wrong side of the buffer.
 
-The fix was almost insultingly small, and that's exactly why it's worth writing down. Keep the limit on the *same* reader that already owns those buffered bytes — chain `io.LimitReader` onto the active `bufio.Reader`, not onto the raw connection.
+The fix was one variable. Keep the limit on the same reader that owns those buffered bytes:
 
 ```go
 // l7-http-engine — the cap, chained onto the buffer that owns the bytes
 body, _ := io.ReadAll(io.LimitReader(reader, maxBody+1))
 ```
 
-One variable. The difference between the limit sitting before the buffer (and silently discarding its pre-fetched contents) and the limit sitting after it, reading the buffered + fresh bytes as one continuous stream. `net/http` hides this seam from you so completely that you'd never know it existed — which is precisely why I'd never have learned it if I'd kept using `net/http`. The abstraction wasn't protecting me from this bug; it was protecting me from the *understanding* that this bug even exists.
-
-This is the kind of gotcha that only bites if you build the whole connection by hand, and it's a big part of why I did. When you write `io.Copy` and `LimitReader` onto raw sockets yourself, you learn where buffering boundaries actually live — and how expensive it is to guess wrong about them. That fix stayed in the code because it wasn't a workaround; it was the first time I truly understood what a buffered reader was for.
+`net/http` hides this seam so completely I'd never have known it existed — which is exactly why I'd never have learned it if I'd kept using it. The abstraction wasn't protecting me from this bug; it was protecting me from the *understanding* that the bug exists. This gotcha only bites when you build the whole connection by hand, and that's a big part of why I did.
 
 ## A Load Balancer I Added Afterwards
 
-The Layer 4 component came after the engine, and I'm glad it did — it gave me a reason to look at what I'd built from the outside. It listens on `:9000`, accepts connections in a loop, and keeps a rotating pointer across the two backends. Each new connection gets handed to the next backend in line. Then the real work which I'd been dreading for years turns out to be two lines: relaying bytes in each direction with `io.Copy`.
+The Layer 4 component came after the engine — it let me look at what I'd built from the outside. It listens on `:9000`, accepts connections in a loop, and round-robins each one across the two backends. The work I'd been dreading for years turned out to be two lines:
 
 ```go
 // l4-rproxy-lb — minimal busy loop, sockets, and a round-robin pointer
@@ -162,19 +152,15 @@ go func() {
 _, _ = io.Copy(client, backend)
 ```
 
-Deceptively short, but that's the door opening. I stared at that relay and understood something concrete: a reverse proxy at this layer isn't interpreting anything. It's a mirror. It holds a connection open in both directions and lets the bytes flow through, and the moment one side hangs up, it closes the write on the other so the conversation ends cleanly.
+Deceptively short, but that's the door opening. A reverse proxy at this layer isn't interpreting anything — it's a mirror. It holds the connection open in both directions and lets bytes flow; when one side hangs up, it closes the write on the other so the conversation ends cleanly.
 
-And then came the moment I'd actually been digging for. I pointed a `curl` at `localhost:9000`, and watched it round-robin straight into the engine I'd written myself on `:8080`, then relay a real HTTP response back out through a connection I'd wired by hand. The first byte relay worked. There's a particular kind of joy in watching bytes you don't fully deserve cross a socket you built with your own hands, and that was the closest I've come to a dopamine spike in months. The blackbox wasn't a blackbox anymore — it was a mirror I'd constructed, and it was reflecting traffic correctly.
-
-It was protocol-agnostic by construction, and that was a feature. It didn't need to know that the payload was HTTP — it would happily balance raw Telnet or a binary stream. That was when I finally internalized the difference between balancing connections and balancing requests, and why the "L4" in my components actually meant something.
+Then came the moment I'd been digging for: `curl localhost:9000` round-robin'd into the engine I'd written on `:8080` and relayed a real HTTP response back through a connection I'd wired by hand. Protocol-agnostic by construction — it would happily balance raw Telnet or a binary stream. That's when I internalized the difference between balancing connections and balancing requests, and why the "L4" actually meant something.
 
 ## The Honest Rule About AI
 
-Here's the part that ties this whole project back to everything I've written before, and it's the part I'm most careful about. After two projects where I leaned hard on AI and eventually paid for it with systems I didn't fully understand, this time I set a different, stricter boundary.
+After two projects where I leaned hard on AI and paid for it with systems I didn't fully understand, I set a stricter boundary this time. I wrote the core logic and conventions entirely myself. AI was the assistant, not the author: syntax, boilerplate, and a code-review/critique tool so I could understand the systems better. I hand-picked its advice and investigated its edge cases myself rather than accepting fixes wholesale.
 
-I wrote the core logic and conventions entirely myself. AI was the assistant, not the author: it produced syntax, boilerplate generation, and acted as a code-review and critique tool so I could understand the underlying systems better. I hand-picked its implemented advice and investigated its edge cases myself rather than accepting AI-generated fixes wholesale.
-
-But I also learned, in a way that felt deeply human, that AI can be confidently wrong. There was a moment on the path-traversal surface where the AI kept telling me my code was broken. It insisted there was a vulnerability I'd shipped. My defense was a simple containment check on the file-path — building the full path and asserting it stayed under the working directory:
+But I also learned AI can be confidently wrong. On the path-traversal surface, the AI kept insisting my code had a vulnerability. My defense was a containment check — building the full path and asserting it stayed under the working directory:
 
 ```go
 // l7-http-engine — the directory-traversal guard the AI insisted was broken
@@ -187,26 +173,24 @@ if !strings.HasPrefix(fullPath, basePrefix) && fullPath != cwd {
 }
 ```
 
-I read the logic again, and I genuinely didn't think it was broken — I doubted the AI instead of doubting myself. So I stopped arguing and did the only thing that settles technical disagreements: I wrote a test.
+I didn't think it was broken, so I stopped arguing and did the only thing that settles technical disagreements: I wrote a test.
 
 ```bash
 ./path_traversal_test.sh   # directory-traversal and injection attempts
 ```
 
-I ran it, watched it reject traversal and injection attempts cleanly, and then fed those results back to the AI. It went quiet for a beat, and then it admitted it was in the wrong. My code wasn't broken — its confidence was. That was the moment the whole project clicked for me at a different level: I'd let AI critique and generate, but I'd kept the ultimate authority. I verified its claims with my own eyes and my own tests, and when the evidence disagreed with it, the evidence won.
-
-Maybe I've missed something and it's still vulnerable — that's a real possibility, and I say so out loud — but for now the behavior is verified by my own tests, not by an AI's confidence. That distinction mattered more to me than shipping a perfectly secure server ever could.
+It rejected traversal and injection attempts cleanly, and when I fed the results back, the AI admitted it was wrong. My code wasn't broken — its confidence was. That's the whole rule in practice: let AI critique and generate, but keep the ultimate authority, and verify its claims with your own tests. Maybe I've still missed something — a real possibility — but the behavior is verified by my tests, not by an AI's confidence. That distinction mattered more than shipping a perfectly secure server.
 
 ## What Digging Gave Me
 
-The honest payoff isn't a load balancer. I built a toy TCP proxy and a toy HTTP engine, and I could have `go get` any of it in under a minute. Neither is finished, fully hardened, or production-safe, and I'd be lying if I said otherwise. But I didn't build them to ship them — I built them to understand them, and on that count they've already paid for themselves.
+The payoff isn't a load balancer — it's understanding. I built a from-scratch L4 proxy and a hand-rolled HTTP/1.1 engine. It's a learning repo, not something I'd run in prod, and that was never the point. The point was to understand the stack, and on that count it already paid for itself.
 
-I now know what `net/http` hides, because I rebuilt the slice of it that mattered by hand. I know what a load balancer really does, because I wired the byte relay myself. And every time I reach for the real `net/http` next, or configure another reverse proxy, it won't be a gesture toward a blackbox — it'll be a tool I've seen inside of.
+I now know what `net/http` hides, because I rebuilt the slice of it that mattered by hand. Every time I reach for the real `net/http` next, or configure another reverse proxy, it won't be a gesture toward a blackbox — it'll be a tool I've seen inside of.
 
 # Conclusion
 
-Everyone is hiding on abstractions these days. It's fast, it's reasonable, and honestly it's usually the right call. But I've learned that sometimes the most valuable thing you can do is refuse to fit in and dig one layer down, just to see. This project was my dig. I got dust in my hands, my engine still has holes, and I'm not sure it's production-safe on a good day — but I understand it, byte by byte, and that understanding is worth more than any framework could have handed me.
+Everyone is hiding on abstractions these days — it's fast, reasonable, and usually the right call. But the most valuable thing you can do is sometimes refuse to fit in and dig one layer down, just to see. This project was my dig: a learning repo, not prod, but I understand it byte by byte — and that understanding is worth more than any framework could have handed me.
 
-The goal wasn't to build something better than the tools that exist. It was to build something I couldn't hide behind, and to prove to myself that I could. The next time someone hands me a perfectly abstracted tool, I'll be the one who knows what's actually underneath it. That's the architectural curiosity I've been chasing, and it turns out all I had to do was dig.
+The goal wasn't to build something better than the tools that exist — it was to build something I couldn't hide behind. The next time someone hands me a perfectly abstracted tool, I'll be the one who knows what's actually underneath it. All I had to do was dig — and I'm proud I did.
 
 ---
