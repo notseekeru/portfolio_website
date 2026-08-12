@@ -114,6 +114,36 @@ myConnection.Write([]byte(serverResponse))
 
 Every byte crossed my own code before it hit the socket. That sentence from the README isn't marketing — it was the entire contract I'd made with myself.
 
+## The Case of the Vanishing POST Body
+
+There's a bug buried in this engine that taught me more than any of the features, and it starts with that `io.LimitReader` bullet. I capped POST bodies at roughly 10 MB for safety's sake, and one afternoon I was verifying it with a `curl` — a body larger than the cap, and then a normal one, just to see the boundary behave.
+
+The small payload fine. The large payload got rejected, exactly as designed. But then I fired the small one again, the same one that had just worked, and something was wrong. The body arrived truncated. Half a JSON body, then nothing. I ran it again — cut in the same place. I hadn't changed a thing.
+
+I started poking. The truncation wasn't random; it was in the same spot every time, which told me it wasn't a race or a bit flip — it was structural. Somewhere, bytes were being read off the socket and then simply never making it into my handler. I'd spent long enough looking at this pipeline that I had a suspicion, and it was the kind that only exists if you actually know what `bufio` is doing. That's the thing about using raw primitives: you're not just writing the code, you're inheriting the behavior of every layer you stack on top of the socket.
+
+Here was the trap. I was parsing the request line and headers through a `bufio.Reader` wrapped around the raw `net.Conn` — the same shared, buffered reader I used for the whole connection. That reader doesn't read byte-by-byte from the socket; it pulls in big chunks and hands them out a piece at a time from its internal buffer. So by the time I'd read the headers, the reader had very likely already pre-fetched a chunk of the POST body into that buffer, sitting there waiting, counted as "read" from the socket's point of view but not yet consumed by my code.
+
+And exactly there, at that seam, I'd made the mistake. When I wanted to cap the body, my first instinct was the one everyone has: wrap the limit around the raw socket.
+
+```go
+// l7-http-engine — the naive cap, and where the bytes went to die
+body, _ := io.ReadAll(io.LimitReader(conn, maxBody+1))
+```
+
+`io.LimitReader(conn, ...)` reads straight off the network socket — not through my `bufio.Reader`. So whatever the user had sent had already been slurped into the buffered reader's cache, and this new, separate reader over the socket could only see whatever came next on the wire. The buffered bytes — genuine, real, already-delivered user data — were effectively orphaned. My proxy had eaten them and my limit-reader would never open that cache again. The truncation wasn't the data being lost on the network. It was me throwing away bytes I'd already received, because I'd put the cap on the wrong side of the buffer.
+
+The fix was almost insultingly small, and that's exactly why it's worth writing down. Keep the limit on the *same* reader that already owns those buffered bytes — chain `io.LimitReader` onto the active `bufio.Reader`, not onto the raw connection.
+
+```go
+// l7-http-engine — the cap, chained onto the buffer that owns the bytes
+body, _ := io.ReadAll(io.LimitReader(reader, maxBody+1))
+```
+
+One variable. The difference between the limit sitting before the buffer (and silently discarding its pre-fetched contents) and the limit sitting after it, reading the buffered + fresh bytes as one continuous stream. `net/http` hides this seam from you so completely that you'd never know it existed — which is precisely why I'd never have learned it if I'd kept using `net/http`. The abstraction wasn't protecting me from this bug; it was protecting me from the *understanding* that this bug even exists.
+
+This is the kind of gotcha that only bites if you build the whole connection by hand, and it's a big part of why I did. When you write `io.Copy` and `LimitReader` onto raw sockets yourself, you learn where buffering boundaries actually live — and how expensive it is to guess wrong about them. That fix stayed in the code because it wasn't a workaround; it was the first time I truly understood what a buffered reader was for.
+
 ## A Load Balancer I Added Afterwards
 
 The Layer 4 component came after the engine, and I'm glad it did — it gave me a reason to look at what I'd built from the outside. It listens on `:9000`, accepts connections in a loop, and keeps a rotating pointer across the two backends. Each new connection gets handed to the next backend in line. Then the real work which I'd been dreading for years turns out to be two lines: relaying bytes in each direction with `io.Copy`.
