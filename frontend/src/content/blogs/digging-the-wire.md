@@ -1,7 +1,7 @@
 ---
 title: Digging the Wire
-date: 2026-6-30
-description: I got tired of everyone hiding behind abstractions, so I built a TCP reverse proxy and an HTTP/1.1 engine from scratch in Go with nothing but the standard library. No net/http, no frameworks — just raw sockets, byte relays, and a deep, long-standing need to finally see what's under the hood.
+date: 2026-8-30
+description: I got tired of everyone hiding behind abstractions, so I built a TCP reverse proxy and an HTTP/1.1 engine from scratch in Go with nothing but the standard library. No net/http, no frameworks.
 favorite: true
 github: https://github.com/notseekeru/l4-l7-rproxy-lb-http-go
 ---
