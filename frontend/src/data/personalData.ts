@@ -378,8 +378,7 @@ const personalData: PersonalData = {
         },
         {
             title: "Raw L7 TCP/HTTP 1.1 Engine & L7 Reverse Proxy + Load Balancer",
-            description:
-                "Built an HTTP/1.1 server + L4 Reverse Proxy + Load Balancer from scratch using Go's net package — no frameworks, just raw net sockets, and bufio.Reader. Serves GET/POST with dynamic Content-Length, SetDeadline timeouts, and proper 200/400/404 http responses.",
+            description: "Built an HTTP/1.1 server + L4 Reverse Proxy + Load Balancer from scratch using Go's net package — no frameworks, just raw net sockets, and bufio.Reader. Serves GET/POST with dynamic Content-Length, SetDeadline timeouts, and proper 200/400/404 http responses.",
             techStack: ["Go", "TCP/IP", "HTTP/1.1"],
             image: "/project7.png",
             github: "https://github.com/notseekeru/l4-l7-rproxy-lb-http-go",
