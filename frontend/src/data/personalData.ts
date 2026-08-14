@@ -59,8 +59,8 @@ export interface PersonalData {
 
 const personalData: PersonalData = {
     name: "Stephen Macabulos",
-    status: "Available for remote part-time roles and internships",
-    title: "Aspiring SRE | DevOps Engineer | Platform Engineer",
+    status: "Available for remote roles and internships",
+    title: "Aspiring SRE | DevOps | Platform | Cloud Engineer",
     location: "Pampanga, Philippines",
     email: "stpmacabulos@gmail.com",
     linkedin: "https://www.linkedin.com/in/stephen-macabulos",
