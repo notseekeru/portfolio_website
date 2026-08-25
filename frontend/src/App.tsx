@@ -4,6 +4,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
 
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 
@@ -18,6 +19,7 @@ export default function App() {
                             <Routes>
                                 <Route path="/" element={<Home />} />
                                 <Route path="/blog/:slug" element={<BlogPost />} />
+                                <Route path="*" element={<NotFound />} />
                             </Routes>
                         </Suspense>
                     </main>
