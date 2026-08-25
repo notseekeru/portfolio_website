@@ -58,7 +58,7 @@ export default function Navbar() {
 
 	return (
 		<header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-ink/90 backdrop-blur-md border-b border-border" : "bg-transparent"}`}>
-			<nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+			<nav className="h-24 max-w-6xl mx-auto px-6 flex items-center justify-between">
 				<Link
 					to="/"
 					onClick={() => {
@@ -66,9 +66,10 @@ export default function Navbar() {
 							window.scrollTo({ top: 0, behavior: "smooth" });
 						}
 					}}
-					className="font-serif text-lg font-medium text-bone"
+					className="-ml-6 lg:-ml-10 font-display text-2xl leading-none"
 				>
-					{personalData.name}
+					<span className="text-accent">{personalData.name.split(" ")[0]}</span>
+					<span className="text-bone"> {personalData.name.split(" ")[1]}</span>
 				</Link>
 
 				<ul className="hidden md:flex items-center gap-8">

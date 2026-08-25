@@ -171,7 +171,7 @@ export default function InfrastructureDiagram() {
     return (
         <div id="infrastructure-diagram" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
             <div className="max-w-6xl mx-auto px-6">
-                <div ref={headerRef} className={`mb-16 transition-all duration-500 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
+				<div ref={headerRef} className={`mb-16 flex flex-col md:items-end md:text-right transition-all duration-500 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
 					<span className="font-serif italic text-accent text-sm">Architecture</span>
 					<h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">Infrastructure</h1>
 					<p className="text-muted max-w-lg">End-to-end homelab breakdown — edge to a Raspberry Pi 5.</p>

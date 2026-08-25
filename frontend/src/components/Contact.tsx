@@ -48,7 +48,7 @@ export default function Contact() {
     return (
         <div id="contact" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
             <div className="max-w-6xl mx-auto px-6">
-                <div className="animate-slide-in-left">
+				<div className="animate-slide-in-left md:ml-24">
 					<span className="font-serif italic text-accent text-sm">03 — Contact</span>
 					<h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-6">Get in touch</h1>
 					<p className="text-muted text-sm mb-10 max-w-lg">Open to remote roles, internships, and collaborations.</p>

@@ -25,7 +25,7 @@ export default function Blog() {
     return (
         <div id="blog" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
             <div className="max-w-6xl mx-auto px-6">
-                <div ref={headerRef} className={`transition-all duration-500 mb-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
+				<div ref={headerRef} className={`transition-all duration-500 mb-16 md:-ml-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
 					<span className="font-serif italic text-accent text-sm">02 — Writing</span>
 					<h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">Blog</h1>
 					<p className="text-muted max-w-lg">Thoughts, guides, and things I've learned along the way.</p>
@@ -59,11 +59,17 @@ export default function Blog() {
                             </div>
                         )}
 
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                            {visibleBlogs.map((post, i) => (
-                                <BlogCard key={post.slug} post={post} index={i} />
-                            ))}
-                        </div>
+						<div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+							{visibleBlogs.map((post, i) => {
+								// staggered editorial rhythm: featured lead card + inline offsets
+								const featured = i === 0 ? "md:col-span-7" : i % 3 === 1 ? "md:col-span-5 md:col-start-8" : "md:col-span-4";
+								return (
+									<div key={post.slug} className={featured}>
+										<BlogCard post={post} index={i} />
+									</div>
+								);
+							})}
+						</div>
                     </>
                 )}
             </div>
