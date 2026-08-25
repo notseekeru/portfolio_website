@@ -20,7 +20,7 @@ function PanControls({ transformRef }: { transformRef: React.RefObject<ReactZoom
         [transformRef],
     );
 
-    const btn = "flex items-center justify-center w-7 h-7 rounded-md bg-zinc-900/80 border border-zinc-700/60 text-zinc-400 hover:text-white hover:bg-zinc-800 hover:border-zinc-500 transition-colors focus:outline-none focus:ring-1 focus:ring-zinc-500 select-none";
+	const btn = "flex items-center justify-center w-7 h-7 rounded-md bg-surface/80 border border-border text-muted hover:text-bone hover:bg-surface hover:border-amber/50 transition-colors focus:outline-none focus:ring-1 focus:ring-amber/50 select-none";
 
     return (
         <div className="absolute bottom-3 right-3 z-20 grid grid-cols-3 gap-0.5">
@@ -50,7 +50,7 @@ function PanControls({ transformRef }: { transformRef: React.RefObject<ReactZoom
                     <path d="m15 18-6-6 6-6" />
                 </svg>
             </button>
-            <button type="button" className={`${btn} bg-zinc-900/90`} onClick={() => transformRef.current?.centerView(1, 200)} aria-label="Reset view" tabIndex={-1}>
+			<button type="button" className={`${btn} bg-ink/80`} onClick={() => transformRef.current?.centerView(1, 200)} aria-label="Reset view" tabIndex={-1}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <title>Reset view</title>
                     <circle cx="12" cy="12" r="3" />
@@ -87,14 +87,58 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
     useEffect(() => {
         let isMounted = true;
 
-        mermaid.initialize({
-            startOnLoad: false,
-            theme: "dark",
-            flowchart: {
-                useMaxWidth: false,
-                htmlLabels: true,
-            },
-        });
+		mermaid.initialize({
+			startOnLoad: false,
+			theme: "base",
+			flowchart: {
+				useMaxWidth: false,
+				htmlLabels: true,
+			},
+			themeVariables: {
+				fontFamily: "JetBrains Mono, monospace",
+				background: "#211e17",
+				primaryColor: "#211e17",
+				primaryTextColor: "#e8e6da",
+				primaryBorderColor: "#8abf9a",
+				lineColor: "#8a8271",
+				textColor: "#e8e6da",
+				mainBkg: "#211e17",
+				nodeBkg: "#211e17",
+				nodeBorder: "#8abf9a",
+				clusterBkg: "#14140f",
+				clusterBorder: "#322d24",
+				titleColor: "#e8e6da",
+				edgeLabelBackground: "#14140f",
+				actorBkg: "#211e17",
+				actorBorder: "#8abf9a",
+				actorTextColor: "#e8e6da",
+				signalColor: "#8a8271",
+				signalTextColor: "#e8e6da",
+				labelBoxBkgColor: "#211e17",
+				labelBoxBorderColor: "#8abf9a",
+				labelTextColor: "#8a8271",
+				loopTextColor: "#e8e6da",
+				noteBkgColor: "#14140f",
+				noteBorderColor: "#d9a441",
+				noteTextColor: "#e8e6da",
+				activationBkgColor: "#211e17",
+				activationBorderColor: "#8a8271",
+				sequenceNumberColor: "#14140f",
+				sectionBkgColor: "#211e17",
+				altSectionBkgColor: "#14140f",
+				altBkgColor: "#14140f",
+				commitLabelColor: "#e8e6da",
+				commitBackgroundColor: "#211e17",
+				pie1: "#8abf9a",
+				pie2: "#d9a441",
+				pie3: "#8a8271",
+				pie4: "#322d24",
+				pie5: "#211e17",
+				pieTitleTextColor: "#e8e6da",
+				pieSectionTextColor: "#e8e6da",
+				pieLegendTextColor: "#e8e6da",
+			},
+		});
 
         const renderDiagram = async () => {
             try {
@@ -166,10 +210,10 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
     );
 
     const shell = (
-        <div className="relative flex-1 min-h-0 w-full overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/50 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:24px_24px]">
+		<div className="relative flex-1 min-h-0 w-full overflow-hidden rounded-lg border border-border bg-surface/40 bg-[linear-gradient(to_right,#322d24_1px,transparent_1px),linear-gradient(to_bottom,#322d24_1px,transparent_1px)] bg-[size:24px_24px]">
             {diagramView}
             <PanControls transformRef={transformRef} />
-            <button type="button" onClick={toggleFullscreen} className="absolute top-4 right-4 z-10 rounded bg-zinc-800/80 p-2 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors" aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}>
+			<button type="button" onClick={toggleFullscreen} className="absolute top-4 right-4 z-10 rounded bg-surface/80 p-2 text-muted hover:text-bone hover:bg-surface border border-border transition-colors" aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d={fsIconPath} />
                 </svg>
@@ -180,7 +224,7 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
     if (!isFullscreen) return shell;
 
     return createPortal(
-        <div className="fixed inset-0 z-[100] flex flex-col" style={{ backgroundColor: "#0a0a0a" }}>
+		<div className="fixed inset-0 z-[100] flex flex-col" style={{ backgroundColor: "#14140f" }}>
             {shell}
         </div>,
         document.body,
