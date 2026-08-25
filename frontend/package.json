@@ -5,7 +5,8 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "tsc --noEmit -p tsconfig.json && vite build",
+        "build": "sh scripts/check-tokens.sh src && tsc --noEmit -p tsconfig.json && vite build",
+        "check-tokens": "sh scripts/check-tokens.sh src",
         "typecheck": "tsc --noEmit -p tsconfig.json",
         "lint": "biome check . --fix --unsafe",
         "preview": "vite preview"

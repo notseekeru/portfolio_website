@@ -7,6 +7,18 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
 mermaid.registerLayoutLoaders(elkLayouts);
 
+// Single source of truth for Mermaid colors (mirrors the @theme tokens in index.css).
+// Mermaid's themeVariables take literal color strings, so keep them in ONE place here.
+const MERMAID_THEME = {
+    bg: "#15120e",
+    ink: "#0c0a08",
+    line: "#8a8271",
+    border: "#322d24",
+    accent: "#8abf9a",
+    amber: "#d9a441",
+    text: "#e8e6da",
+};
+
 const PAN_STEP = 80;
 
 function PanControls({ transformRef }: { transformRef: React.RefObject<ReactZoomPanPinchRef | null> }) {
@@ -96,47 +108,47 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
             },
             themeVariables: {
                 fontFamily: "JetBrains Mono, monospace",
-                background: "#15120e",
-                primaryColor: "#15120e",
-                primaryTextColor: "#e8e6da",
-                primaryBorderColor: "#8abf9a",
-                lineColor: "#8a8271",
-                textColor: "#e8e6da",
-                mainBkg: "#15120e",
-                nodeBkg: "#15120e",
-                nodeBorder: "#8abf9a",
-                clusterBkg: "#0c0a08",
-                clusterBorder: "#322d24",
-                titleColor: "#e8e6da",
-                edgeLabelBackground: "#0c0a08",
-                actorBkg: "#15120e",
-                actorBorder: "#8abf9a",
-                actorTextColor: "#e8e6da",
-                signalColor: "#8a8271",
-                signalTextColor: "#e8e6da",
-                labelBoxBkgColor: "#15120e",
-                labelBoxBorderColor: "#8abf9a",
-                labelTextColor: "#8a8271",
-                loopTextColor: "#e8e6da",
-                noteBkgColor: "#0c0a08",
-                noteBorderColor: "#d9a441",
-                noteTextColor: "#e8e6da",
-                activationBkgColor: "#15120e",
-                activationBorderColor: "#8a8271",
-                sequenceNumberColor: "#0c0a08",
-                sectionBkgColor: "#15120e",
-                altSectionBkgColor: "#0c0a08",
-                altBkgColor: "#0c0a08",
-                commitLabelColor: "#e8e6da",
-                commitBackgroundColor: "#15120e",
-                pie1: "#8abf9a",
-                pie2: "#d9a441",
-                pie3: "#8a8271",
-                pie4: "#322d24",
-                pie5: "#15120e",
-                pieTitleTextColor: "#e8e6da",
-                pieSectionTextColor: "#e8e6da",
-                pieLegendTextColor: "#e8e6da",
+                background: MERMAID_THEME.ink,
+                primaryColor: MERMAID_THEME.bg,
+                primaryTextColor: MERMAID_THEME.text,
+                primaryBorderColor: MERMAID_THEME.accent,
+                lineColor: MERMAID_THEME.line,
+                textColor: MERMAID_THEME.text,
+                mainBkg: MERMAID_THEME.bg,
+                nodeBkg: MERMAID_THEME.bg,
+                nodeBorder: MERMAID_THEME.accent,
+                clusterBkg: MERMAID_THEME.ink,
+                clusterBorder: MERMAID_THEME.border,
+                titleColor: MERMAID_THEME.text,
+                edgeLabelBackground: MERMAID_THEME.ink,
+                actorBkg: MERMAID_THEME.bg,
+                actorBorder: MERMAID_THEME.accent,
+                actorTextColor: MERMAID_THEME.text,
+                signalColor: MERMAID_THEME.line,
+                signalTextColor: MERMAID_THEME.text,
+                labelBoxBkgColor: MERMAID_THEME.bg,
+                labelBoxBorderColor: MERMAID_THEME.accent,
+                labelTextColor: MERMAID_THEME.line,
+                loopTextColor: MERMAID_THEME.text,
+                noteBkgColor: MERMAID_THEME.ink,
+                noteBorderColor: MERMAID_THEME.amber,
+                noteTextColor: MERMAID_THEME.text,
+                activationBkgColor: MERMAID_THEME.bg,
+                activationBorderColor: MERMAID_THEME.line,
+                sequenceNumberColor: MERMAID_THEME.ink,
+                sectionBkgColor: MERMAID_THEME.bg,
+                altSectionBkgColor: MERMAID_THEME.ink,
+                altBkgColor: MERMAID_THEME.ink,
+                commitLabelColor: MERMAID_THEME.text,
+                commitBackgroundColor: MERMAID_THEME.bg,
+                pie1: MERMAID_THEME.accent,
+                pie2: MERMAID_THEME.amber,
+                pie3: MERMAID_THEME.line,
+                pie4: MERMAID_THEME.border,
+                pie5: MERMAID_THEME.bg,
+                pieTitleTextColor: MERMAID_THEME.text,
+                pieSectionTextColor: MERMAID_THEME.text,
+                pieLegendTextColor: MERMAID_THEME.text,
             },
         });
 
@@ -210,7 +222,7 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
     );
 
     const shell = (
-        <div className="relative flex-1 min-h-0 w-full overflow-hidden rounded-lg border border-border bg-surface/40 bg-[linear-gradient(to_right,#322d24_1px,transparent_1px),linear-gradient(to_bottom,#322d24_1px,transparent_1px)] bg-[size:24px_24px]">
+        <div className="relative flex-1 min-h-0 w-full overflow-hidden rounded-lg border border-border bg-surface/40 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:24px_24px]">
             {diagramView}
             <PanControls transformRef={transformRef} />
             <button type="button" onClick={toggleFullscreen} className="absolute top-4 right-4 z-10 rounded bg-surface/80 p-2 text-muted hover:text-bone hover:bg-surface border border-border transition-colors" aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}>
@@ -224,7 +236,7 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
     if (!isFullscreen) return shell;
 
     return createPortal(
-        <div className="fixed inset-0 z-[100] flex flex-col" style={{ backgroundColor: "#0c0a08" }}>
+        <div className="fixed inset-0 z-[100] flex flex-col" style={{ backgroundColor: MERMAID_THEME.ink }}>
             {shell}
         </div>,
         document.body,
