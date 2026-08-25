@@ -32,7 +32,7 @@ export default function Projects() {
         <div id="projects" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
             <div className="max-w-6xl mx-auto px-6">
                 <div ref={headerRef} className={`transition-all duration-500 mb-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
-                    <span className="font-serif italic text-accent text-sm">01 — Work</span>
+                    <span className="font-mono text-xs tracking-widest text-accent">01 / WORK</span>
                     <h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">Projects</h1>
                     <p className="text-muted max-w-lg">Things I've built, broken, and learned from.</p>
                 </div>
@@ -230,7 +230,7 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
 
                     {relatedBlogs.length > 0 && (
                         <div className="mb-8">
-                            <h4 className="font-serif italic text-accent text-sm mb-4">Related Posts</h4>
+                            <h4 className="font-mono text-xs tracking-widest text-accent mb-4">RELATED POSTS</h4>
                             <div className="flex flex-col gap-2">
                                 {relatedBlogs.map((blog) => (
                                     <Link key={blog.slug} to={`/blog/${blog.slug}`} className="group/link flex items-center justify-between gap-4 px-4 py-3 border border-border bg-surface/40 hover:border-accent/40 transition-colors">

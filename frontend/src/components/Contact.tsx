@@ -49,29 +49,29 @@ export default function Contact() {
         <div id="contact" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
             <div className="max-w-6xl mx-auto px-6">
                 <div className="animate-slide-in-left">
-					<span className="font-serif italic text-accent text-sm">03 — Contact</span>
-					<h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-6">Get in touch</h1>
-					<p className="text-muted text-sm mb-10 max-w-lg">Open to remote roles, internships, and collaborations.</p>
+                    <span className="font-mono text-xs tracking-widest text-accent">03 / CONTACT</span>
+                    <h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-6">Get in touch</h1>
+                    <p className="text-muted text-sm mb-10 max-w-lg">Open to remote roles, internships, and collaborations.</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 animate-slide-in-right" style={{ animationDelay: "0.1s" }}>
                     {socialLinks.map((link) => (
-						<a key={link.label} href={link.href} target={link.href.startsWith("mailto") ? undefined : "_blank"} rel="noopener noreferrer" className="flex items-center gap-4 p-4 border border-border bg-surface hover:border-accent/40 transition-colors group">
-							<div className="w-10 h-10 bg-ink/60 border border-border flex items-center justify-center text-muted group-hover:text-accent group-hover:border-accent/40 transition-colors shrink-0">
+                        <a key={link.label} href={link.href} target={link.href.startsWith("mailto") ? undefined : "_blank"} rel="noopener noreferrer" className="flex items-center gap-4 p-4 border border-border bg-surface hover:border-accent/40 transition-colors group">
+                            <div className="w-10 h-10 bg-ink/60 border border-border flex items-center justify-center text-muted group-hover:text-accent group-hover:border-accent/40 transition-colors shrink-0">
                                 <link.icon />
                             </div>
                             <div className="min-w-0">
-								<p className="text-xs text-muted mb-0.5">{link.label}</p>
-								<p className="text-sm text-bone group-hover:text-accent transition-colors truncate">{link.value}</p>
+                                <p className="text-xs text-muted mb-0.5">{link.label}</p>
+                                <p className="text-sm text-bone group-hover:text-accent transition-colors truncate">{link.value}</p>
                             </div>
                         </a>
                     ))}
                     <div className="border border-border bg-surface rounded-xl p-4 flex flex-col justify-center">
-						<div className="flex items-center gap-2 mb-1">
-							<div className="w-2 h-2 bg-accent" />
-							<span className="text-sm text-bone font-medium">{personalData.status}</span>
-						</div>
-						<p className="text-muted text-xs font-mono">{personalData.location}</p>
+                        <div className="flex items-center gap-2 mb-1">
+                            <div className="w-2 h-2 bg-accent" />
+                            <span className="text-sm text-bone font-medium">{personalData.status}</span>
+                        </div>
+                        <p className="text-muted text-xs font-mono">{personalData.location}</p>
                     </div>
                 </div>
             </div>

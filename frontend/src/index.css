@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-	--color-surface: #211e17;
-	--color-border: #322d24;
-	--color-accent: #8abf9a;
-	--color-amber: #d9a441;
-	--color-muted: #8a8271;
-	--color-ink: #14140f;
-	--color-bone: #e8e6da;
-	--font-sans: "Inter", "system-ui", "sans-serif";
-	--font-mono: "JetBrains Mono", "monospace";
-	--font-serif: "Newsreader", "Georgia", serif;
+    --color-surface: #232019;
+    --color-border: #3a352a;
+    --color-accent: #94c9a5;
+    --color-amber: #e0ad50;
+    --color-muted: #a29a88;
+    --color-ink: #14120d;
+    --color-bone: #ece8dc;
+    --font-sans: "Inter", "system-ui", "sans-serif";
+    --font-mono: "JetBrains Mono", "monospace";
+    --font-serif: "Newsreader", "Georgia", serif;
 }
 
 @layer utilities {
@@ -97,70 +97,70 @@
         scroll-behavior: smooth;
     }
 
-	body {
-		background-color: var(--color-ink);
-		color: var(--color-bone);
-		font-family: var(--font-sans);
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-	}
+    body {
+        background-color: var(--color-ink);
+        color: var(--color-bone);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
 
     ::-webkit-scrollbar {
         width: 6px;
     }
 
-	::-webkit-scrollbar-track {
-		background: #12110c;
-	}
+    ::-webkit-scrollbar-track {
+        background: #12110c;
+    }
 
-	::-webkit-scrollbar-thumb {
-		background: #322d24;
-		border-radius: 3px;
-	}
+    ::-webkit-scrollbar-thumb {
+        background: #322d24;
+        border-radius: 3px;
+    }
 
-	::-webkit-scrollbar-thumb:hover {
-		background: #45402f;
-	}
+    ::-webkit-scrollbar-thumb:hover {
+        background: #45402f;
+    }
 }
 
 @layer utilities {
-	.font-display {
-		font-family: var(--font-serif);
-		font-weight: 500;
-		letter-spacing: -0.01em;
-	}
+    .font-display {
+        font-family: var(--font-serif);
+        font-weight: 500;
+        letter-spacing: -0.01em;
+    }
 }
 
 .blog-prose {
-	color: var(--color-bone);
-	line-height: 1.75;
+    color: var(--color-bone);
+    line-height: 1.75;
 }
 
 .blog-prose h1 {
-	font-size: 1.75rem;
-	font-weight: 500;
-	font-family: var(--font-serif);
-	color: var(--color-bone);
-	margin-top: 2.5rem;
-	margin-bottom: 1rem;
+    font-size: 1.75rem;
+    font-weight: 500;
+    font-family: var(--font-serif);
+    color: var(--color-bone);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
 }
 
 .blog-prose h2 {
-	font-size: 1.5rem;
-	font-weight: 500;
-	font-family: var(--font-serif);
-	color: var(--color-bone);
-	margin-top: 2.5rem;
-	margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+    font-family: var(--font-serif);
+    color: var(--color-bone);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
 }
 
 .blog-prose h3 {
-	font-size: 1.25rem;
-	font-weight: 500;
-	font-family: var(--font-serif);
-	color: var(--color-bone);
-	margin-top: 2rem;
-	margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 500;
+    font-family: var(--font-serif);
+    color: var(--color-bone);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
 }
 
 .blog-prose h4,
@@ -168,7 +168,7 @@
 .blog-prose h6 {
     font-size: 1rem;
     font-weight: 600;
-		color: var(--color-bone);
+    color: var(--color-bone);
     margin-top: 1.5rem;
     margin-bottom: 0.5rem;
 }
@@ -192,16 +192,16 @@
 
 .blog-prose strong {
     font-weight: 600;
-		color: var(--color-bone);
+    color: var(--color-bone);
 }
 
 .blog-prose em {
     font-style: italic;
-		color: var(--color-muted);
+    color: var(--color-muted);
 }
 
 .blog-prose li {
-		color: var(--color-bone);
+    color: var(--color-bone);
 }
 
 .blog-prose ul {
@@ -233,7 +233,7 @@
     padding-bottom: 0.25rem;
     margin-top: 1.25rem;
     margin-bottom: 1.25rem;
-		color: var(--color-muted);
+    color: var(--color-muted);
     font-style: italic;
 }
 
@@ -244,34 +244,34 @@
 }
 
 .blog-prose code {
-	font-family: var(--font-mono);
-	font-size: 0.875rem;
-	background-color: #211e17;
-	color: #d9a441;
-	padding: 0.125rem 0.375rem;
-	border-radius: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    background-color: #211e17;
+    color: #d9a441;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
 }
 
 .blog-prose .blog-code-block {
-	background-color: #14140f;
-	border: 1px solid var(--color-border);
-	border-radius: 0.25rem;
-	padding: 1.25rem;
-	margin-bottom: 1.25rem;
-	overflow-x: auto;
+    background-color: #14140f;
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    overflow-x: auto;
 }
 
 .blog-prose .blog-code-block code {
     background: transparent;
     padding: 0;
-		color: var(--color-bone);
+    color: var(--color-bone);
     font-size: 0.875rem;
     line-height: 1.625;
 }
 
 .blog-prose .blog-code-block code[class*="language-"],
 .blog-prose .blog-code-block pre[class*="language-"] {
-		color: #e8e6da;
+    color: #e8e6da;
     background: transparent;
     text-shadow: none;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -289,11 +289,11 @@
 .blog-prose .blog-code-block .token.prolog,
 .blog-prose .blog-code-block .token.doctype,
 .blog-prose .blog-code-block .token.cdata {
-		color: #8a8271;
+    color: #8a8271;
 }
 
 .blog-prose .blog-code-block .token.punctuation {
-		color: #e8e6da;
+    color: #e8e6da;
 }
 
 .blog-prose .blog-code-block .token.property,
@@ -303,7 +303,7 @@
 .blog-prose .blog-code-block .token.constant,
 .blog-prose .blog-code-block .token.symbol,
 .blog-prose .blog-code-block .token.deleted {
-		color: #e08a78;
+    color: #e08a78;
 }
 
 .blog-prose .blog-code-block .token.selector,
@@ -312,7 +312,7 @@
 .blog-prose .blog-code-block .token.char,
 .blog-prose .blog-code-block .token.builtin,
 .blog-prose .blog-code-block .token.inserted {
-		color: #8abf9a;
+    color: #8abf9a;
 }
 
 .blog-prose .blog-code-block .token.operator,
@@ -320,24 +320,24 @@
 .blog-prose .blog-code-block .token.url,
 .blog-prose .blog-code-block .language-css .token.string,
 .blog-prose .blog-code-block .style .token.string {
-		color: #8abf9a;
+    color: #8abf9a;
 }
 
 .blog-prose .blog-code-block .token.atrule,
 .blog-prose .blog-code-block .token.attr-value,
 .blog-prose .blog-code-block .token.keyword {
-		color: #d9a441;
+    color: #d9a441;
 }
 
 .blog-prose .blog-code-block .token.function,
 .blog-prose .blog-code-block .token.class-name {
-		color: #e2c46c;
+    color: #e2c46c;
 }
 
 .blog-prose .blog-code-block .token.regex,
 .blog-prose .blog-code-block .token.important,
 .blog-prose .blog-code-block .token.variable {
-		color: #c9a5e0;
+    color: #c9a5e0;
 }
 
 .blog-prose .blog-code-block .token.important,

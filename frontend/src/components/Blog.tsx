@@ -24,7 +24,7 @@ export default function Blog() {
         <div id="blog" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
             <div className="max-w-6xl mx-auto px-6">
                 <div ref={headerRef} className={`mb-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"} transition-all duration-500`}>
-                    <span className="font-serif italic text-accent text-sm">02 — Writing</span>
+                    <span className="font-mono text-xs tracking-widest text-accent">02 / WRITING</span>
                     <h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">Blog</h1>
                     <p className="text-muted max-w-lg">Thoughts, guides, and things I've learned along the way.</p>
                 </div>
@@ -101,7 +101,7 @@ function BlogRow({ post, index, first }: BlogRowProps) {
                 </div>
                 <div className="lg:col-span-10">
                     <div className="flex items-center gap-3 mb-3 flex-wrap">
-                        <span className="font-serif italic text-accent text-sm">{post.favorite ? "Featured" : "Latest"}</span>
+                        <span className="font-mono text-xs tracking-widest text-accent">{post.favorite ? "FEATURED" : "LATEST"}</span>
                         <span className="text-xs font-mono text-muted">{fmtDate(post.date)}</span>
                         {post.github && <span className="text-xs font-mono text-muted">· source ↗</span>}
                     </div>
