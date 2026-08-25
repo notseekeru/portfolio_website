@@ -1,13 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-    --color-surface: #161616;
-    --color-border: #252525;
-    --color-accent: #00d9ff;
-    --color-accent-purple: #7c3aed;
-    --color-muted: #888888;
-    --font-sans: "Inter", "system-ui", "sans-serif";
-    --font-mono: "JetBrains Mono", "monospace";
+	--color-surface: #211e17;
+	--color-border: #322d24;
+	--color-accent: #8abf9a;
+	--color-amber: #d9a441;
+	--color-muted: #8a8271;
+	--color-ink: #14140f;
+	--color-bone: #e8e6da;
+	--font-sans: "Inter", "system-ui", "sans-serif";
+	--font-mono: "JetBrains Mono", "monospace";
+	--font-serif: "Newsreader", "Georgia", serif;
 }
 
 @layer utilities {
@@ -94,83 +97,70 @@
         scroll-behavior: smooth;
     }
 
-    body {
-        background-color: var(--color-zinc-950);
-        color: var(--color-zinc-100);
-        font-family: var(--font-sans);
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
+	body {
+		background-color: var(--color-ink);
+		color: var(--color-bone);
+		font-family: var(--font-sans);
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
 
     ::-webkit-scrollbar {
         width: 6px;
     }
 
-    ::-webkit-scrollbar-track {
-        background: #0d0d0d;
-    }
+	::-webkit-scrollbar-track {
+		background: #12110c;
+	}
 
-    ::-webkit-scrollbar-thumb {
-        background: #252525;
-        border-radius: 3px;
-    }
+	::-webkit-scrollbar-thumb {
+		background: #322d24;
+		border-radius: 3px;
+	}
 
-    ::-webkit-scrollbar-thumb:hover {
-        background: #00d9ff44;
-    }
+	::-webkit-scrollbar-thumb:hover {
+		background: #45402f;
+	}
 }
 
 @layer utilities {
-    .text-gradient {
-        background: linear-gradient(135deg, #00d9ff 0%, #7c3aed 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .glow-accent {
-        box-shadow: 0 0 20px rgba(0, 217, 255, 0.15);
-    }
-
-    .glow-accent-hover:hover {
-        box-shadow: 0 0 30px rgba(0, 217, 255, 0.25);
-    }
-
-    .border-gradient {
-        border: 1px solid transparent;
-        background:
-            linear-gradient(#161616, #161616) padding-box,
-            linear-gradient(135deg, #00d9ff33, #7c3aed33) border-box;
-    }
+	.font-display {
+		font-family: var(--font-serif);
+		font-weight: 500;
+		letter-spacing: -0.01em;
+	}
 }
 
 .blog-prose {
-    color: var(--color-zinc-300);
-    line-height: 1.75;
+	color: var(--color-bone);
+	line-height: 1.75;
 }
 
 .blog-prose h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-zinc-100);
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
+	font-size: 1.75rem;
+	font-weight: 500;
+	font-family: var(--font-serif);
+	color: var(--color-bone);
+	margin-top: 2.5rem;
+	margin-bottom: 1rem;
 }
 
 .blog-prose h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--color-zinc-100);
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
+	font-size: 1.5rem;
+	font-weight: 500;
+	font-family: var(--font-serif);
+	color: var(--color-bone);
+	margin-top: 2.5rem;
+	margin-bottom: 1rem;
 }
 
 .blog-prose h3 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--color-zinc-200);
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
+	font-size: 1.25rem;
+	font-weight: 500;
+	font-family: var(--font-serif);
+	color: var(--color-bone);
+	margin-top: 2rem;
+	margin-bottom: 0.75rem;
 }
 
 .blog-prose h4,
@@ -178,7 +168,7 @@
 .blog-prose h6 {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--color-zinc-200);
+		color: var(--color-bone);
     margin-top: 1.5rem;
     margin-bottom: 0.5rem;
 }
@@ -202,16 +192,16 @@
 
 .blog-prose strong {
     font-weight: 600;
-    color: var(--color-zinc-100);
+		color: var(--color-bone);
 }
 
 .blog-prose em {
     font-style: italic;
-    color: var(--color-zinc-400);
+		color: var(--color-muted);
 }
 
 .blog-prose li {
-    color: var(--color-zinc-300);
+		color: var(--color-bone);
 }
 
 .blog-prose ul {
@@ -243,7 +233,7 @@
     padding-bottom: 0.25rem;
     margin-top: 1.25rem;
     margin-bottom: 1.25rem;
-    color: var(--color-zinc-400);
+		color: var(--color-muted);
     font-style: italic;
 }
 

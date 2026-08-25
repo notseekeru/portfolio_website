@@ -26,9 +26,9 @@ export default function Blog() {
         <div id="blog" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
             <div className="max-w-6xl mx-auto px-6">
                 <div ref={headerRef} className={`transition-all duration-500 mb-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
-                    <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase">Writing</span>
-                    <h1 className="text-4xl lg:text-5xl font-bold text-zinc-100 mt-2 mb-4">Blog</h1>
-                    <p className="text-zinc-500 max-w-lg">Thoughts, guides, and things I've learned along the way.</p>
+					<span className="font-serif italic text-accent text-sm">02 — Writing</span>
+					<h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">Blog</h1>
+					<p className="text-muted max-w-lg">Thoughts, guides, and things I've learned along the way.</p>
                 </div>
 
                 {blogs.length === 0 ? (
@@ -92,7 +92,7 @@ function BlogCard({ post, index }: BlogCardProps) {
 
     return (
         <article className="animate-fade-in-up" style={{ animationDelay: `${index * 0.07}s` }}>
-            <div className="group relative flex flex-col border border-border bg-surface rounded-2xl overflow-hidden hover:border-accent/30 glow-accent-hover transition-all duration-300 h-full cursor-pointer">
+			<div className="group relative flex flex-col border border-border bg-surface hover:border-accent/40 transition-colors duration-300 h-full cursor-pointer">
                 <button
                     type="button"
                     onClick={handleCardClick}
@@ -104,7 +104,7 @@ function BlogCard({ post, index }: BlogCardProps) {
                     }}
                     className="flex flex-col h-full w-full text-left"
                 >
-                    <div className="relative h-40 bg-gradient-to-br from-zinc-800 to-zinc-900 overflow-hidden">
+					<div className="relative h-40 bg-surface/40 border-b border-border overflow-hidden">
                         {post.image ? (
                             <img
                                 src={post.image}
@@ -119,15 +119,15 @@ function BlogCard({ post, index }: BlogCardProps) {
                             />
                         ) : null}
                         <div className={`${post.image ? "hidden" : "flex"} w-full h-full items-center justify-center`} style={post.image ? { display: "none" } : {}}>
-                            <div className="text-5xl font-bold text-gradient opacity-30 select-none">{post.title.charAt(0)}</div>
+							<div className="text-5xl font-display text-muted/40 select-none">{post.title.charAt(0)}</div>
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
                     </div>
 
                     <div className="flex flex-col flex-1 p-5">
-                        <div className="flex items-start justify-between gap-2 mb-2">{formattedDate && <span className="font-mono text-[10px] text-accent/70 tracking-wider uppercase">{formattedDate}</span>}</div>
-                        <h3 className="font-semibold text-zinc-100 mb-2 group-hover:text-accent transition-colors duration-200 leading-snug">{post.title}</h3>
-                        <p className="text-zinc-500 text-sm leading-relaxed flex-1">{post.description}</p>
+						<div className="flex items-start justify-between gap-2 mb-2">{formattedDate && <span className="font-mono text-[10px] text-accent/70">{formattedDate}</span>}</div>
+						<h3 className="font-display text-bone mb-2 group-hover:text-accent transition-colors duration-200 leading-snug">{post.title}</h3>
+						<p className="text-muted text-sm leading-relaxed flex-1">{post.description}</p>
                         <div className="mt-4 flex items-center gap-1 text-accent text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                             Read more
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">

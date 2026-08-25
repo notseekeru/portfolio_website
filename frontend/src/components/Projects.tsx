@@ -32,10 +32,10 @@ export default function Projects() {
         <div id="projects" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
             <div className="max-w-6xl mx-auto px-6">
                 <div ref={headerRef} className={`transition-all duration-500 mb-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
-                    <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase">Work</span>
-                    <h1 className="text-4xl lg:text-5xl font-bold text-zinc-100 mt-2 mb-4">Projects</h1>
-                    <p className="text-zinc-500 max-w-lg">Things I've built, broken, and learned from.</p>
-                </div>
+					<span className="font-serif italic text-accent text-sm">01 — Work</span>
+					<h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">Projects</h1>
+					<p className="text-muted max-w-lg">Things I've built, broken, and learned from.</p>
+				</div>
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     {personalData.projects.map((project, i) => (
@@ -69,31 +69,31 @@ function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
             }}
             aria-label={`Open ${project.title}`}
         >
-            <div className="group relative flex flex-col border border-border bg-surface rounded-2xl overflow-hidden hover:border-accent/30 glow-accent-hover transition-all duration-300 h-full">
-                <div className="flex flex-col h-full w-full text-left cursor-pointer">
-                    <div className="relative h-40 bg-gradient-to-br from-zinc-800 to-zinc-900 overflow-hidden flex items-center justify-center">
+			<div className="group relative flex flex-col border border-border bg-surface hover:border-accent/40 transition-colors duration-300 h-full">
+				<div className="flex flex-col h-full w-full text-left cursor-pointer">
+					<div className="relative h-40 bg-surface/40 border-b border-border overflow-hidden flex items-center justify-center">
                         {project.video ? (
                             <video src={project.video} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
                         ) : project.image ? (
                             <img src={project.image} alt={project.title} className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
                         ) : (
-                            <div className="text-5xl text-zinc-700 group-hover:text-accent/40 transition-colors duration-300 select-none">{project.icon ? <ProjectIcon icon={project.icon} /> : <span className="text-5xl font-bold text-gradient opacity-30">{project.title.charAt(0)}</span>}</div>
+							<div className="text-5xl text-muted/40 group-hover:text-accent/60 transition-colors duration-300 select-none">{project.icon ? <ProjectIcon icon={project.icon} /> : <span className="text-5xl font-display text-muted/40">{project.title.charAt(0)}</span>}</div>
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
                     </div>
 
                     <div className="flex flex-col flex-1 p-5">
                         <ProjectTitle project={project} />
-                        <p className="text-zinc-500 text-sm leading-relaxed flex-1 line-clamp-4">{project.description}</p>
+						<p className="text-muted text-sm leading-relaxed flex-1 line-clamp-4">{project.description}</p>
 
                         {project.techStack.length > 0 && (
                             <div className="mt-4 flex flex-wrap gap-1.5">
                                 {project.techStack.slice(0, 4).map((tech) => (
-                                    <span key={tech} className="text-[10px] font-mono text-accent/70 bg-zinc-800/60 border border-zinc-700/60 px-2 py-0.5 rounded-full">
+									<span key={tech} className="text-[10px] font-mono text-accent/80 bg-ink/60 border border-border px-2 py-0.5">
                                         {tech}
                                     </span>
                                 ))}
-                                {project.techStack.length > 4 && <span className="text-[10px] font-mono text-accent/70">+{project.techStack.length - 4}</span>}
+								{project.techStack.length > 4 && <span className="text-[10px] font-mono text-accent/70">+{project.techStack.length - 4}</span>}
                             </div>
                         )}
 
@@ -196,14 +196,14 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
                     ) : project.image ? (
                         <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
                     ) : (
-                        <div className="text-6xl text-zinc-700 select-none">{project.icon ? <ProjectIcon icon={project.icon} size={48} /> : <span className="text-6xl font-bold text-gradient opacity-30">{project.title.charAt(0)}</span>}</div>
+							<div className="text-6xl text-muted/40 select-none">{project.icon ? <ProjectIcon icon={project.icon} size={48} /> : <span className="text-6xl font-display text-muted/40">{project.title.charAt(0)}</span>}</div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
                 </div>
 
                 <div className="p-6 lg:p-8">
                     <div className="flex items-start justify-between gap-4 mb-3">
-                        <h3 className="font-semibold text-zinc-100 text-2xl leading-snug">{project.title}</h3>
+						<h3 className="font-display text-bone text-2xl leading-snug">{project.title}</h3>
                         <button type="button" onClick={onClose} aria-label="Close" className="shrink-0 text-zinc-500 hover:text-zinc-100 transition-colors p-1">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -212,12 +212,12 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
                         </button>
                     </div>
 
-                    <p className="text-zinc-400 text-base leading-relaxed mb-6">{project.description}</p>
+					<p className="text-muted text-base leading-relaxed mb-6">{project.description}</p>
 
                     {project.techStack.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-6">
                             {project.techStack.map((tech) => (
-                                <span key={tech} className="text-xs font-mono text-accent/70 bg-zinc-800/60 border border-zinc-700/60 px-2.5 py-1 rounded-full">
+								<span key={tech} className="text-xs font-mono text-accent/80 bg-ink/60 border border-border px-2.5 py-1">
                                     {tech}
                                 </span>
                             ))}
@@ -226,12 +226,12 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
 
                     {relatedBlogs.length > 0 && (
                         <div className="mb-8">
-                            <h4 className="font-mono text-xs text-accent tracking-[0.3em] uppercase mb-4">Related Posts</h4>
+							<h4 className="font-serif italic text-accent text-sm mb-4">Related Posts</h4>
                             <div className="flex flex-col gap-2">
                                 {relatedBlogs.map((blog) => (
-                                    <Link key={blog.slug} to={`/blog/${blog.slug}`} className="group/link flex items-center justify-between gap-4 px-4 py-3 border border-zinc-800 rounded-lg bg-zinc-900/40 hover:border-accent/30 transition-colors">
+									<Link key={blog.slug} to={`/blog/${blog.slug}`} className="group/link flex items-center justify-between gap-4 px-4 py-3 border border-border bg-surface/40 hover:border-accent/40 transition-colors">
                                         <div>
-                                            <div className="text-sm text-zinc-200 group-hover/link:text-accent transition-colors">{blog.title}</div>
+											<div className="text-sm text-bone group-hover/link:text-accent transition-colors">{blog.title}</div>
                                             {blog.date && <div className="text-xs text-zinc-600 font-mono mt-0.5">{new Date(blog.date).toLocaleDateString("en-US", { year: "numeric", month: "short" })}</div>}
                                         </div>
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-600 group-hover/link:text-accent shrink-0 transition-colors" aria-hidden="true">
@@ -269,13 +269,13 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
 
 function ProjectTitle({ project }: { project: ProjectItem }) {
     return (
-        <h3 className="font-semibold text-zinc-100 mb-2 group-hover:text-accent transition-colors duration-200 leading-snug flex items-center gap-2">
-            {project.icon && (
-                <span className="text-accent/70 group-hover:text-accent shrink-0">
-                    <ProjectIcon icon={project.icon} size={22} />
-                </span>
-            )}
-            <span>{project.title}</span>
-        </h3>
-    );
+		<h3 className="font-display text-bone mb-2 group-hover:text-accent transition-colors duration-200 leading-snug flex items-center gap-2">
+			{project.icon && (
+				<span className="text-accent/80 group-hover:text-accent shrink-0">
+					<ProjectIcon icon={project.icon} size={22} />
+				</span>
+			)}
+			<span>{project.title}</span>
+		</h3>
+	);
 }
