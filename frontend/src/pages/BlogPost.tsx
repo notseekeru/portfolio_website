@@ -38,8 +38,8 @@ export default function BlogPost() {
         return (
             <div className="min-h-screen pt-28 pb-24 animate-fade-in">
                 <div className="max-w-3xl mx-auto px-6 text-center">
-					<h1 className="font-display text-4xl text-bone mb-4">Post Not Found</h1>
-					<p className="text-muted mb-8">The blog post you're looking for doesn't exist.</p>
+                    <h1 className="font-display text-4xl text-bone mb-4">Post Not Found</h1>
+                    <p className="text-muted mb-8">The blog post you're looking for doesn't exist.</p>
                     <Link to="/#blog" className="inline-flex items-center gap-2 text-sm font-mono text-accent hover:text-accent/80 transition-colors">
                         <ArrowLeftIcon size={14} />
                         Back to Blog
@@ -62,14 +62,14 @@ export default function BlogPost() {
     return (
         <div className="min-h-screen pt-28 pb-24 animate-fade-in">
             <div className="max-w-3xl mx-auto px-6">
-				<Link to="/#blog" className="inline-flex items-center gap-2 text-sm font-mono text-muted hover:text-accent transition-colors duration-200 mb-10">
+                <Link to="/#blog" className="inline-flex items-center gap-2 text-sm font-mono text-muted hover:text-accent transition-colors duration-200 mb-10">
                     <ArrowLeftIcon size={14} />
                     Back to Blog
                 </Link>
 
                 <div className="animate-fade-in-up">
-					{formattedDate && <span className="font-mono text-xs text-accent/70">{formattedDate}</span>}
-					<h1 className="font-display text-3xl lg:text-5xl text-bone mt-2 mb-6 leading-tight">{post.title}</h1>
+                    {formattedDate && <span className="font-mono text-xs text-accent/70">{formattedDate}</span>}
+                    <h1 className="font-display text-3xl lg:text-5xl text-bone mt-2 mb-6 leading-tight">{post.title}</h1>
 
                     {post.image && (
                         <div className="rounded-xl overflow-hidden border border-border mb-10">
