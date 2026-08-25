@@ -71,17 +71,49 @@ function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
         >
 			<div className="group relative flex flex-col border border-border bg-surface hover:border-accent/40 transition-colors duration-300 h-full">
 				<div className="flex flex-col h-full w-full text-left cursor-pointer">
-					<div className="relative h-40 bg-surface/40 border-b border-border overflow-hidden flex items-center justify-center">
-                        {project.video ? (
-                            <video src={project.video} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
-                        ) : project.image ? (
-                            <img src={project.image} alt={project.title} className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
-                        ) : (
-							<div className="text-5xl text-muted/40 group-hover:text-accent/60 transition-colors duration-300 select-none">{project.icon ? <ProjectIcon icon={project.icon} /> : <span className="text-5xl font-display text-muted/40">{project.title.charAt(0)}</span>}</div>
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
-                    </div>
-
+					<div className="relative">
+						{/* browser chrome */}
+						<div className="flex items-center gap-2 border-b border-border bg-ink/60 pl-3 pr-1 h-8">
+							<span className="flex gap-1.5 shrink-0">
+								<span className="h-2 w-2 rounded-full bg-amber/70" />
+								<span className="h-2 w-2 rounded-full bg-accent/60" />
+								<span className="h-2 w-2 rounded-full bg-muted/50" />
+							</span>
+							<span className="ml-2 flex-1 truncate rounded-sm bg-surface px-2 py-0.5 text-[10px] font-mono text-muted">
+								{project.link ? project.link.replace(/https?:\/\//, "").split("/")[0] : project.title}
+							</span>
+							<span className="flex shrink-0 items-center gap-1 pl-1">
+								{project.github && (
+									<a
+										href={project.github}
+										target="_blank"
+										rel="noopener noreferrer"
+										onClick={(e) => e.stopPropagation()}
+										className="flex h-6 items-center justify-center rounded-sm px-1.5 text-muted hover:text-accent transition-colors"
+										title="GitHub repository"
+									>
+										<GitHubIcon size={13} />
+									</a>
+								)}
+								{project.favorite && (
+									<span className="flex h-6 items-center px-1 text-amber" title="Personal favorite">
+										<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+											<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+										</svg>
+									</span>
+								)}
+							</span>
+						</div>
+						<div className="relative h-36 overflow-hidden flex items-center justify-center bg-surface/30">
+							{project.video ? (
+								<video src={project.video} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
+							) : project.image ? (
+								<img src={project.image} alt={project.title} className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
+							) : (
+								<div className="text-5xl text-muted/40 group-hover:text-accent/60 transition-colors duration-300 select-none">{project.icon ? <ProjectIcon icon={project.icon} /> : <span className="text-5xl font-display text-muted/40">{project.title.charAt(0)}</span>}</div>
+							)}
+						</div>
+					</div>
                     <div className="flex flex-col flex-1 p-5">
                         <ProjectTitle project={project} />
 						<p className="text-muted text-sm leading-relaxed flex-1 line-clamp-4">{project.description}</p>
@@ -108,34 +140,7 @@ function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
                     </div>
                 </div>
 
-                <div className="absolute top-4 right-4 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-surface/80 backdrop-blur-sm text-zinc-500 transition-all duration-300 group-hover:text-accent group-hover:rotate-90">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                        <line x1="12" y1="5" x2="12" y2="19" />
-                        <line x1="5" y1="12" x2="19" y2="12" />
-                    </svg>
-                </div>
 
-                <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
-                    {project.github && (
-                        <a
-                            href={project.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="flex items-center gap-1.5 text-zinc-500 hover:text-accent transition-colors bg-surface/80 backdrop-blur-sm px-1.5 py-1.5 rounded-full group/link"
-                            title="GitHub repository — Open Source"
-                        >
-                            <GitHubIcon />
-                        </a>
-                    )}
-                    {project.favorite && (
-                        <span className="text-amber-400 text-sm bg-surface/80 backdrop-blur-sm px-1.5 py-1.5 rounded-full flex items-center gap-1" title="Personal Favorite">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                            </svg>
-                        </span>
-                    )}
-                </div>
             </div>
         </article>
     );
@@ -190,16 +195,28 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-zinc-950/70 backdrop-blur-md animate-fade-in cursor-default" />
             <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-border bg-surface rounded-2xl shadow-2xl animate-fade-in-up" role="dialog" aria-modal="true" aria-label={project.title}>
-                <div className="relative h-72 lg:h-96 bg-zinc-900 overflow-hidden flex items-center justify-center">
-                    {project.video ? (
-                        <video src={project.video} autoPlay muted loop playsInline className="w-full h-full object-cover" />
-                    ) : project.image ? (
-                        <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
-                    ) : (
+				<div className="relative overflow-hidden border-b border-border">
+					{/* browser chrome */}
+					<div className="flex items-center gap-2 bg-ink/60 px-4 h-9">
+						<span className="flex gap-1.5">
+							<span className="h-2.5 w-2.5 rounded-full bg-amber/70" />
+							<span className="h-2.5 w-2.5 rounded-full bg-accent/60" />
+							<span className="h-2.5 w-2.5 rounded-full bg-muted/50" />
+						</span>
+						<span className="ml-3 flex-1 truncate rounded-sm bg-surface px-3 py-1 text-xs font-mono text-muted">
+							{project.link ? project.link.replace(/https?:\/\//, "") : project.title}
+						</span>
+					</div>
+					<div className="relative h-72 lg:h-96 bg-zinc-900 overflow-hidden flex items-center justify-center">
+						{project.video ? (
+							<video src={project.video} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+						) : project.image ? (
+							<img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+						) : (
 							<div className="text-6xl text-muted/40 select-none">{project.icon ? <ProjectIcon icon={project.icon} size={48} /> : <span className="text-6xl font-display text-muted/40">{project.title.charAt(0)}</span>}</div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
-                </div>
+						)}
+					</div>
+				</div>
 
                 <div className="p-6 lg:p-8">
                     <div className="flex items-start justify-between gap-4 mb-3">
