@@ -1,13 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-    --color-surface: #161616;
-    --color-border: #252525;
-    --color-accent: #00d9ff;
-    --color-accent-purple: #7c3aed;
-    --color-muted: #888888;
+    --color-surface: #15120e;
+    --color-border: #2a261d;
+    --color-accent: #94c9a5;
+    --color-amber: #e0ad50;
+    --color-muted: #a29a88;
+    --color-ink: #0c0a08;
+    --color-bone: #ece8dc;
     --font-sans: "Inter", "system-ui", "sans-serif";
     --font-mono: "JetBrains Mono", "monospace";
+    --font-serif: "Newsreader", "Georgia", serif;
 }
 
 @layer utilities {
@@ -95,8 +98,8 @@
     }
 
     body {
-        background-color: var(--color-zinc-950);
-        color: var(--color-zinc-100);
+        background-color: var(--color-ink);
+        color: var(--color-bone);
         font-family: var(--font-sans);
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -107,68 +110,55 @@
     }
 
     ::-webkit-scrollbar-track {
-        background: #0d0d0d;
+        background: var(--color-ink);
     }
 
     ::-webkit-scrollbar-thumb {
-        background: #252525;
+        background: var(--color-border);
         border-radius: 3px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-        background: #00d9ff44;
+        background: var(--color-border);
     }
 }
 
 @layer utilities {
-    .text-gradient {
-        background: linear-gradient(135deg, #00d9ff 0%, #7c3aed 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .glow-accent {
-        box-shadow: 0 0 20px rgba(0, 217, 255, 0.15);
-    }
-
-    .glow-accent-hover:hover {
-        box-shadow: 0 0 30px rgba(0, 217, 255, 0.25);
-    }
-
-    .border-gradient {
-        border: 1px solid transparent;
-        background:
-            linear-gradient(#161616, #161616) padding-box,
-            linear-gradient(135deg, #00d9ff33, #7c3aed33) border-box;
+    .font-display {
+        font-family: var(--font-serif);
+        font-weight: 500;
+        letter-spacing: -0.01em;
     }
 }
 
 .blog-prose {
-    color: var(--color-zinc-300);
+    color: var(--color-bone);
     line-height: 1.75;
 }
 
 .blog-prose h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-zinc-100);
+    font-size: 1.75rem;
+    font-weight: 500;
+    font-family: var(--font-serif);
+    color: var(--color-bone);
     margin-top: 2.5rem;
     margin-bottom: 1rem;
 }
 
 .blog-prose h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--color-zinc-100);
+    font-size: 1.5rem;
+    font-weight: 500;
+    font-family: var(--font-serif);
+    color: var(--color-bone);
     margin-top: 2.5rem;
     margin-bottom: 1rem;
 }
 
 .blog-prose h3 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--color-zinc-200);
+    font-size: 1.25rem;
+    font-weight: 500;
+    font-family: var(--font-serif);
+    color: var(--color-bone);
     margin-top: 2rem;
     margin-bottom: 0.75rem;
 }
@@ -178,7 +168,7 @@
 .blog-prose h6 {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--color-zinc-200);
+    color: var(--color-bone);
     margin-top: 1.5rem;
     margin-bottom: 0.5rem;
 }
@@ -202,16 +192,16 @@
 
 .blog-prose strong {
     font-weight: 600;
-    color: var(--color-zinc-100);
+    color: var(--color-bone);
 }
 
 .blog-prose em {
     font-style: italic;
-    color: var(--color-zinc-400);
+    color: var(--color-muted);
 }
 
 .blog-prose li {
-    color: var(--color-zinc-300);
+    color: var(--color-bone);
 }
 
 .blog-prose ul {
@@ -243,7 +233,7 @@
     padding-bottom: 0.25rem;
     margin-top: 1.25rem;
     margin-bottom: 1.25rem;
-    color: var(--color-zinc-400);
+    color: var(--color-muted);
     font-style: italic;
 }
 
@@ -256,16 +246,16 @@
 .blog-prose code {
     font-family: var(--font-mono);
     font-size: 0.875rem;
-    background-color: var(--color-zinc-800);
-    color: color-mix(in srgb, var(--color-accent) 90%, transparent);
+    background-color: var(--color-surface);
+    color: var(--color-amber);
     padding: 0.125rem 0.375rem;
     border-radius: 0.25rem;
 }
 
 .blog-prose .blog-code-block {
-    background-color: var(--color-zinc-900);
+    background-color: var(--color-ink);
     border: 1px solid var(--color-border);
-    border-radius: 0.75rem;
+    border-radius: 0.25rem;
     padding: 1.25rem;
     margin-bottom: 1.25rem;
     overflow-x: auto;
@@ -274,14 +264,14 @@
 .blog-prose .blog-code-block code {
     background: transparent;
     padding: 0;
-    color: var(--color-zinc-300);
+    color: var(--color-bone);
     font-size: 0.875rem;
     line-height: 1.625;
 }
 
 .blog-prose .blog-code-block code[class*="language-"],
 .blog-prose .blog-code-block pre[class*="language-"] {
-    color: #f8f8f2;
+    color: var(--color-bone);
     background: transparent;
     text-shadow: none;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -299,11 +289,11 @@
 .blog-prose .blog-code-block .token.prolog,
 .blog-prose .blog-code-block .token.doctype,
 .blog-prose .blog-code-block .token.cdata {
-    color: #8292a2;
+    color: var(--color-muted);
 }
 
 .blog-prose .blog-code-block .token.punctuation {
-    color: #f8f8f2;
+    color: var(--color-bone);
 }
 
 .blog-prose .blog-code-block .token.property,
@@ -313,7 +303,7 @@
 .blog-prose .blog-code-block .token.constant,
 .blog-prose .blog-code-block .token.symbol,
 .blog-prose .blog-code-block .token.deleted {
-    color: #ff7b72;
+    color: var(--color-muted);
 }
 
 .blog-prose .blog-code-block .token.selector,
@@ -322,7 +312,7 @@
 .blog-prose .blog-code-block .token.char,
 .blog-prose .blog-code-block .token.builtin,
 .blog-prose .blog-code-block .token.inserted {
-    color: #a5d6ff;
+    color: var(--color-accent);
 }
 
 .blog-prose .blog-code-block .token.operator,
@@ -330,24 +320,24 @@
 .blog-prose .blog-code-block .token.url,
 .blog-prose .blog-code-block .language-css .token.string,
 .blog-prose .blog-code-block .style .token.string {
-    color: #79c0ff;
+    color: var(--color-accent);
 }
 
 .blog-prose .blog-code-block .token.atrule,
 .blog-prose .blog-code-block .token.attr-value,
 .blog-prose .blog-code-block .token.keyword {
-    color: #ff9e64;
+    color: var(--color-amber);
 }
 
 .blog-prose .blog-code-block .token.function,
 .blog-prose .blog-code-block .token.class-name {
-    color: #ffd866;
+    color: var(--color-accent);
 }
 
 .blog-prose .blog-code-block .token.regex,
 .blog-prose .blog-code-block .token.important,
 .blog-prose .blog-code-block .token.variable {
-    color: #c792ea;
+    color: var(--color-muted);
 }
 
 .blog-prose .blog-code-block .token.important,

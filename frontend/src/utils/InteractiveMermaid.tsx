@@ -7,6 +7,18 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
 mermaid.registerLayoutLoaders(elkLayouts);
 
+// Single source of truth for Mermaid colors (mirrors the @theme tokens in index.css).
+// Mermaid's themeVariables take literal color strings, so keep them in ONE place here.
+const MERMAID_THEME = {
+    bg: "#15120e",
+    ink: "#0c0a08",
+    line: "#8a8271",
+    border: "#322d24",
+    accent: "#8abf9a",
+    amber: "#d9a441",
+    text: "#e8e6da",
+};
+
 const PAN_STEP = 80;
 
 function PanControls({ transformRef }: { transformRef: React.RefObject<ReactZoomPanPinchRef | null> }) {
@@ -20,7 +32,7 @@ function PanControls({ transformRef }: { transformRef: React.RefObject<ReactZoom
         [transformRef],
     );
 
-    const btn = "flex items-center justify-center w-7 h-7 rounded-md bg-zinc-900/80 border border-zinc-700/60 text-zinc-400 hover:text-white hover:bg-zinc-800 hover:border-zinc-500 transition-colors focus:outline-none focus:ring-1 focus:ring-zinc-500 select-none";
+    const btn = "flex items-center justify-center w-7 h-7 rounded-md bg-surface/80 border border-border text-muted hover:text-bone hover:bg-surface hover:border-amber/50 transition-colors focus:outline-none focus:ring-1 focus:ring-amber/50 select-none";
 
     return (
         <div className="absolute bottom-3 right-3 z-20 grid grid-cols-3 gap-0.5">
@@ -50,7 +62,7 @@ function PanControls({ transformRef }: { transformRef: React.RefObject<ReactZoom
                     <path d="m15 18-6-6 6-6" />
                 </svg>
             </button>
-            <button type="button" className={`${btn} bg-zinc-900/90`} onClick={() => transformRef.current?.centerView(1, 200)} aria-label="Reset view" tabIndex={-1}>
+            <button type="button" className={`${btn} bg-ink/80`} onClick={() => transformRef.current?.centerView(1, 200)} aria-label="Reset view" tabIndex={-1}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <title>Reset view</title>
                     <circle cx="12" cy="12" r="3" />
@@ -89,10 +101,54 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
 
         mermaid.initialize({
             startOnLoad: false,
-            theme: "dark",
+            theme: "base",
             flowchart: {
                 useMaxWidth: false,
                 htmlLabels: true,
+            },
+            themeVariables: {
+                fontFamily: "JetBrains Mono, monospace",
+                background: MERMAID_THEME.ink,
+                primaryColor: MERMAID_THEME.bg,
+                primaryTextColor: MERMAID_THEME.text,
+                primaryBorderColor: MERMAID_THEME.accent,
+                lineColor: MERMAID_THEME.line,
+                textColor: MERMAID_THEME.text,
+                mainBkg: MERMAID_THEME.bg,
+                nodeBkg: MERMAID_THEME.bg,
+                nodeBorder: MERMAID_THEME.accent,
+                clusterBkg: MERMAID_THEME.ink,
+                clusterBorder: MERMAID_THEME.border,
+                titleColor: MERMAID_THEME.text,
+                edgeLabelBackground: MERMAID_THEME.ink,
+                actorBkg: MERMAID_THEME.bg,
+                actorBorder: MERMAID_THEME.accent,
+                actorTextColor: MERMAID_THEME.text,
+                signalColor: MERMAID_THEME.line,
+                signalTextColor: MERMAID_THEME.text,
+                labelBoxBkgColor: MERMAID_THEME.bg,
+                labelBoxBorderColor: MERMAID_THEME.accent,
+                labelTextColor: MERMAID_THEME.line,
+                loopTextColor: MERMAID_THEME.text,
+                noteBkgColor: MERMAID_THEME.ink,
+                noteBorderColor: MERMAID_THEME.amber,
+                noteTextColor: MERMAID_THEME.text,
+                activationBkgColor: MERMAID_THEME.bg,
+                activationBorderColor: MERMAID_THEME.line,
+                sequenceNumberColor: MERMAID_THEME.ink,
+                sectionBkgColor: MERMAID_THEME.bg,
+                altSectionBkgColor: MERMAID_THEME.ink,
+                altBkgColor: MERMAID_THEME.ink,
+                commitLabelColor: MERMAID_THEME.text,
+                commitBackgroundColor: MERMAID_THEME.bg,
+                pie1: MERMAID_THEME.accent,
+                pie2: MERMAID_THEME.amber,
+                pie3: MERMAID_THEME.line,
+                pie4: MERMAID_THEME.border,
+                pie5: MERMAID_THEME.bg,
+                pieTitleTextColor: MERMAID_THEME.text,
+                pieSectionTextColor: MERMAID_THEME.text,
+                pieLegendTextColor: MERMAID_THEME.text,
             },
         });
 
@@ -166,10 +222,10 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
     );
 
     const shell = (
-        <div className="relative flex-1 min-h-0 w-full overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/50 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:24px_24px]">
+        <div className="relative flex-1 min-h-0 w-full overflow-hidden rounded-lg border border-border bg-surface/40 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:24px_24px]">
             {diagramView}
             <PanControls transformRef={transformRef} />
-            <button type="button" onClick={toggleFullscreen} className="absolute top-4 right-4 z-10 rounded bg-zinc-800/80 p-2 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors" aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}>
+            <button type="button" onClick={toggleFullscreen} className="absolute top-4 right-4 z-10 rounded bg-surface/80 p-2 text-muted hover:text-bone hover:bg-surface border border-border transition-colors" aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d={fsIconPath} />
                 </svg>
@@ -180,7 +236,7 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
     if (!isFullscreen) return shell;
 
     return createPortal(
-        <div className="fixed inset-0 z-[100] flex flex-col" style={{ backgroundColor: "#0a0a0a" }}>
+        <div className="fixed inset-0 z-[100] flex flex-col" style={{ backgroundColor: MERMAID_THEME.ink }}>
             {shell}
         </div>,
         document.body,
