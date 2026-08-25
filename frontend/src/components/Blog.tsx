@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { loadBlogs, type BlogPost } from "../utils/blogLoader";
-import { GitHubIcon } from "./icons/Icons";
 import { useInView } from "../hooks/useInView";
-import type { SyntheticEvent } from "react";
 
 const POSTS_PER_PAGE = 6;
 
@@ -25,133 +23,122 @@ export default function Blog() {
     return (
         <div id="blog" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
             <div className="max-w-6xl mx-auto px-6">
-                <div ref={headerRef} className={`transition-all duration-500 mb-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
-					<span className="font-serif italic text-accent text-sm">02 — Writing</span>
-					<h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">Blog</h1>
-					<p className="text-muted max-w-lg">Thoughts, guides, and things I've learned along the way.</p>
+                <div ref={headerRef} className={`mb-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"} transition-all duration-500`}>
+                    <span className="font-serif italic text-accent text-sm">02 — Writing</span>
+                    <h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">Blog</h1>
+                    <p className="text-muted max-w-lg">Thoughts, guides, and things I've learned along the way.</p>
                 </div>
 
                 {blogs.length === 0 ? (
-                    <p className="text-zinc-500 text-center py-20">No posts yet. Check back soon.</p>
+                    <p className="text-muted text-center py-20">No posts yet. Check back soon.</p>
                 ) : (
-                    <>
-                        {totalPages > 1 && (
-                            <div className="flex justify-center items-center gap-4 mb-8">
-                                <button
-                                    type="button"
-                                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                                    disabled={currentPage === 1}
-                                    className="px-4 py-2 border border-border rounded-md text-sm text-zinc-400 hover:text-zinc-100 hover:border-accent/50 disabled:opacity-50 disabled:pointer-events-none transition-all"
-                                >
-                                    Previous
-                                </button>
-                                <span className="text-sm text-zinc-500 font-mono">
-                                    {currentPage} / {totalPages}
-                                </span>
-                                <button
-                                    type="button"
-                                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                                    disabled={currentPage === totalPages}
-                                    className="px-4 py-2 border border-border rounded-md text-sm text-zinc-400 hover:text-zinc-100 hover:border-accent/50 disabled:opacity-50 disabled:pointer-events-none transition-all"
-                                >
-                                    Next
-                                </button>
-                            </div>
-                        )}
+                    <ol className="divide-y divide-border border-y border-border">
+                        {visibleBlogs.map((post, i) => (
+                            <li key={post.slug}>
+                                <BlogRow post={post} index={startIndex + i} first={startIndex + i === 0} />
+                            </li>
+                        ))}
+                    </ol>
+                )}
 
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                            {visibleBlogs.map((post, i) => (
-                                <BlogCard key={post.slug} post={post} index={i} />
-                            ))}
-                        </div>
-                    </>
+                {totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-4 mt-10">
+                        <button type="button" onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} className="text-sm font-mono text-muted hover:text-accent disabled:opacity-40 disabled:pointer-events-none transition-colors">
+                            ← Prev
+                        </button>
+                        <span className="text-xs font-mono text-muted">
+                            {currentPage} / {totalPages}
+                        </span>
+                        <button type="button" onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="text-sm font-mono text-muted hover:text-accent disabled:opacity-40 disabled:pointer-events-none transition-colors">
+                            Next →
+                        </button>
+                    </div>
                 )}
             </div>
         </div>
     );
 }
 
-interface BlogCardProps {
+interface BlogRowProps {
     post: BlogPost;
-    index: number;
+    index: number; // 0-based page-relative
+    first: boolean;
 }
 
-function BlogCard({ post, index }: BlogCardProps) {
-    const navigate = useNavigate();
-    const formattedDate = post.date
-        ? new Date(post.date).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-          })
-        : "";
+function fmtDate(date: string): string {
+    if (!date) return "";
+    return new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+}
 
-    const handleCardClick = () => {
-        navigate(`/blog/${post.slug}`);
-    };
+function Arrow() {
+    return (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <path d="M7 17L17 7M17 7H7M17 7V17" />
+        </svg>
+    );
+}
+
+function BlogRow({ post, index, first }: BlogRowProps) {
+    const navigate = useNavigate();
+    const go = () => navigate(`/blog/${post.slug}`);
+    const numeral = String(index + 1).padStart(2, "0");
+
+    if (first) {
+        return (
+            <article
+                className="group grid cursor-pointer gap-x-8 py-10 lg:grid-cols-12"
+                onClick={go}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        go();
+                    }
+                }}
+            >
+                {/* oversized index numeral */}
+                <div className="lg:col-span-2 select-none">
+                    <span className="font-display text-7xl lg:text-8xl leading-none text-muted/30 group-hover:text-accent/50 transition-colors">{numeral}</span>
+                </div>
+                <div className="lg:col-span-10">
+                    <div className="flex items-center gap-3 mb-3 flex-wrap">
+                        <span className="font-serif italic text-accent text-sm">{post.favorite ? "Featured" : "Latest"}</span>
+                        <span className="text-xs font-mono text-muted">{fmtDate(post.date)}</span>
+                        {post.github && <span className="text-xs font-mono text-muted">· source ↗</span>}
+                    </div>
+                    <h2 className="font-display text-3xl lg:text-5xl text-bone group-hover:text-accent transition-colors leading-tight">{post.title}</h2>
+                    <p className="mt-4 max-w-2xl text-muted leading-relaxed">{post.description}</p>
+                    <div className="mt-6 inline-flex items-center gap-2 text-accent font-mono text-sm group-hover:gap-3 transition-all">
+                        read
+                        <Arrow />
+                    </div>
+                </div>
+            </article>
+        );
+    }
 
     return (
-        <article className="animate-fade-in-up" style={{ animationDelay: `${index * 0.07}s` }}>
-			<div className="group relative flex flex-col border border-border bg-surface hover:border-accent/40 transition-colors duration-300 h-full cursor-pointer">
-                <button
-                    type="button"
-                    onClick={handleCardClick}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            handleCardClick();
-                        }
-                    }}
-                    className="flex flex-col h-full w-full text-left"
-                >
-					<div className="relative h-40 bg-surface/40 border-b border-border overflow-hidden">
-                        {post.image ? (
-                            <img
-                                src={post.image}
-                                alt={post.title}
-                                className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300"
-                                onError={(e: SyntheticEvent<HTMLImageElement>) => {
-                                    const image = e.currentTarget;
-                                    image.style.display = "none";
-                                    const fallback = image.nextElementSibling as HTMLDivElement | null;
-                                    if (fallback) fallback.style.display = "flex";
-                                }}
-                            />
-                        ) : null}
-                        <div className={`${post.image ? "hidden" : "flex"} w-full h-full items-center justify-center`} style={post.image ? { display: "none" } : {}}>
-							<div className="text-5xl font-display text-muted/40 select-none">{post.title.charAt(0)}</div>
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
-                    </div>
-
-                    <div className="flex flex-col flex-1 p-5">
-						<div className="flex items-start justify-between gap-2 mb-2">{formattedDate && <span className="font-mono text-[10px] text-accent/70">{formattedDate}</span>}</div>
-						<h3 className="font-display text-bone mb-2 group-hover:text-accent transition-colors duration-200 leading-snug">{post.title}</h3>
-						<p className="text-muted text-sm leading-relaxed flex-1">{post.description}</p>
-                        <div className="mt-4 flex items-center gap-1 text-accent text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                            Read more
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                                <line x1="5" y1="12" x2="19" y2="12" />
-                                <polyline points="12 5 19 12 12 19" />
-                            </svg>
-                        </div>
-                    </div>
-                </button>
-
-                <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-                    {post.github && (
-                        <a href={post.github} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 text-zinc-500 hover:text-accent transition-colors bg-surface/80 backdrop-blur-sm px-1.5 py-1.5 rounded-full group/link" title="GitHub repository link">
-                            <GitHubIcon />
-                        </a>
-                    )}
-                    {post.favorite && (
-                        <span className="text-amber-400 text-sm bg-surface/80 backdrop-blur-sm px-1.5 py-1.5 rounded-full flex items-center gap-1" title="Personal Favorite">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                            </svg>
-                        </span>
-                    )}
-                </div>
+        <article
+            className="group grid cursor-pointer items-baseline gap-x-8 py-6 lg:grid-cols-12"
+            onClick={go}
+            onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    go();
+                }
+            }}
+        >
+            <div className="lg:col-span-1 select-none">
+                <span className="font-display text-2xl text-muted/40 group-hover:text-accent transition-colors">{numeral}</span>
+            </div>
+            <div className="lg:col-span-8">
+                <h3 className="font-display text-xl text-bone group-hover:text-accent transition-colors leading-snug">{post.title}</h3>
+                {post.description && <p className="mt-1 text-sm text-muted line-clamp-2">{post.description}</p>}
+            </div>
+            <div className="lg:col-span-3 flex items-center justify-between gap-4 lg:justify-end">
+                <span className="text-xs font-mono text-muted">{fmtDate(post.date)}</span>
+                <span className="text-muted group-hover:text-accent transition-colors">
+                    <Arrow />
+                </span>
             </div>
         </article>
     );
