@@ -17,6 +17,9 @@ Defined in the `@theme` block of `index.css`. Use via Tailwind utilities (`bg-*`
 | `accent` | `text/bg-accent` | `#94c9a5` | Links, CTAs (teal) |
 | `amber` | `text/bg-amber` | `#e0ad50` | Highlights, spot accents |
 | `muted` | `text-muted` | `#a29a88` | Secondary/helper text (brightened for contrast) |
+| `signal-green` | `bg-signal-green` | `#7fb98a` | Status = healthy/available |
+| `signal-amber` | `text-signal-amber` | `#d9b45a` | Status = attention/favorite |
+| `signal-red` | `bg-signal-red` | `#d07878` | Status = error/risk |
 | `font-sans` | Tailwind | "Inter" | Body/copy |
 | `font-mono` | Tailwind | "JetBrains Mono" | Code, technical labels |
 | `font-serif` | `font-display` | "Newsreader" | Editorial display headings |
@@ -28,9 +31,10 @@ Base (`@layer base`): page bg `ink`, text `bone`; custom 6px scrollbar.
 | Utility | Effect |
 |---------|--------|
 | `font-display` | Serif display type for headings |
+| `glow-white` / `glow-white-hover` | Soft white glow for primary CTAs (monochrome pop) |
+| `link-pop` / `link-pop-hover` | Sweeping white underline for hierarchy links |
 
-Accent usage rules: `accent` (teal) = interactive (links, CTAs, hover states); `amber` = non-interactive highlights (badges, initial blocks). Do not apply teal to color both roles.
-
+Accent usage rules: `accent` (teal) = interactive (links, CTAs, hover states); `amber` = non-interactive highlights (badges, initial blocks). Do not apply teal to both roles.
 ## Motion
 
 Keyframed in `index.css`, used as utilities. Motion is intentionally conservative — reserve for section-level reveals, not every card:
@@ -60,8 +64,9 @@ Content typography from rendered markdown:
 
 ## Rules
 
-1. Change tokens in `@theme`, never inline hex.
+1. All color VALUES live in exactly one place: the `@theme` block in `index.css` (and the `MERMAID_THEME` const in `src/utils/InteractiveMermaid.tsx`, which mirrors it for Mermaid's literal strings).
 2. Reuse utilities — don't reinvent fonts/colors in components.
-3. Keep color usage limited to the token set (never raw hex in JSX/TSX).
+3. Never write raw hex in JSX/TSX/CSS outside `@theme` / `MERMAID_THEME`. A build-time guard (`frontend/scripts/check-tokens.sh`, run by `npm run build`) fails the build if a stray hex appears.
 4. `accent` = interactive only; `amber` = highlights only; never reuse for both.
-5. No glow shadows, no cyan/purple gradients in the current system.
+5. `--color-ink` is the page background — if the page ever shows white, this token was dropped from `@theme` (see the guard).
+6. No cyan/purple or rainbow gradients in the current system; the only color beyond the warm theme are the semantic signals `--color-signal-{green,amber,red}` used strictly for status dots/badges.
