@@ -70,7 +70,7 @@ const personalData: PersonalData = {
     x: "https://x.com/notseekeru",
     threads: "https://www.threads.com/@notseekeru",
     bio: "Computer Engineering undergraduate who learns by building. I run a self-hosted homelab: a local Kubernetes cluster with ArgoCD GitOps, a full LGTM observability stack with OpenTelemetry, and a self-hosted service infrastructure. I've also written an HTTP/1.1 server from scratch in Go. Currently seeking internships where I can contribute and keep growing.",
-    profilePicture: "/profile3.png",
+    profilePicture: "/profile4.png",
 
     experience: [
         {
