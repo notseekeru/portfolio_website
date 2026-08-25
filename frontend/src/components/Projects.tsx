@@ -31,28 +31,17 @@ export default function Projects() {
     return (
         <div id="projects" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
             <div className="max-w-6xl mx-auto px-6">
-				<div ref={headerRef} className={`transition-all duration-500 mb-16 md:pl-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
+                <div ref={headerRef} className={`transition-all duration-500 mb-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
 					<span className="font-serif italic text-accent text-sm">01 — Work</span>
 					<h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">Projects</h1>
 					<p className="text-muted max-w-lg">Things I've built, broken, and learned from.</p>
 				</div>
 
-				<div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-					{personalData.projects.map((project, i) => {
-						// editorial rhythm: alternate featured (span 7/5) vs standard (span 4), inline-offset odd rows
-						const align = i % 2 === 0 ? "" : "md:col-start-1";
-						const spread = project.favorite && i % 2 === 0
-							? "md:col-span-7"
-							: project.favorite && i % 2 === 1
-								? "md:col-span-7 md:col-start-6"
-								: "md:col-span-4";
-						return (
-							<div key={project.title} className={`${align} ${spread}`}>
-								<ProjectCard project={project} index={i} onOpen={() => setActiveProject(project)} />
-							</div>
-						);
-					})}
-				</div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {personalData.projects.map((project, i) => (
+                        <ProjectCard key={project.title} project={project} index={i} onOpen={() => setActiveProject(project)} />
+                    ))}
+                </div>
             </div>
 
             {activeProject && <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />}
