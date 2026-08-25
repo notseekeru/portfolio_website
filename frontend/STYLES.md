@@ -10,13 +10,13 @@ Defined in the `@theme` block of `index.css`. Use via Tailwind utilities (`bg-*`
 
 | Token | Class prefix | Value | Purpose |
 |-------|--------------|-------|---------|
-| `ink` | `bg-ink` | `#14140f` | Page background |
-| `surface` | `bg-surface` | `#211e17` | Cards, panels |
-| `border` | `border-border` | `#322d24` | Hairline dividers, card borders |
-| `bone` | `text-bone` | `#e8e6da` | Primary text |
-| `accent` | `text/bg-accent` | `#8abf9a` | Links, CTAs (muted teal) |
-| `amber` | `text/bg-amber` | `#d9a441` | Highlights, spot accents |
-| `muted` | `text-muted` | `#8a8271` | Secondary/helper text |
+| `ink` | `bg-ink` | `#0c0a08` | Page background (deep near-black) |
+| `surface` | `bg-surface` | `#15120e` | Cards, panels |
+| `border` | `border-border` | `#2a261d` | Hairline dividers, card borders |
+| `bone` | `text-bone` | `#ece8dc` | Primary text |
+| `accent` | `text/bg-accent` | `#94c9a5` | Links, CTAs (teal) |
+| `amber` | `text/bg-amber` | `#e0ad50` | Highlights, spot accents |
+| `muted` | `text-muted` | `#a29a88` | Secondary/helper text (brightened for contrast) |
 | `font-sans` | Tailwind | "Inter" | Body/copy |
 | `font-mono` | Tailwind | "JetBrains Mono" | Code, technical labels |
 | `font-serif` | `font-display` | "Newsreader" | Editorial display headings |
@@ -48,14 +48,14 @@ Scroll-triggered: `useInView` hook gates reveals. Avoid per-card stagger spam.
 - Asymmetric grids (e.g. hero `grid-cols-[1.1fr_0.9fr]`) preferred over centered stacks.
 - Cards: `bg-surface` + `border-border` (straight corners preferred over heavy rounded/glow).
 - Typography: headings `font-display` (serif); big hero scale (`text-5xl`/`7xl`); labels via `font-mono`, minimal letter-spacing (no `tracking-[0.3em] uppercase` cliché).
-- Section eyebrows: `font-serif italic text-accent` prefixed with a number, e.g. `01 — Work`.
+- Section eyebrows: `font-mono text-xs tracking-widest text-accent` in `NN / SECTION` form, e.g. `01 / WORK`.
 
 ## Blog Prose (`.blog-prose`)
 
 Content typography from rendered markdown:
 - Base: `bone`, 15px, line-height 1.8; headings `font-display` (serif).
 - Links teal-underline; blockquote teal-left border, italic.
-- Code highlighting: PrismJS, dark theme (GitHub-dark palette) kept dark as deliberate terminal contrast — tokens hardcoded in `index.css`.
+- Code highlighting: PrismJS with a warm syntax palette on the `ink` code-block (teal/amber/bone-toned tokens), hardcoded in `index.css`.
 - Mermaid diagrams, images: rounded, `border-border`, full-width.
 
 ## Rules
