@@ -95,7 +95,7 @@ function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
                                 )}
                             </span>
                         </div>
-                        <div className="relative h-52 bg-ink/40 overflow-hidden flex items-center justify-center">
+                        <div className="relative aspect-video bg-ink/40 overflow-hidden flex items-center justify-center">
                             {project.video ? (
                                 <video src={project.video} autoPlay muted loop playsInline className="h-full w-full object-contain" />
                             ) : project.image ? (
