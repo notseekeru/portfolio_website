@@ -1,59 +1,91 @@
 # Portfolio Website
 
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
-[![CI Status](https://github.com/notseekeru/portfolio_website/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/notseekeru/portfolio_website/actions)
-[![CD Status](https://github.com/notseekeru/portfolio_website/actions/workflows/cd-pipeline.yml/badge.svg)](https://github.com/notseekeru/portfolio_website/actions)
+[![CI](https://github.com/notseekeru/portfolio_website/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/notseekeru/portfolio_website/actions)
+[![CD](https://github.com/notseekeru/portfolio_website/actions/workflows/cd-pipeline.yml/badge.svg)](https://github.com/notseekeru/portfolio_website/actions)
 
-## TechStack
+Single-page portfolio website: React 19 + TypeScript + Vite + Tailwind 4, containerized with Docker and deployed via a GitOps pipeline.
 
-- TypeScript
-- React
+## Features
 
-## System Stack
+- SPA with client-side routing.
+- Interactive project & tool overview (Infrastructure, Projects, Languages, Tools & Frameworks).
+- Mermaid diagrams for infrastructure and CI/CD pipeline visuals.
+- Syntax highlighting with PrismJS; zoomable diagrams.
+- Contact form wired to N8N webhooks with secure headers.
 
-- Cloudflare Tunnel (cloudflared)
-- Nginx Ingress Controller (cluster-level reverse proxy)
-- Tailscale (secure encrypted bridge between Raspberry Pi and local desktop)
-- Docker (for containerizing the frontend application)
+## Tech Stack
 
-## Website Features
+| Layer         | Stack                                                          |
+| ------------- | -------------------------------------------------------------- |
+| Frontend      | React 19, TypeScript, Vite, Tailwind CSS 4, Mermaid, PrismJS   |
+| Container     | Docker (multi-stage dev/prod targets in `frontend/Dockerfile`) |
+| Orchestration | Docker Compose, Nginx ingress                                  |
+| Networking    | Cloudflare Tunnel (cloudflared), Tailscale                     |
+| CI/CD         | GitHub Actions → GHCR (multi-arch) → GitOps repo               |
 
-- Single Page Application (SPA) for smooth navigation and fast loading times.
-- Hover interactive project and tool overview in the Infrastructure, Projects, Languages, Tools & Framework sections.
-- Interactive Mermaid Diagrams for infrastructure and CI/CD pipelines at blogposts.
-- Contact form with N8N integration using webhooks and secure headers.
+## Local Development
 
-## Testing and Security:
-
-- SSLLabs for testing SSL configuration and security headers.
-- To test the SSL configuration and security headers of your website, you can use the following command:
+Start the dev container (lints and typechecks on `make up`; source mounts in `/app`):
 
 ```bash
-  curl -I https://portfolio.seekeru.tech
-  curl -IL http://portfolio.seekeru.tech
-  curl -IL --http3 https://portfolio.seekeru.tech
-  curl -o /dev/null -s -w "DNS: %{time_namelookup}s\nConnect: %{time_connect}s\nTLS: %{time_appconnect}s\nTTFB: %{time_starttransfer}s\nTotal: %{time_total}s\n" https://portfolio.seekeru.tech
-
-
-
-  curl -I -H "Accept-Encoding: gzip, deflate, br" https://portfolio.seekeru.tech
-
-  curl -A "Googlebot" -I https://portfolio.seekeru.tech
-  curl -A "Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15" -I https://portfolio.seekeru.tech
-
-
-  curl -I -X OPTIONS https://portfolio.seekeru.tech \
-  -H "Origin: https://malicious-example.com" \
-  -H "Access-Control-Request-Method: GET"
-
-
+make up        # builds + starts dev stack on :5173
 ```
 
-Todos:
+The `Makefile` wraps Docker Compose. Useful targets:
 
-<!--
-- N8N integration for contact form submissions using webhooks and secure headers.
-- Dependabot in GitHub for automated dependency updates and security patches.
-- Project section with actual good projects to show
-- Implementing a live monitoring solution to track the performance and health of the application and the overall system infrastructure.
--->
+```bash
+make lint      # biome lint
+make exec      # lint + typecheck + audit inside container
+make build     # build dev image
+make logs      # tail dev logs
+make down      # stop dev stack
+```
+
+Prod variants use `make prod-up`, `make prod-build`, `make prod-down`.
+
+## CI/CD
+
+- **CI** (`ci-pipeline.yml`): lint, typecheck, build, `npm audit`, Trivy filesystem scan on push/PR.
+- **CD** (`cd-pipeline.yml`): on successful CI on `main` → build + multi-arch image (`linux/amd64`, `linux/arm64`), Trivy image scan, smoke test, push to GHCR, then kustomize the image tag in the GitOps repo to trigger deploy.
+- **Dependabot** (`dependabot.yml`): weekly updates for npm and Docker dependencies.
+
+## Deployment Architecture
+
+```
+Clusters
+   │                                          │
+   └── Nginx Ingress ── Docker (frontend) ── Cloudflare Tunnel ── internet
+```
+
+Requests route: Cloudflare Tunnel → Nginx ingress → Docker container → static assets.
+
+## Verification
+
+Check SSL config, security headers and response timing:
+
+```bash
+H=https://portfolio.seekeru.tech
+curl -IL $H                                  # headers + redirects
+curl -IL --http3 $H                          # HTTP/3
+curl -o /dev/null -s -w "\
+DNS: %{time_namelookup}s\nConnect: %{time_connect}s\nTLS: %{time_appconnect}s\nTTFB: %{time_starttransfer}s\nTotal: %{time_total}s\n" $H
+curl -A "Googlebot" -I $H                    # bot view
+curl -I -X OPTIONS $H \
+  -H "Origin: https://malicious-example.com" \
+  -H "Access-Control-Request-Method: GET"    # CORS check
+curl -I --compressed $H                      # gzip/br
+```
+
+Full HTTPS/security scoring via [SSL Labs](https://www.ssllabs.com/ssltest/).
+
+## Project Structure
+
+```
+├── frontend/          # React app (src, Dockerfile, nginx.conf, vite.config)
+├── scripts/           # port-claimer.sh
+├── .github/workflows/ # CI + CD pipelines
+├── Makefile           # compose wrapper (dev/prod)
+├── compose*.yml       # docker compose dev/prod overlays
+└── html-css-parser.py # tooling helper
+```
