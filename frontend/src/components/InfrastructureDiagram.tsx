@@ -90,7 +90,7 @@ flowchart TB
             F2B["Fail2ban"]
         end
 
-        subgraph Docker["🐳 Docker Containers (Isolated Dev/Test Only)"]
+        subgraph Docker["🐳 Docker Containers (Isolated Dev/Test Only. Not running everyday for RAM and I/O Limits)"]
             subgraph ObservabilityStack["Compose - Observability Stack (LGTM + Alloy - Dev/Testing)"]
                 Alloy["Grafana Alloy :12345"]
                 Prom["Prometheus :9090"]
