@@ -9,3 +9,4 @@ CVE-2026-55685   # react-router: DoS via route matching (no unauthenticated expo
 CVE-2026-33245   # react-router: XSS in RSC redirect (RSC not used)
 CVE-2026-34077   # react-router: DoS in single-fetch (single-fetch not used)
 GHSA-qwww-vcr4-c8h2   # react-router: RSC CSRF bypass (RSC not used)
+CVE-2026-14456 # openssl: OpenSSL: Denial of Service via unbounded memory
