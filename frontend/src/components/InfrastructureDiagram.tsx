@@ -110,7 +110,6 @@ flowchart TB
             subgraph Workloads["Namespaces & Pods"]
                 subgraph Portfolio_App["Portfolio Stack"]
                     Portfolio_Frontend_Pod["Portfolio Frontend"]
-                    Portfolio_Backend_Pod["Portfolio Backend"]
                 end
 
                 subgraph Diagram_App["Migrated Diagram Stack"]
