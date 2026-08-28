@@ -1,7 +1,7 @@
 ---
 title: Telemetry Madness
 date: 2026-05-30
-description: I let AI generate my observability stack, then watched it fail silently. Here's how I rebuilt it from first principles using curl, Alloy, and a Postgres blackout experiment that exposed a hidden retry-loop disaster.
+description: I let AI generate my observability stack, then watched it fail silently. Here's how I rebuilt it from first principles using curl, Alloy, and a Postgres blackout experiment.
 favorite: true
 github: https://github.com/notseekeru/diagram_website
 ---
@@ -173,6 +173,8 @@ This unconfigured retry behavior severely impacted my critical response metrics:
 - **Mean Time to Recovery (MTTR):** Artificially prolonged. By allowing connections to pile up silently during the outage, the application exhaustively consumed local thread runtimes, delaying the application's ability to cleanly re-establish stable database states once the container was restarted.
 
 This failure proved that observability is not just about measuring static, healthy code; it is about exposing how your system behaves under extreme duress.
+
+This made my previous metrics of MTTD and MTTR meaningless. The system was not failing gracefully, and the telemetry pipeline was not capturing the true state of the application under stress.
 
 ---
 
