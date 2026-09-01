@@ -10,3 +10,5 @@ CVE-2026-33245   # react-router: XSS in RSC redirect (RSC not used)
 CVE-2026-34077   # react-router: DoS in single-fetch (single-fetch not used)
 GHSA-qwww-vcr4-c8h2   # react-router: RSC CSRF bypass (RSC not used)
 CVE-2026-14456 # openssl: OpenSSL: Denial of Service via unbounded memory
+CVE-2026-66046 # Expat through 2.8.3 contains a denial of service
+CVE-2026-76641 # affecting package expat for versions
