@@ -222,7 +222,9 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
     );
 
     const shell = (
-        <div className="relative flex-1 min-h-0 w-full h-[60vh] min-h-[420px] max-h-[750px] overflow-hidden rounded-lg border border-border bg-surface/40 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:24px_24px]">
+        <div
+            className={`relative flex-1 min-h-0 w-full ${isFullscreen ? "h-full" : "h-[60vh] min-h-[420px] max-h-[750px]"} overflow-hidden rounded-lg border border-border bg-surface/40 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:24px_24px]`}
+        >
             {diagramView}
             <PanControls transformRef={transformRef} />
             <button type="button" onClick={toggleFullscreen} className="absolute top-4 right-4 z-10 rounded bg-surface/80 p-2 text-muted hover:text-bone hover:bg-surface border border-border transition-colors" aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}>
