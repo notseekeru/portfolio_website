@@ -15,7 +15,7 @@ export default function Footer() {
                     <p className="text-xs text-muted mt-1">{new Date().getFullYear()} · Built with React + Vite + Tailwind</p>
                 </div>
 
-                <nav className="flex items-center gap-6">
+                <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
                     {[
                         { label: "Home", to: "/#home" },
                         { label: "Projects", to: "/#projects" },

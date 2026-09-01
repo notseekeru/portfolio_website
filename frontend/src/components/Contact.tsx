@@ -54,7 +54,7 @@ export default function Contact() {
                     <p className="text-muted text-sm mb-10 max-w-lg">Open to remote roles, internships, and collaborations.</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 animate-slide-in-right" style={{ animationDelay: "0.1s" }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-slide-in-right" style={{ animationDelay: "0.1s" }}>
                     {socialLinks.map((link) => (
                         <a key={link.label} href={link.href} target={link.href.startsWith("mailto") ? undefined : "_blank"} rel="noopener noreferrer" className="flex items-center gap-4 p-4 border border-border bg-surface hover:border-accent/40 transition-colors group">
                             <div className="w-10 h-10 bg-ink/60 border border-border flex items-center justify-center text-muted group-hover:text-accent group-hover:border-accent/40 transition-colors shrink-0">
