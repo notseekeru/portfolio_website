@@ -46,7 +46,7 @@ export default function Contact() {
     const { ref: sectionRef, inView: sectionInView } = useInView();
 
     return (
-        <div id="contact" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
+        <div id="contact" ref={sectionRef} className={`py-16 sm:py-20 lg:py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
             <div className="max-w-6xl mx-auto px-6">
                 <div className="animate-slide-in-left">
                     <span className="font-mono text-xs tracking-widest text-accent">03 / CONTACT</span>

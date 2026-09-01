@@ -4,7 +4,7 @@ import { GitHubIcon, LinkedInIcon, MailIcon } from "./icons/Icons";
 
 export default function Hero() {
     return (
-        <section className="py-24 lg:py-32 relative">
+        <section className="py-16 sm:py-20 lg:py-32 relative">
             <div className="mx-auto max-w-6xl px-6 grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-20 items-center">
                 <div>
                     <span className="inline-block bg-ink/40 border border-border text-muted font-mono text-xs tracking-widest px-3 py-1 mb-8">{personalData.location}</span>

@@ -29,7 +29,7 @@ export default function Projects() {
     const [activeProject, setActiveProject] = useState<ProjectItem | null>(null);
 
     return (
-        <div id="projects" ref={sectionRef} className={`py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
+        <div id="projects" ref={sectionRef} className={`py-16 sm:py-20 lg:py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
             <div className="max-w-6xl mx-auto px-6">
                 <div ref={headerRef} className={`transition-all duration-500 mb-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
                     <span className="font-mono text-xs tracking-widest text-accent">01 / WORK</span>
