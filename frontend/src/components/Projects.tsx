@@ -58,7 +58,7 @@ interface ProjectCardProps {
 function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
     return (
         <article
-            className="animate-fade-in-up cursor-pointer"
+            className="animate-fade-in-up cursor-pointer min-w-0 w-full"
             style={{ animationDelay: `${index * 0.07}s` }}
             onClick={onOpen}
             onKeyDown={(e) => {
@@ -194,7 +194,7 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
                         </span>
                         <span className="ml-3 flex-1 truncate rounded-sm bg-surface px-3 py-1 text-xs font-mono text-muted">{project.link ? project.link.replace(/https?:\/\//, "") : project.title}</span>
                     </div>
-                    <div className="relative h-80 lg:h-[32rem] bg-ink/60 overflow-hidden flex items-center justify-center">
+                    <div className="relative h-56 sm:h-72 lg:h-[32rem] bg-ink/60 overflow-hidden flex items-center justify-center">
                         {project.video ? (
                             <video src={project.video} autoPlay muted loop playsInline className="h-full w-full object-contain" />
                         ) : project.image ? (
