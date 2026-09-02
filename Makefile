@@ -31,6 +31,9 @@ up: check-ports
 	$(DEV_CMD) up -d
 
 down:
+	$(DEV_CMD) down
+
+clean:
 	$(DEV_CMD) down -v
 
 prod-build:
