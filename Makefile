@@ -48,5 +48,15 @@ prod-logs:
 prod-down:
 	$(PROD_CMD) down -v --rmi local
 
+prod-scan: prod-build
+	@echo "**--- Trivy image scan: portfolio-prod-frontend ---**"
+	docker run --rm \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(abspath frontend/.trivyignore.yaml):/.trivyignore.yaml \
+		aquasec/trivy:0.74.0 image \
+		--severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 \
+		--ignorefile /.trivyignore.yaml \
+		portfolio-prod-frontend
+
 prod-up:
 	$(PROD_CMD) up -d
