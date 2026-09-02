@@ -46,8 +46,8 @@ Prod variants use `make prod-up`, `make prod-build`, `make prod-down`.
 
 ## CI/CD
 
-- **CI** (`ci-pipeline.yml`): lint, typecheck, build, `npm audit`, Trivy filesystem scan on push/PR.
-- **CD** (`cd-pipeline.yml`): on successful CI on `main` → build + multi-arch image (`linux/amd64`, `linux/arm64`), Trivy image scan, smoke test, push to GHCR, then kustomize the image tag in the GitOps repo to trigger deploy.
+- **CI** (`ci-pipeline.yml`): lint, typecheck, build, `npm audit`, Trivy 0.74 filesystem scan gated on `frontend/.trivyignore.yaml` (`--ignore-unfixed`, exceptions expire 2026-12-01) on push/PR.
+- **CD** (`cd-pipeline.yml`): on successful CI on `main` → build + multi-arch image (`linux/amd64`, `linux/arm64`), Trivy image scan (same dated ignore), smoke test, push to GHCR, then kustomize the image tag in the GitOps repo to trigger deploy.
 - **Dependabot** (`dependabot.yml`): weekly updates for npm and Docker dependencies.
 
 ## Deployment Architecture
