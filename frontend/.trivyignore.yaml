@@ -69,7 +69,7 @@ vulnerabilities:
 
   - id: CVE-2026-66046
     purls:
-      - pkg:apk/alpine/expat
+      - pkg:apk/alpine/libexpat
     statement: >-
       expat XML DoS (< 2.8.3). No untrusted XML parsing. Re-check after base
       ships expat >= 2.8.4.
@@ -77,7 +77,7 @@ vulnerabilities:
 
   - id: CVE-2026-76641
     purls:
-      - pkg:apk/alpine/expat
+      - pkg:apk/alpine/libexpat
     statement: >-
       expat XML DoS (< 2.8.3-2). No untrusted XML parsing. Re-check after base
       ships expat >= 2.8.4.
