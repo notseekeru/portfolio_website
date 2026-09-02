@@ -79,6 +79,42 @@ curl -I --compressed $H                      # gzip/br
 
 Full HTTPS/security scoring via [SSL Labs](https://www.ssllabs.com/ssltest/).
 
+### Browser QA with an AI agent (@playwright/mcp)
+
+For MCP-native agents (VS Code, Cursor, Claude Code, etc.), point the agent's
+`mcpServers` at Microsoft's Playwright MCP server. It drives a real Chromium via
+accessibility snapshots **(browser_snapshot)**, screenshots (browser_take_screenshot),
+click/fill/type, console & network capture, and tabs — no custom code needed.
+
+The nix package bundles an offline Chromium (no `playwright install` download):
+
+```bash
+nix build nixpkgs#playwright-mcp --print-out-paths   # cache the store path
+```
+
+Register it in your agent (example config):
+
+```jsonc
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "<PATH_FROM_ABOVE>/bin/playwright-mcp",
+      "args": ["--headless"],
+      "env": {}
+    }
+  }
+}
+```
+
+Start the dev stack first so the agent can drive http://localhost:5173:
+
+```bash
+make up
+```
+
+Claude Code: `claude mcp add playwright <PATH>/bin/playwright-mcp --headless`.
+VS Code: add under `mcp` in `.vscode/mcp.json` / workspace settings.
+
 ## Project Structure
 
 ```
