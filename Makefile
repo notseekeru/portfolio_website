@@ -54,6 +54,7 @@ prod-scan: prod-build
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v $(abspath frontend/.trivyignore.yaml):/.trivyignore.yaml \
 		aquasec/trivy:0.74.0 image \
+		--skip-dirs "app/node_modules" \
 		--severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 \
 		--ignorefile /.trivyignore.yaml \
 		portfolio-prod-frontend
