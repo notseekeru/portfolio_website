@@ -27,6 +27,7 @@ results, and lessons. No AI-slop vocabulary.
 - **Read the author journal first:** `/home/seeker/agents/arciero-agent/journal.md`. It is the author's own first-party record of what each project actually was, what was retroactive framing, the true pain point, and the honest loose ends. Cross-check every premise and framing claim against it before drafting; the journal routinely contradicts comfortable assumptions (e.g. an SAA-C03 label that was pinned on after the fact). Treat journal beats the post must honor: build-first motive over certification labels, AI-audit honesty (`the .tf was AI-generated and hand-hardened`), and truthful current state (loose ends, not a finished deploy).
 - Before drafting, read 2-3 existing posts (e.g. `frontend/src/content/blogs/telemetry-madness.md`, `frontend/src/content/blogs/imposter-syndrome.md`, `frontend/src/content/blogs/the-awakening.md`) as tone/style reference so the new post matches the body of work.
 - One file per post. Lowercase kebab-case slug matches the filename (used as the URL path).
+
 ### File & frontmatter schema
 
 Place new posts at `frontend/src/content/blogs/<slug>.md`. Leading frontmatter block:
@@ -37,8 +38,8 @@ title: <Post Title, sentence case>
 date: <YYYY-MM-DD>
 description: <One-line human hook; the blog-listing blurb.>
 # optional below
-favorite: true   # only for standouts; omit otherwise
-github: <https://github.com/owner/repo>   # only when a repo backs this post
+favorite: true # only for standouts; omit otherwise
+github: <https://github.com/owner/repo> # only when a repo backs this post
 ---
 ```
 
