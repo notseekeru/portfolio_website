@@ -57,10 +57,12 @@ Scroll-triggered: `useInView` hook gates reveals. Avoid per-card stagger spam.
 ## Blog Prose (`.blog-prose`)
 
 Content typography from rendered markdown:
+- The body renders via a unified remark/rehype pipeline (`frontend/src/utils/markdown.ts`), then Prism (`SyntaxHighlighter`) and Mermaid (`MermaidRenderer`) post-process the DOM for code + diagrams.
+- GFM tables are supported: emitted as `<div class="blog-table-wrapper"><table>` with `<thead>/<tbody>`, styled with 1px `border-border` hairlines, `surface` header band, zebra body, `overflow-x` scroll on narrow rows.
 - Base: `bone`, 15px, line-height 1.8; headings `font-display` (serif).
 - Links teal-underline; blockquote teal-left border, italic.
-- Code highlighting: PrismJS with a warm syntax palette on the `ink` code-block (teal/amber/bone-toned tokens), hardcoded in `index.css`.
-- Mermaid diagrams, images: rounded, `border-border`, full-width.
+- Code highlighting: PrismJS with a warm syntax palette on the `ink` code-block (teal/amber/bone-toned tokens), hardcoded in `index.css`; wrapped `.blog-code-block` + `language-*` on `<code>`.
+- Mermaid fences render `<div class="mermaid">` for `MermaidRenderer`; inline images max-width + rounded.
 
 ## Rules
 

@@ -11,13 +11,24 @@ export default function BlogPost() {
     const contentRef = useRef<HTMLDivElement | null>(null);
     const { slug } = useParams<{ slug: string }>();
     const [post, setPost] = useState<BlogPostType | null>(null);
+    const [html, setHtml] = useState("");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getBlogBySlug(slug ?? "").then((p) => {
-            setPost(p);
+        let cancelled = false;
+        setPost(null);
+        setHtml("");
+        setLoading(true);
+        getBlogBySlug(slug ?? "").then(async (found) => {
+            if (cancelled) return;
+            if (found) setHtml(await parseMarkdown(found.content));
+            if (cancelled) return;
+            setPost(found);
             setLoading(false);
         });
+        return () => {
+            cancelled = true;
+        };
     }, [slug]);
 
     useEffect(() => {
@@ -57,7 +68,7 @@ export default function BlogPost() {
           })
         : "";
 
-    const htmlContent = parseMarkdown(post.content);
+    const htmlContent = post && html ? html : "";
 
     return (
         <div className="min-h-screen pt-28 pb-24 animate-fade-in">

@@ -1,156 +1,85 @@
-import Prism from "prismjs";
-import "prismjs/components/prism-bash";
-import "prismjs/components/prism-docker";
-import "prismjs/components/prism-jsx";
-import "prismjs/components/prism-json";
-import "prismjs/components/prism-markdown";
-import "prismjs/components/prism-python";
-import "prismjs/components/prism-tsx";
-import "prismjs/components/prism-typescript";
-import "prismjs/components/prism-yaml";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkRehype from "remark-rehype";
+import rehypeStringify from "rehype-stringify";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import type { Schema } from "hast-util-sanitize";
+import type { Element, ElementContent, Root } from "hast";
+import { visit } from "unist-util-visit";
 
-interface HighlightedCode {
-    html: string;
-    className: string;
-}
-
-function escapeHtml(text: string): string {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
-function normalizeLanguage(lang: string): string {
-    if (!lang) return "";
-
-    const aliases: Record<string, string> = {
-        js: "javascript",
-        jsx: "jsx",
-        ts: "typescript",
-        tsx: "tsx",
-        py: "python",
-        sh: "bash",
-        shell: "bash",
-        zsh: "bash",
-        yml: "yaml",
-        docker: "docker",
-        dockerfile: "docker",
-        compose: "yaml",
-    };
-
-    const normalized = lang.trim().toLowerCase();
-    return aliases[normalized] || normalized;
-}
-
-function highlightCode(code: string, language: string): HighlightedCode {
-    const normalizedLanguage = normalizeLanguage(language);
-    const prismLanguage = Prism.languages[normalizedLanguage];
-
-    if (!normalizedLanguage || !prismLanguage) {
-        return {
-            html: escapeHtml(code),
-            className: "",
+/**
+ * Rendered-markup shims so output matches what the project's processors/CSS already
+ * expect — this is a drop-in for the legacy hand-rolled `markdown.ts` contract:
+ *  - ```mermaid fences must reach MermaidRenderer as `<div class="mermaid">` (it
+ *    queries `div.mermaid`), not remark's default `<pre><code>`.
+ *  - every other fenced block keeps `code.language-*` (Prism's selector) and gets
+ *    `.blog-code-block` on `<pre>`, the class `.blog-prose` CSS scopes tokens on.
+ */
+function remapBlocks() {
+    /** Replace `node` (at `parent.children[index]`) with a scroll wrapper around it. */
+    const wrap = (node: Element, index: number, parent: { children: ElementContent[] }) => {
+        const wrapper: Element = {
+            type: "element",
+            tagName: "div",
+            properties: { className: ["blog-table-wrapper"] },
+            children: [node],
         };
-    }
+        parent.children[index] = wrapper;
+    };
 
-    return {
-        html: Prism.highlight(code, prismLanguage, normalizedLanguage),
-        className: `language-${normalizedLanguage}`,
+    return (tree: Root) => {
+        visit(tree, "element", (node, index, parent) => {
+            if (node.tagName === "table") {
+                if (index !== undefined && parent?.children) {
+                    wrap(node, index, parent as { children: ElementContent[] });
+                }
+                return;
+            }
+
+            if (node.tagName !== "pre") return;
+            const code = node.children[0] as ElementContent | undefined;
+            if (!(code && code.type === "element" && code.tagName === "code")) return;
+
+            const classNames = Array.isArray(code.properties?.className) ? (code.properties.className as string[]) : [];
+            if (classNames.includes("language-mermaid")) {
+                const chart = (code.children as ElementContent[])
+                    .filter((c) => c.type === "text")
+                    .map((c) => c.value)
+                    .join("");
+                node.tagName = "div";
+                node.properties = { className: ["mermaid"] };
+                node.children = [{ type: "text", value: chart }];
+                return;
+            }
+
+            if (node.properties?.className === undefined) node.properties.className = [];
+            (node.properties.className as string[]).push("blog-code-block");
+        });
     };
 }
 
-function parseMarkdown(md: string): string {
-    let html = "";
-    const lines = md.split("\n");
-    let i = 0;
+// Sanitize everything by default, but do not strip the structural/token classes the
+// blog machinery injects: Prism's `language-*`, the `.blog-code-block` and `.mermaid`
+// wrapper classes, and GFM table alignment.
+const schemaAttributes = {
+    ...(defaultSchema.attributes ?? {}),
+    img: [...(defaultSchema.attributes?.img ?? []), ["className"]],
+    div: [...(defaultSchema.attributes?.div ?? []), ["className"]],
+    pre: [...(defaultSchema.attributes?.pre ?? []), ["className"]],
+    code: [...(defaultSchema.attributes?.code ?? []), ["className"]],
+} as Schema["attributes"];
+const schema = {
+    ...defaultSchema,
+    attributes: schemaAttributes,
+} as Schema;
 
-    while (i < lines.length) {
-        const line = lines[i];
+const processor = unified().use(remarkParse).use(remarkGfm).use(remarkRehype, { allowDangerousHtml: false }).use(remapBlocks).use(rehypeSanitize, schema).use(rehypeStringify);
 
-        if (line.startsWith("```")) {
-            const fenceMatch = line.match(/^```\s*([\w-]+)?\s*$/);
-            const language = fenceMatch?.[1] || "";
-            i++;
-            let code = "";
-            while (i < lines.length && !lines[i].startsWith("```")) {
-                code += (code ? "\n" : "") + lines[i];
-                i++;
-            }
-            i++;
-
-            if (language === "mermaid") {
-                html += `<div class="mermaid">${escapeHtml(code)}</div>`;
-            } else {
-                const highlighted = highlightCode(code, language);
-                html += `<pre class="blog-code-block"><code class="${highlighted.className}">${highlighted.html}</code></pre>`;
-            }
-            continue;
-        }
-
-        if (line.startsWith("######")) {
-            html += `<h6>${parseInline(line.slice(6).trim())}</h6>`;
-        } else if (line.startsWith("#####")) {
-            html += `<h5>${parseInline(line.slice(5).trim())}</h5>`;
-        } else if (line.startsWith("####")) {
-            html += `<h4>${parseInline(line.slice(4).trim())}</h4>`;
-        } else if (line.startsWith("###")) {
-            html += `<h3>${parseInline(line.slice(3).trim())}</h3>`;
-        } else if (line.startsWith("##")) {
-            html += `<h2>${parseInline(line.slice(2).trim())}</h2>`;
-        } else if (line.startsWith("#")) {
-            html += `<h1>${parseInline(line.slice(1).trim())}</h1>`;
-        } else if (line.startsWith("> ")) {
-            let quote = "";
-            while (i < lines.length && lines[i].startsWith("> ")) {
-                quote += (quote ? " " : "") + lines[i].slice(2);
-                i++;
-            }
-            html += `<blockquote>${parseInline(quote)}</blockquote>`;
-            continue;
-        } else if (line.match(/^---+\s*$/) || line.match(/^\*\*\*+\s*$/)) {
-            html += "<hr />";
-        } else if (line.match(/^[-*]\s/)) {
-            let items = "";
-            while (i < lines.length && lines[i].match(/^[-*]\s/)) {
-                items += `<li>${parseInline(lines[i].replace(/^[-*]\s/, ""))}</li>`;
-                i++;
-            }
-            html += `<ul>${items}</ul>`;
-            continue;
-        } else if (line.match(/^\d+\.\s/)) {
-            let items = "";
-            while (i < lines.length && lines[i].match(/^\d+\.\s/)) {
-                items += `<li>${parseInline(lines[i].replace(/^\d+\.\s/, ""))}</li>`;
-                i++;
-            }
-            html += `<ol>${items}</ol>`;
-            continue;
-        } else if (line.trim() === "") {
-            html += "";
-        } else {
-            let para = line;
-            while (i + 1 < lines.length && lines[i + 1].trim() !== "" && !isBlockStart(lines[i + 1])) {
-                i++;
-                para += ` ${lines[i]}`;
-            }
-            html += `<p>${parseInline(para)}</p>`;
-        }
-
-        i++;
-    }
-
-    return html;
-}
-
-function isBlockStart(line: string): boolean {
-    return line.startsWith("#") || line.startsWith("```") || line.startsWith("> ") || line.match(/^[-*]\s/) !== null || line.match(/^\d+\.\s/) !== null || line.match(/^---+\s*$/) !== null || line.match(/^\*\*\*+\s*$/) !== null;
-}
-
-function parseInline(text: string): string {
-    return escapeHtml(text)
-        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />')
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
-        .replace(/`([^`]+)`/g, "<code>$1</code>")
-        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-        .replace(/\*([^*]+)\*/g, "<em>$1</em>");
+/** Convert a blog post's markdown body to HTML for the `.blog-prose` container. */
+async function parseMarkdown(md: string): Promise<string> {
+    const file = await processor.process(md);
+    return String(file);
 }
 
 export { parseMarkdown };
