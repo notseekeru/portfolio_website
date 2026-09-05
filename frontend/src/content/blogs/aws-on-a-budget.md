@@ -10,6 +10,7 @@ github: https://github.com/notseekeru/terraform
 I built AWS properly, for the first time, and I did it on free-tier money. A real 3-tier fault-tolerant stack under Terraform, because rolling your own ALB + ASG + RDS + CloudFront is where the industry actually lives, and I wanted to prove I could make it hold. The .tf was largely AI-generated and then hand-hardened block by block before any of it touched state; that audit, not the generation, was where I learned the architecture. Two things fought me the whole way. First, billing reality: every enterprise best practice carried a dollar sign, and the ones that survived had to earn their headroom. Second, a genuinely confusing credential collision that bit during plain `init`, before a single resource had ever deployed: my Terraform state lives in a Cloudflare R2 bucket, R2 is S3-compatible, and S3 compatibility means it reads the same `AWS_ACCESS_KEY_ID` that the real AWS provider does. Two accounts tripped over one variable name and for a while I could not see how one env var broke both sides. This is the collision, the namespace fix, and the cost rails that let me destroy and rebuild the stack while spending almost nothing.
 
 ---
+
 ## Build First, Exam Label Later
 
 Let me be direct about the framing. This was never an exam study project. The `SAA-C03` label on my own `AWS.md` came after, pinned on retroactively as a resume angle, because the architecture I built maps cleanly onto that exam. The spark was build-first: a real 3-tier architecture on AWS because that is where the market is. Framing it as studying for a certification would be a comfortable lie, and it would also be the wrong lesson. The lesson was that I could hand Terraform to an AI, generate most of a multi-service stack, and then sit down and audit every resource closely enough to catch what the model got subtly wrong.
@@ -108,7 +109,7 @@ Compute defaults to `t4g.micro`, the ARM Graviton instance, resolved through an 
 
 **RDS is single-AZ, but the subnet group spans two AZs.** The free-tier guardrail is single-AZ so the instance stays inside the 750 free monthly RDS hours. The subnet group spanning two availability zones is the pre-architected escape hatch. The moment I am willing to spend ~$80 a month and flip `multi_az = true`, there is already a standby subnet waiting. Cost discipline now, readiness later, no rework.
 
-**S3 assets behind CloudFront with OAC.** Static files live in a private S3 bucket, served through a CloudFront distribution with Origin Access Control. The gotcha that nearly emptied a weekend: `aws_cloudfront_origin_access_control` only *signs* the request. The bucket still needs an `aws_s3_bucket_policy` granting `s3:GetObject` to the CloudFront principal scoped by `aws:SourceArn`, or every origin request returns 403 regardless of the OAC config. Policy-less OAC is a signed knock on a locked door.
+**S3 assets behind CloudFront with OAC.** Static files live in a private S3 bucket, served through a CloudFront distribution with Origin Access Control. The gotcha that nearly emptied a weekend: `aws_cloudfront_origin_access_control` only _signs_ the request. The bucket still needs an `aws_s3_bucket_policy` granting `s3:GetObject` to the CloudFront principal scoped by `aws:SourceArn`, or every origin request returns 403 regardless of the OAC config. Policy-less OAC is a signed knock on a locked door.
 
 **Database credentials sit in SSM under `/app/*`, not baked into the AMI.** The default `AmazonSSMManagedInstanceCore` policy only grants read under `parameter/aws/*`, so params under `/app/db_endpoint` and `/app/POSTGRES_PASSWORD` need an inline IAM role policy with `ssm:GetParameter` on `parameter/app/*`. Miss it and EC2 gets `AccessDenied` when it boots and reaches for the connection string, a failure that surfaces only at runtime. Because SSM params propagate a few seconds after an instance profile attaches, the user-data script has to retry or wait on cloud-init.
 
@@ -122,24 +123,24 @@ This whole build very nearly never got off the ground, because it died in the mo
 
 The mistake was assuming there is only one thing in the world that reads a variable named `AWS_ACCESS_KEY_ID`. This repo keeps its state in a Cloudflare R2 bucket via the S3-compatible backend, and secrets are injected by `infisical run --`. R2 is S3-compatible, and S3 compatibility means it speaks the same environment language as real AWS. When only the DigitalOcean provider lived here, that shared vocabulary never mattered, because DigitalOcean has no S3 SDK. The AWS provider ended the truce. My Infisical project held two credential pairs, and they had collided on one native name:
 
-| Secret in Infisical | Held | Who consumes it |
-| --- | --- | --- |
-| `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | **R2** keys | s3 backend **and** aws provider |
-| `TF_VAR_AWS_ACCESS_KEY_ID` / `TF_VAR_AWS_SECRET_ACCESS_KEY` | real AWS | read by nothing |
+| Secret in Infisical                                         | Held        | Who consumes it                 |
+| ----------------------------------------------------------- | ----------- | ------------------------------- |
+| `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`               | **R2** keys | s3 backend **and** aws provider |
+| `TF_VAR_AWS_ACCESS_KEY_ID` / `TF_VAR_AWS_SECRET_ACCESS_KEY` | real AWS    | read by nothing                 |
 
-So the real AWS keys were parked under `TF_VAR_*`, which only defines a Terraform input variable that nothing consumes. The prefixed name is a decoy, not a partition. Both the backend and the provider kept reading the *native* unprefixed variable, which held R2 keys, so the provider tried to authenticate against real AWS with Cloudflare credentials, surfacing AWS's telltale `InvalidAccessKeyId` on `init` and `plan`.
+So the real AWS keys were parked under `TF_VAR_*`, which only defines a Terraform input variable that nothing consumes. The prefixed name is a decoy, not a partition. Both the backend and the provider kept reading the _native_ unprefixed variable, which held R2 keys, so the provider tried to authenticate against real AWS with Cloudflare credentials, surfacing AWS's telltale `InvalidAccessKeyId` on `init` and `plan`.
 
 The fix is a strict partition, each credential under the name only its consumer reads:
 
-| Secret | Now holds | Consumed by |
-| --- | --- | --- |
-| `AWS_ACCESS_KEY_ID` | real AWS key | aws provider |
-| `AWS_SECRET_ACCESS_KEY` | real AWS secret | aws provider |
-| `TF_VAR_R2_ACCESS_KEY_ID` | R2 key | s3 backend |
-| `TF_VAR_R2_SECRET_ACCESS_KEY` | R2 secret | s3 backend |
-| `TF_VAR_R2_ACCOUNT_ID` | R2 account id | endpoint building |
-| `TF_VAR_R2_BUCKET` | `terraform-state` | s3 backend |
-| `AWS_ENDPOINT_URL_S3` | `https://<acct>.r2.cloudflarestorage.com` | s3 endpoint |
+| Secret                        | Now holds                                 | Consumed by       |
+| ----------------------------- | ----------------------------------------- | ----------------- |
+| `AWS_ACCESS_KEY_ID`           | real AWS key                              | aws provider      |
+| `AWS_SECRET_ACCESS_KEY`       | real AWS secret                           | aws provider      |
+| `TF_VAR_R2_ACCESS_KEY_ID`     | R2 key                                    | s3 backend        |
+| `TF_VAR_R2_SECRET_ACCESS_KEY` | R2 secret                                 | s3 backend        |
+| `TF_VAR_R2_ACCOUNT_ID`        | R2 account id                             | endpoint building |
+| `TF_VAR_R2_BUCKET`            | `terraform-state`                         | s3 backend        |
+| `AWS_ENDPOINT_URL_S3`         | `https://<acct>.r2.cloudflarestorage.com` | s3 endpoint       |
 
 But the rename alone was not enough, because `infisical run` is not a shell. `infisical run -- terraform ...` **execs** the command directly. That means a Makefile recipe that tries to inject a per-invocation override like `AWS_ACCESS_KEY_ID=$R2... terraform ...` fails first at exec:
 
@@ -207,12 +208,12 @@ The collision taught a rule I keep restating in CI configs and runbooks: **provi
 
 The HTTPS piece is a short manual dance worth one line: the ACM certificate is DNS-validated through a CNAME I add by hand in Cloudflare, since my DNS lives outside Route 53. `aws_acm_certificate_validation` plus a listener `depends_on` make the `:443` listener wait for `ISSUED`. When I had it up and verified, the behavior held:
 
-| Endpoint | Verified behavior |
-| --- | --- |
-| `https://alb.seekeru.tech` | 200 (nginx) |
-| `http://alb.seekeru.tech` | 301 redirect to HTTPS |
+| Endpoint                                | Verified behavior                                                |
+| --------------------------------------- | ---------------------------------------------------------------- |
+| `https://alb.seekeru.tech`              | 200 (nginx)                                                      |
+| `http://alb.seekeru.tech`               | 301 redirect to HTTPS                                            |
 | `https://d14f3y8b1rk8te.cloudfront.net` | authenticates via OAC; returns 403 until the S3 bucket is seeded |
-| RDS `main-db` (user `dbadmin`) | private, not publicly reachable |
+| RDS `main-db` (user `dbadmin`)          | private, not publicly reachable                                  |
 
 I verified these endpoints once while the stack was up, and `destroy` has run since. The point of the destroy is that I only pay while I am actually working, so the endpoints are not guaranteed to resolve right now, and I am at peace with that.
 
