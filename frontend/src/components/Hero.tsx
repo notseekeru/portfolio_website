@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import personalData from "../data/personalData";
+import CopyPortfolio from "./CopyPortfolio";
 import { GitHubIcon, LinkedInIcon, MailIcon } from "./icons/Icons";
 
 export default function Hero() {
@@ -38,6 +39,10 @@ export default function Hero() {
                             </a>
                         </div>
                         <span className="hidden sm:inline-flex items-center gap-2 text-sm text-muted">● {personalData.status}</span>
+                    </div>
+
+                    <div className="mt-6">
+                        <CopyPortfolio />
                     </div>
                 </div>
 

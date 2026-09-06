@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import personalData from "../data/personalData";
+import CopyPortfolio from "./CopyPortfolio";
 
 const navLinks = [
     { label: "Home", path: "/#home" },
@@ -96,9 +97,12 @@ export default function Navbar() {
                         </li>
                     ))}
                 </ul>
-                <a href={`mailto:${personalData?.email}`} className="hidden md:inline-flex items-center gap-2 text-xs font-mono px-4 py-2 border border-border text-muted hover:text-accent hover:border-accent transition-all duration-200">
-                    Email
-                </a>
+                <div className="hidden md:flex items-center gap-3">
+                    <CopyPortfolio />
+                    <a href={`mailto:${personalData?.email}`} className="inline-flex items-center gap-2 text-xs font-mono px-4 py-2 border border-border text-muted hover:text-accent hover:border-accent transition-all duration-200">
+                        Email
+                    </a>
+                </div>
 
                 <button type="button" onClick={() => setMenuOpen(!menuOpen)} className="md:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
                     <span className={`block w-5 h-0.5 bg-muted transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
