@@ -109,13 +109,13 @@ export default function CopyPortfolio() {
                     <rect width="14" height="14" x="8" y="8" rx="2" />
                     <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
                 </svg>
-                {copied ? <span>Copied ✓</span> : loading ? <span>Assembling…</span> : <span>Copy as AI context</span>}
+                {copied ? <span>Copied ✓</span> : loading ? <span>Assembling…</span> : <span>Copy to AI</span>}
             </button>
 
             {showPreview && (
                 <div id="copy-ai-preview" role="dialog" onMouseEnter={openPreview} onMouseLeave={scheduleClose} className="absolute right-0 top-full mt-2 z-[60] w-[24rem] max-w-[calc(100vw-2rem)] border border-border bg-surface shadow-2xl">
                     <div className="px-3 py-2 border-b border-border bg-ink/60">
-                        <p className="font-mono text-[11px] uppercase tracking-widest text-muted">Copy portfolio as AI context</p>
+                        <p className="font-mono text-[11px] uppercase tracking-widest text-muted">Copy portfolio to AI</p>
                     </div>
                     <pre className="max-h-56 overflow-auto px-3 py-2 font-mono text-[11px] leading-relaxed text-bone whitespace-pre-wrap break-words">{previewBody}</pre>
                     <div className="px-3 py-2 border-t border-border">
