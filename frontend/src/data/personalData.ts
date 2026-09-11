@@ -406,4 +406,3 @@ const personalData: PersonalData = {
 };
 
 export default personalData;
-

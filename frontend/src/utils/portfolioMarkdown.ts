@@ -2,12 +2,6 @@ import personalData, { type ProjectItem, type SkillItem, type Skills } from "../
 import { loadBlogs, type BlogPost } from "./blogLoader";
 import { infrastructureChart } from "./infrastructureChart";
 
-/**
- * Latest-blog cap for the exported doc. Blogger caps the assembled markdown so
- * the copy stays small enough that an agent/HR paste stays readable. Raise the
- * constant to widen the window; never reach past a fractional head-count of
- * posts past their body load — the docs are rich.
- */
 export const LATEST_BLOG_CAP = 4;
 
 const stripTrailingNewlines = (s: string): string => `${s.trimEnd()}\n`;
@@ -53,7 +47,6 @@ function projectsSection(projects: ProjectItem[]): string {
     return `${body}\n`;
 }
 
-/** Full raw markdown body of the 4 most recent posts + indexed headers. Returns '' if none. */
 async function latestBlogsSection(cap: number): Promise<string> {
     const all: BlogPost[] = await loadBlogs();
     const latest = all.slice(0, cap);
@@ -69,9 +62,10 @@ async function latestBlogsSection(cap: number): Promise<string> {
     return `${parts.join("\n\n---\n\n")}\n`;
 }
 
-/** Build a single plain-markdown document of the whole portfolio, ready to paste. */
 export async function buildPortfolioMarkdown(): Promise<string> {
     const { status, title, location, email, bio, github, linkedin, experience, education, skills, projects, name } = personalData;
+
+    const note = `> *This markdown was from the portfolio website with convenient copy button for parsing/AI evaluation purposes, so you don't have to ctrl + a, ctrl + c, and paste it with missing details from outside the DOM.*\n`;
 
     const intro = [`# ${name}`, "", title ?? "", status ? `_${status}_` : "", bio ? `\n${bio}`.trim() : "", `\n**Location:** ${[location, email].filter(Boolean).join(" · ")}`, "", `- GitHub: ${github ?? ""}`, `- LinkedIn: ${linkedin ?? ""}`].filter((line) => line.trim() !== "").join("\n");
 
@@ -82,6 +76,7 @@ export async function buildPortfolioMarkdown(): Promise<string> {
     const sectionIf = (titleRow: string, content: string) => (content.trim() ? `\n\n# ${titleRow}\n\n${content.trim()}\n` : "");
 
     const sections = [
+        note,
         intro,
         sectionIf("Experience", exp),
         sectionIf("Education", edu),
