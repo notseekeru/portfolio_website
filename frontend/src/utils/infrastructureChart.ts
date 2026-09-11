@@ -151,7 +151,7 @@ flowchart TB
 
     CloudflareEdge -- Secure Tunnel --> TunnelPod
     TunnelPod --> Ingress
-    Ingress --> Portfolio_Frontend_Pod & Portfolio_Backend_Pod & Frontend2 & Backend2
+    Ingress --> Portfolio_Frontend_Pod & Frontend2 & Backend2
     Backend2 --> Postgres_Pod
 
     AManager -- Webhook Alerts --> Slack
