@@ -26,7 +26,10 @@ export default function Blog() {
                 <div ref={headerRef} className={`mb-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"} transition-all duration-500`}>
                     <span className="font-mono text-xs tracking-widest text-accent">02 / WRITING</span>
                     <h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">Blog</h1>
-                    <p className="text-muted max-w-lg">Thoughts, guides, and things I've learned along the way.</p>
+                    <p className="text-muted max-w-lg">
+                        Thoughts, guides, and things I've learned along the way.
+                        <span className="text-xs block mt-1">&gt; AI assisted writing.</span>
+                    </p>
                 </div>
 
                 {blogs.length === 0 ? (
