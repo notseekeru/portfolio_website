@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import Prism from "prismjs";
 
-// Prism core self-installs a `Prism` global on import above; these must register
-// their grammars on that global before `highlightAllUnder` runs.
 import "prismjs/components/prism-bash";
 import "prismjs/components/prism-docker";
 import "prismjs/components/prism-jsx";
@@ -22,7 +20,6 @@ export default function SyntaxHighlighter({ containerRef, deps = [] }: SyntaxHig
         if (containerRef.current) {
             Prism.highlightAllUnder(containerRef.current);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [containerRef, ...deps]);
 
     return null;

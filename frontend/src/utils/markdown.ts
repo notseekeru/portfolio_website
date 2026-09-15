@@ -59,9 +59,6 @@ function remapBlocks() {
     };
 }
 
-// Sanitize everything by default, but do not strip the structural/token classes the
-// blog machinery injects: Prism's `language-*`, the `.blog-code-block` and `.mermaid`
-// wrapper classes, and GFM table alignment.
 const schemaAttributes = {
     ...(defaultSchema.attributes ?? {}),
     img: [...(defaultSchema.attributes?.img ?? []), ["className"]],

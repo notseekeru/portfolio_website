@@ -7,8 +7,6 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
 mermaid.registerLayoutLoaders(elkLayouts);
 
-// Single source of truth for Mermaid colors (mirrors the @theme tokens in index.css).
-// Mermaid's themeVariables take literal color strings, so keep them in ONE place here.
 const MERMAID_THEME = {
     bg: "#15120e",
     ink: "#0c0a08",

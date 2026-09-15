@@ -48,7 +48,6 @@ export default function MermaidRenderer({ containerRef, deps = [] }: MermaidRend
             }
             mermaidRootsRef.current = [];
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [containerRef, ...deps]);
 
     return null;

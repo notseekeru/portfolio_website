@@ -1,5 +1,3 @@
-// Single source of truth for the rendered infrastructure chart.
-
 export const infrastructureChart = `---
 config:
   layout: elk
