@@ -8,7 +8,7 @@ import { loadBlogs, type BlogPost } from "../utils/blogLoader";
 import type { ProjectItem } from "../data/personalData";
 
 import { SiReact, SiTerraform, SiGrafana, SiAnsible, SiRaspberrypi, SiNixos } from "react-icons/si";
-import { FaJava, FaGolang, FaLock } from "react-icons/fa6";
+import { FaJava, FaGolang, FaLock, FaAws } from "react-icons/fa6";
 import type { IconType } from "react-icons";
 
 const iconMap: Record<string, IconType> = {
@@ -19,6 +19,7 @@ const iconMap: Record<string, IconType> = {
     FaJava,
     FaGolang,
     FaLock,
+    FaAws,
     SiRaspberrypi,
     SiNixos,
 };

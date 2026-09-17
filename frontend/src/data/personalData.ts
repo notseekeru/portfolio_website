@@ -380,9 +380,11 @@ const personalData: PersonalData = {
             title: "Raw L7 TCP/HTTP 1.1 Engine & L7 Reverse Proxy + Load Balancer",
             description: "Built an HTTP/1.1 server + L4 Reverse Proxy + Load Balancer from scratch using Go's net package — no frameworks, just raw net sockets, and bufio.Reader. Serves GET/POST with dynamic Content-Length, SetDeadline timeouts, and proper 200/400/404 http responses.",
             techStack: ["Go", "TCP/IP", "HTTP/1.1"],
+            favorite: true,
             image: "/project7.png",
             github: "https://github.com/notseekeru/l4-l7-rproxy-lb-http-go",
             icon: "FaGolang",
+            blogs: ["digging-the-wire"],
         },
         {
             title: "NixOS Declarative Workflow — Flakes + Home-Manager + Neovim",
@@ -402,6 +404,17 @@ const personalData: PersonalData = {
             techStack: ["Infisical", "Terraform", "Ansible"],
             image: "/project9.png",
             icon: "FaLock",
+        },
+        {
+            title: "AWS — 3-Tier Terraform Stack on Free-Tier Rails",
+            description:
+                "Provisioned a 3-tier AWS stack in inline HCL with no public VPC modules: Cloudflare CNAME → ALB → ASG (2× t4g.micro, AL2023 arm64 via SSM AMI param) → private single-AZ RDS PostgreSQL, plus a private S3 bucket served through CloudFront with OAC and an ACM certificate DNS-validated through Cloudflare. Added billing rails — a $1 zero-spend tripwire budget and a credit-cap budget firing at 95% actual / 90% forecast — wired to one SNS topic with a CloudWatch CPU alarm, so `make destroy` plus aws-nuke allowlisting keeps monthly spend at zero. Debugged a credential namespace collision where the Cloudflare R2 S3-compatible state backend and the real AWS provider both consumed the native AWS_ACCESS_KEY_ID, resolved by partitioning secrets into TF_VAR_R2_* and pinning the provider's S3 endpoint back to its region. Reached 39 resources with a drift-free terraform plan across repeated destroy and re-apply cycles.",
+            techStack: ["Terraform", "AWS", "ALB", "ASG", "RDS", "CloudFront", "S3", "Cloudflare R2", "Infisical"],
+            favorite: true,
+            video: "/project10.webm",
+            github: "https://github.com/notseekeru/terraform",
+            icon: "FaAws",
+            blogs: ["aws-on-a-budget"],
         },
     ],
 };
