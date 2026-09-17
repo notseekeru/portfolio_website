@@ -326,7 +326,8 @@ const personalData: PersonalData = {
         },
         {
             title: "Cloud Infrastructure  — Terraform & Kubernetes + ArgoCD GitOps",
-            description: "Provisioned DigitalOcean infrastructure with Terraform using modular .tf files and secure variable management, integrated dynamic Ansible inventories, deployed a 3-node Kubernetes cluster with ArgoCD GitOps, and hardened containers with tmpfs/readonly root filesystems.",
+            description:
+                "Provisioned DigitalOcean infrastructure with Terraform using modular .tf files and secure variable management, integrated dynamic Ansible inventories, deployed a 3-node Kubernetes cluster with ArgoCD GitOps, and hardened containers with tmpfs/readonly root filesystems. Extended the same GitOps pattern to a self-hosted k3s cluster with two environments rendered from one kustomize base (separate namespace, secret and managed database per env), both reconciled by ArgoCD.",
             techStack: ["Terraform", "DigitalOcean", "Kubernetes", "ArgoCD", "Ansible", "GitHub Actions"],
             favorite: true,
             video: "/project2.webm",
@@ -397,7 +398,7 @@ const personalData: PersonalData = {
         {
             title: "Centralized Secrets Management with Infisical Cloud + CLI",
             description:
-                "Migrated from fragmented secret storage (Ansible Vault, .tfvars, .env) to a single source of truth using Infisical Cloud. Designed source-of-truth and consumer folder structure with dynamic secret references. Integrated with Terraform via infisical run for injection into apply, replacing all hardcoded secrets.tfvars. Also can be applied to various projects such as Ansible, Docker, and Node.js apps via the Infisical CLI.",
+                "Migrated from fragmented secret storage (Ansible Vault, .tfvars, .env) to a single source of truth using Infisical Cloud. Designed source-of-truth and consumer folder structure with dynamic secret references, then extended it into per-environment inheritance: a staging environment that inherits prod's values as per-key references while overriding only the five that must differ (database, identity and payment keys). Integrated with Terraform via infisical run for injection into apply, and added plan-time guards in both directions that refuse the other environment's database endpoint, because an inherited value would otherwise point staging's migrations at the production database. Also can be applied to various projects such as Ansible, Docker, and Node.js apps via the Infisical CLI.",
             techStack: ["Infisical", "Terraform", "Ansible"],
             image: "/project9.png",
             icon: "FaLock",
