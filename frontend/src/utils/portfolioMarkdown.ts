@@ -1,21 +1,10 @@
-import personalData, { type ProjectItem, type SkillItem, type Skills } from "../data/personalData";
+import personalData, { type ProjectItem } from "../data/personalData";
 import { loadBlogs, type BlogPost } from "./blogLoader";
 import { infrastructureChart } from "./infrastructureChart";
 
 export const LATEST_BLOG_CAP = 4;
 
 const stripTrailingNewlines = (s: string): string => `${s.trimEnd()}\n`;
-
-function skillLines(kind: string, items: SkillItem[]): string {
-    if (items.length === 0) return "";
-    const row = items.map((s) => `${s.name}${s.summary ? ` — ${s.summary}` : ""}`).join("; ");
-    return `\n- **${kind}**: ${row}\n`;
-}
-
-function skillsSection(skills: Skills): string {
-    const sections = [skillLines("Languages", skills.languages ?? []), skillLines("Frameworks", skills.frameworks ?? []), skillLines("Tools", skills.tools ?? [])].join("");
-    return sections || "";
-}
 
 function projectsSection(projects: ProjectItem[]): string {
     if (projects.length === 0) return "";
@@ -63,7 +52,7 @@ async function latestBlogsSection(cap: number): Promise<string> {
 }
 
 export async function buildPortfolioMarkdown(): Promise<string> {
-    const { status, title, location, email, bio, github, linkedin, experience, education, skills, projects, name } = personalData;
+    const { status, title, location, email, bio, github, linkedin, experience, education, projects, name } = personalData;
 
     const note = `> *This markdown was from the portfolio website with convenient copy button for parsing/AI evaluation purposes, so you don't have to ctrl + a, ctrl + c, and paste it with missing details from outside the DOM.*\n`;
 
@@ -75,16 +64,7 @@ export async function buildPortfolioMarkdown(): Promise<string> {
 
     const sectionIf = (titleRow: string, content: string) => (content.trim() ? `\n\n# ${titleRow}\n\n${content.trim()}\n` : "");
 
-    const sections = [
-        note,
-        intro,
-        sectionIf("Experience", exp),
-        sectionIf("Education", edu),
-        sectionIf("Skills", skillsSection(skills)),
-        sectionIf("Projects", projectsSection(projects)),
-        sectionIf("Architecture", ["```mermaid", infrastructureChart, "```"].join("\n")),
-        sectionIf("Latest Blog Posts", await latestBlogsSection(LATEST_BLOG_CAP)),
-    ];
+    const sections = [note, intro, sectionIf("Experience", exp), sectionIf("Education", edu), sectionIf("Projects", projectsSection(projects)), sectionIf("Architecture", ["```mermaid", infrastructureChart, "```"].join("\n")), sectionIf("Latest Blog Posts", await latestBlogsSection(LATEST_BLOG_CAP))];
 
     sections.push("", "---", "", `_Generated from https://portfolio.seekeru.tech — full portfolio, ${new Date().toISOString().slice(0, 10)}._`, "");
 
