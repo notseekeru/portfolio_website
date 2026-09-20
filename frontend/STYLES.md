@@ -17,6 +17,7 @@ Defined in the `@theme` block of `index.css`. Use via Tailwind utilities (`bg-*`
 | `accent` | `text/bg-accent` | `#94c9a5` | Links, CTAs (teal) |
 | `amber` | `text/bg-amber` | `#e0ad50` | Highlights, spot accents |
 | `muted` | `text-muted` | `#a29a88` | Secondary/helper text (brightened for contrast) |
+| `heat-1`..`heat-4` | `bg-heat-*` | `#23342b` → `#94c9a5` | GitHub activity ramp, quiet → accent (0 = `bg-border/60`) |
 | `signal-green` | `bg-signal-green` | `#7fb98a` | Status = healthy/available |
 | `signal-amber` | `text-signal-amber` | `#d9b45a` | Status = attention/favorite |
 | `signal-red` | `bg-signal-red` | `#d07878` | Status = error/risk |

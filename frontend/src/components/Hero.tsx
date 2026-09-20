@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import personalData from "../data/personalData";
 import CopyPortfolio from "./CopyPortfolio";
+import GitHubActivity from "./GitHubActivity";
 import { GitHubIcon, LinkedInIcon, MailIcon } from "./icons/Icons";
 
 export default function Hero() {
@@ -54,6 +55,10 @@ export default function Hero() {
                         <span className="absolute -bottom-4 -left-4 h-16 w-16 bg-amber text-ink flex items-center justify-center text-2xl font-display">{personalData.name.charAt(0)}</span>
                     </div>
                 </div>
+            </div>
+
+            <div className="mx-auto max-w-6xl px-6">
+                <GitHubActivity />
             </div>
         </section>
     );

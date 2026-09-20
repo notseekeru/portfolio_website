@@ -8,6 +8,10 @@
     --color-muted: #a29a88;
     --color-ink: #0c0a08;
     --color-bone: #ece8dc;
+    --color-heat-1: #23342b;
+    --color-heat-2: #3d5f4b;
+    --color-heat-3: #6a9d7c;
+    --color-heat-4: #94c9a5;
     --font-sans: "Inter", "system-ui", "sans-serif";
     --font-mono: "JetBrains Mono", "monospace";
     --font-serif: "Newsreader", "Georgia", serif;
