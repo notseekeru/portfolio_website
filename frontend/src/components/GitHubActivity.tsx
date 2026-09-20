@@ -11,6 +11,8 @@ const WINDOW = 365;
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const HEAT = ["bg-border/60", "bg-heat-1", "bg-heat-2", "bg-heat-3", "bg-heat-4"];
 const ROW = 18; // h-3.5 (14px) + gap-1 (4px)
+const COLS = Math.ceil(WINDOW / 7);
+const PENDING = "animate-pulse bg-border/40";
 
 interface Day {
     d: string;
@@ -19,7 +21,7 @@ interface Day {
 }
 
 export default function GitHubActivity() {
-    const [days, setDays] = useState<Day[] | null>(null);
+    const [days, setDays] = useState<Day[] | null | undefined>(undefined);
 
     useEffect(() => {
         fetch(SOURCE)
@@ -38,16 +40,22 @@ export default function GitHubActivity() {
             .catch(() => setDays(null));
     }, []);
 
-    if (!days?.length) return null;
-    const t = days.reduce((sum, day) => sum + day.c, 0);
+    if (days === null || days?.length === 0) return null;
+    const t = days?.reduce((sum, day) => sum + day.c, 0);
 
     // The window starts mid-week, so the opening column holds fewer days: offset that column
     // instead of padding it, keeping every later column on its true weekday row.
-    const short = new Date(days[0].d).getUTCDay();
+    const short = days ? new Date(days[0].d).getUTCDay() : 0;
     const weeks: Day[][] = [];
-    for (let i = -short; i < days.length; i += 7) weeks.push(days.slice(Math.max(i, 0), i + 7));
+    if (days) for (let i = -short; i < days.length; i += 7) weeks.push(days.slice(Math.max(i, 0), i + 7));
 
     const month = (day: string) => new Date(day).getUTCMonth();
+
+    // While the fetch is in flight the same COLS×7 grid is reserved with level -1 placeholders,
+    // so the section settles into shape instead of appearing whole.
+    const cols: { key: string; label?: string; cells: Day[] }[] = days
+        ? weeks.map((week, i) => ({ key: week[0].d, label: month(week[0].d) !== month(weeks[Math.max(i - 1, 0)][0].d) ? MONTHS[month(week[0].d)] : undefined, cells: week }))
+        : Array.from({ length: COLS }, (_, i) => ({ key: `s${i}`, cells: Array.from({ length: 7 }, (_, j) => ({ d: `s${i}-${j}`, c: -1, l: -1 })) }));
 
     return (
         <div className="mt-16 border-t border-border pt-8">
@@ -56,23 +64,23 @@ export default function GitHubActivity() {
                     <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
                         <span className="font-mono text-sm tracking-widest text-muted">GITHUB ACTIVITY</span>
                         <a href={personalData.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 font-mono text-sm text-muted transition-colors hover:text-accent">
-                            <GitHubIcon size={16} /> {t} contributions · last year
+                            <GitHubIcon size={16} /> {t ?? <span className={`inline-block h-3 w-6 align-middle ${PENDING}`} />} contributions · last year
                         </a>
                     </div>
 
                     <div className="flex gap-1">
-                        {weeks.map((week, i) => (
-                            <div key={week[0].d} className="w-3.5 shrink-0">
-                                {month(week[0].d) !== month(weeks[Math.max(i - 1, 0)][0].d) && <span className="font-mono text-[11px] whitespace-nowrap text-muted">{MONTHS[month(week[0].d)]}</span>}
+                        {cols.map((col) => (
+                            <div key={col.key} className="w-3.5 shrink-0">
+                                {col.label && <span className="font-mono text-[11px] whitespace-nowrap text-muted">{col.label}</span>}
                             </div>
                         ))}
                     </div>
 
-                    <div className="mt-1 flex gap-1" role="img" aria-label={`GitHub contribution calendar: ${t} contributions in the last year`}>
-                        {weeks.map((week, i) => (
-                            <div key={week[0].d} style={i === 0 ? { marginTop: short * ROW } : undefined} className="flex w-3.5 shrink-0 flex-col gap-1">
-                                {week.map((day) => (
-                                    <span key={day.d} title={`${day.c} contribution${day.c === 1 ? "" : "s"} on ${day.d}`} className={`h-3.5 w-3.5 ${HEAT[day.l] ?? HEAT[0]}`} />
+                    <div className="mt-1 flex gap-1" role="img" aria-busy={!days} aria-label={days ? `GitHub contribution calendar: ${t} contributions in the last year` : "GitHub contribution calendar: loading"}>
+                        {cols.map((col, i) => (
+                            <div key={col.key} style={i === 0 && short ? { marginTop: short * ROW } : undefined} className="flex w-3.5 shrink-0 flex-col gap-1">
+                                {col.cells.map((day) => (
+                                    <span key={day.d} title={day.c < 0 ? undefined : `${day.c} contribution${day.c === 1 ? "" : "s"} on ${day.d}`} className={`h-3.5 w-3.5 ${day.l < 0 ? PENDING : (HEAT[day.l] ?? HEAT[0])}`} />
                                 ))}
                             </div>
                         ))}
