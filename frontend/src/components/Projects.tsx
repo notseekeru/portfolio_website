@@ -7,7 +7,7 @@ import { useInView } from "../hooks/useInView";
 import { loadBlogs, type BlogPost } from "../utils/blogLoader";
 import type { ProjectItem } from "../data/personalData";
 
-import { SiReact, SiTerraform, SiGrafana, SiAnsible, SiRaspberrypi, SiNixos } from "react-icons/si";
+import { SiReact, SiTerraform, SiGrafana, SiAnsible, SiRaspberrypi, SiNixos, SiC } from "react-icons/si";
 import { FaJava, FaGolang, FaLock, FaAws } from "react-icons/fa6";
 import type { IconType } from "react-icons";
 
@@ -22,6 +22,7 @@ const iconMap: Record<string, IconType> = {
     FaAws,
     SiRaspberrypi,
     SiNixos,
+    SiC,
 };
 
 export default function Projects() {
