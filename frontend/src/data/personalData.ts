@@ -177,6 +177,16 @@ const personalData: PersonalData = {
             icon: "FaAws",
             blogs: ["aws-on-a-budget"],
         },
+        {
+            title: "Product Engineering — Maxterview AI Interview Simulator",
+            description:
+                "Built and shipped an AI interview simulator end to end: FastAPI plus a React/Vite SPA where a candidate creates an interview, answers over SSE, and gets a graded review with per-answer annotations, ten scored dimensions, a verdict and tips. Split the feedback into a grader that reads the transcript and writes prose plus a cheap formatter that emits constrained JSON, so ten dimensions across communication, substance and profile stay gradable without the interviewer grading itself. Added a provider-agnostic entitlement (one subscriptions row, one resolve_tier, PayMongo behind a single module) and Fernet-encrypted bring-your-own-key storage with a last-four hint. Shipped voice as I/O around the turn the app already had instead of a vendor realtime session: Cloudflare Workers AI Whisper for answers and Aura-1 for replies, cached per line and metered inside the free 10,000 neuron daily allocation. Runs on k3s behind ArgoCD with a PreSync migration Job, Trivy-scanned images pinned by tag in a gitops repo, Neon on its direct host because the pooler breaks asyncpg's prepared statements, and a log-only observability pipeline of structlog JSON through Alloy into Loki where every dashboard number is a LogQL aggregate.",
+            techStack: ["Python", "FastAPI", "React", "TypeScript", "PostgreSQL", "Neon", "Kubernetes", "ArgoCD", "Terraform", "Cloudflare", "PayMongo"],
+            favorite: true,
+            video: "/maxterview.mp4",
+            link: "https://maxterview.seekeru.tech",
+            icon: "SiReact",
+        },
     ],
 };
 
