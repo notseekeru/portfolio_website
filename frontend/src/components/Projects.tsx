@@ -98,6 +98,7 @@ function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
                             </span>
                         </div>
                         <div className="relative aspect-video bg-ink/40 overflow-hidden flex items-center justify-center">
+                            {project.status && <span className="absolute left-3 top-3 z-10 border border-accent/40 bg-ink/80 px-2 py-0.5 text-[10px] font-mono text-accent">{project.status}</span>}
                             {project.video ? (
                                 <video src={project.video} autoPlay muted loop playsInline className="h-full w-full object-contain" />
                             ) : project.image ? (
@@ -196,6 +197,7 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
                         <span className="ml-3 flex-1 truncate rounded-sm bg-surface px-3 py-1 text-xs font-mono text-muted">{project.link ? project.link.replace(/https?:\/\//, "") : project.title}</span>
                     </div>
                     <div className="relative h-56 sm:h-72 lg:h-[32rem] bg-ink/60 overflow-hidden flex items-center justify-center">
+                        {project.status && <span className="absolute left-4 top-4 z-10 border border-accent/40 bg-ink/80 px-2.5 py-1 text-xs font-mono text-accent">{project.status}</span>}
                         {project.video ? (
                             <video src={project.video} autoPlay muted loop playsInline className="h-full w-full object-contain" />
                         ) : project.image ? (
