@@ -101,9 +101,9 @@ Register it in your agent (example config):
     "playwright": {
       "command": "<PATH_FROM_ABOVE>/bin/playwright-mcp",
       "args": ["--headless"],
-      "env": {}
-    }
-  }
+      "env": {},
+    },
+  },
 }
 ```
 
