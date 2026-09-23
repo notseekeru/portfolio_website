@@ -1,0 +1,7 @@
+Seven weeks ago Maxterview was an empty repository. The one-time payment rail is live and verified, and it answers on its own domain.
+
+The payment rail was the part I did not expect. Stripe was not available to a Philippine individual with fees I wanted to absorb, so I researched Xendit, moved to PayMongo, and then found that the recurring capabilities I actually wanted, Subscriptions and Card Vaulting, are support-enabled, with plan creation answering 403 on the account. What was left needed verification, and verification needed a postal ID and a barangay clearance. Nobody writes about that part. It means going out to get documents, and the clerk at the counter wished me luck and processed it for free, on exactly the day the project felt stalled. That hour did more for the build than most of the tooling did.
+
+The account is verified now. The recurring path is still blocked, so I put 30 days of premium on the same period-end field the subscription would have written when it exists. The capability gap turned into an automation gap instead of a blocker, and that only worked because the entitlement was mine from the start: one row, one resolve function, provider code in a single module. That is why swapping providers cost a migration that renamed columns rather than a rewrite.
+
+Seven weeks in, the click moment was not the first payment. It was the app answering on its own domain, knowing the migration job had already run inside the image the pods were about to start.
