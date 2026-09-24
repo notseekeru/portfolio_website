@@ -12,7 +12,6 @@ Single-page portfolio website: React 19 + TypeScript + Vite + Tailwind 4, contai
 - Interactive project & tool overview (Infrastructure, Projects, Languages, Tools & Frameworks).
 - Mermaid diagrams for infrastructure and CI/CD pipeline visuals.
 - Syntax highlighting with PrismJS; zoomable diagrams.
-- Contact form wired to N8N webhooks with secure headers.
 - GitHub contribution heatmap, read client-side from a public contribution API (no token, no snapshot pipeline).
 
 ## Tech Stack
