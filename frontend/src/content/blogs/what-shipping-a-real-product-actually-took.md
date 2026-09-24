@@ -28,6 +28,8 @@ Migrations went to [yoyo](https://pypi.org/project/yoyo-migrations/) as the Pyth
 
 I did not add an ORM. I would rather read the SQL I am shipping than learn another mapping layer's opinions about joins, and the schema here is small enough that the trade is obviously worth it.
 
+Postgres itself is Neon, not a pod holding a volume. A StatefulSet with a PVC means volume sizing, a restore I have to have actually rehearsed, and a backup job that is correct on the day I need it. Neon is PITR and a restore I did not build, with a free tier that covered the whole build and its own console on top. What I gave up is latency, since every query crosses the network to us-east-1 instead of staying in the cluster, and a second vendor in the critical path. For one database with no users, owning the storage was the more expensive kind of free.
+
 ## One SPA Instead Of Two Deployables
 
 The plan had Next.js. I dropped it. The landing page does not need server rendering for anything a static build cannot do, and I preferred one React and Vite and TypeScript application with shadcn/ui and react-router owning both the marketing page and the app itself. One build, one deployable, one place where a route change has to be considered.
