@@ -16,13 +16,7 @@ flowchart TB
         GrafanaCloud["Grafana Cloud (Loki + Alerts)"]
   end
 
- subgraph GitHub_Platform["🐙 GitHub Platform Ecosystem"]
-        subgraph Repositories["Source Repositories (npm Monorepo Workspace)"]
-            Git["Infra & Code Repo"]
-            App_Monorepo["App Monorepo (Portfolio & Diagram Packages)"]
-            GitOps_Repo["GitOps Repo (Manifests)"]
-        end
-
+ subgraph GitHub_Platform["GitHub Platform Ecosystem"]
         subgraph CI_Pipeline["GitHub Actions: CI Workflow"]
             CiCheck["Linter / Analysis / Audit"]
         end
@@ -45,19 +39,16 @@ flowchart TB
                 Clone_GitOps --> Kustomize_Edit --> Git_Push
             end
 
-            Trigger -- if CI Success --> Matrix_Jobs
-            Matrix_Jobs -- needs --> Kustomize_Job
+            Matrix_Jobs --> Kustomize_Job
         end
 
         GHCR["GitHub Container Registry (GHCR)"]
 
         Git --> CiCheck
-        CI_Pipeline -. Triggers .-> Trigger
+        CI_Pipeline .-> Matrix_Jobs
         Push_Multi -- Pulls / Pushes --> GHCR
         Git_Push -- Updates --> GitOps_Repo
 
-        App_Monorepo -. Dependabot .-> App_Monorepo
-        App_Monorepo --> GitOps_Repo
   end
 
  subgraph Automation["Automation Control Plane"]
@@ -82,7 +73,7 @@ flowchart TB
         Pi5
   end
 
- subgraph Pi5["⚙️ Node - Raspberry Pi 5"]
+ subgraph Pi5["Raspberry Pi 5"]
         subgraph SSHD1["SSHD Hardening"]
             Access["SSH Completed"]
             APerms["No Root Login"]
@@ -93,7 +84,7 @@ flowchart TB
             F2B["Fail2ban"]
         end
 
-        subgraph Docker["🐳 Docker Containers (Isolated Dev/Test Only. Not running everyday for RAM and I/O Limits)"]
+        subgraph Docker["Docker Containers (Isolated Dev/Test Only. Not running everyday for RAM and I/O Limits)"]
             subgraph ObservabilityStack["Compose - Observability Stack (LGTM + Alloy - Dev/Testing)"]
                 Alloy["Grafana Alloy :12345"]
                 Prom["Prometheus :9090"]
@@ -105,9 +96,9 @@ flowchart TB
             end
         end
 
-        subgraph K3s_Cluster["☸️ Local k3s Cluster (Single-Node)"]
+        subgraph K3s_Cluster["Local k3s Cluster (Single-Node)"]
             ArgoCD["Helm: ArgoCD Operator"]
-            Ingress["Helm: Traefik / Ingress-NGINX"]
+            Ingress["Helm: Ingress-NGINX"]
             TunnelPod["Cloudflared Tunnel Pod"]
 
             subgraph Workloads["Namespaces & Pods"]
