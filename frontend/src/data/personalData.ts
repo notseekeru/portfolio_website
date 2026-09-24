@@ -129,7 +129,7 @@ const personalData: PersonalData = {
             icon: "FaJava",
         },
         {
-            title: "Self-Hosted Homelab Infrastructure for Linux, Services and Networking",
+            title: "Homelab — Services and Virtualization",
             description:
                 "Operate a Raspberry Pi 5-based homelab running Pi-hole DNS, Plex media server, Portainer container management, game servers, etc. Applied Linux hardening (UFW, SSH key-only, Tailscale overlay), automated apt updates, and enforced Tailscale-only access across all services with network segmentation. Run guest VMs on both Hyper-V and VMware Workstation, using VMware NAT/Bridged/Host-only modes and debugging VM-to-host and VM-to-LAN reachability plus in-network DHCP/DNS resolution.",
             techStack: ["Raspberry Pi", "Docker", "Tailscale", "Pi-hole", "Grafana", "Hyper-V", "VMware"],
