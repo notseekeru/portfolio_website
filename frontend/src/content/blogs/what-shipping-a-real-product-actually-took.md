@@ -6,11 +6,19 @@ description: Seven weeks building Maxterview, from an empty repo to a voiced int
 
 # Summary
 
-Maxterview is an AI interview simulator I built from an empty repository in August and have kept running since. A candidate creates a run, answers over a streamed chat, and gets a graded review with per-answer annotations, ten scored dimensions, a verdict and tips. This is the build log of everything that took, in the order it happened: the repo floor, the no-ORM data layer, the decision to ship one SPA instead of a server-rendered marketing site, the two-stage grader that made ten dimensions possible, the payment provider swap that needed a postal ID and a barangay clearance and still cannot take money until a separate verification bar is cleared, the entitlements, the production path with its PreSync migration job, resumes as the grounding that stopped the grader inventing things, hardcore mode, a staging environment I built and deleted inside two days with ADR 0003 as the way back, observability that ended up as one log-only pipeline after I deleted Sentry, and a voice path where the interviewer speaks and the applicant talks through what is now a single engine with a measured daily budget.
+Maxterview is an AI interview simulator I built from an empty repository in August and have kept running since. A candidate creates a run, answers over a streamed chat, and gets a graded review with per-answer annotations, ten scored dimensions, a verdict and tips. This is the build log of everything that took, in the order it happened: the repo floor, the no-ORM data layer, the decision to ship one SPA instead of a server-rendered marketing site, the two-stage grader that made ten dimensions possible, the payment provider swap that needed documents and still cannot take money until a separate verification bar is cleared, the entitlements, the production path with its PreSync migration job, resumes as the grounding that stopped the grader inventing things, hardcore mode, a staging environment I built and deleted inside two days with ADR 0003 as the way back, observability that ended up as one log-only pipeline after I deleted Sentry, and a voice path where the interviewer speaks and the applicant talks through what is now a single engine with a measured daily budget.
 
 Three things got deleted along the way. Staging, Sentry, and the browser speech engines. The post keeps them in, because in each case the decision to remove something was the part that made the product better.
 
 ---
+
+## The prologue
+
+I had been primarily infra and wanted to test myself on the other half: product and full stack, where the decisions are mine and the polishing is the point instead of the leftover. Not a startup, since I am not that guy. One real product, taken as far as I could take it.
+
+An interview simulator, because it forces the hard parts: voice in both directions, grading that has to be held to something true, runs that carry state, and money at the end. Any wrapper would have done as an excuse. This one refuses to stay one.
+
+The bar was that it looks and feels shipped, which is taller than it sounds when every layer underneath is yours too.
 
 ## The Floor, And Deciding Not To Have An ORM
 
@@ -18,7 +26,7 @@ The first week was chore work and I wanted it that way. Three compose files, a s
 
 Migrations went to [yoyo](https://pypi.org/project/yoyo-migrations/) as the Python analogue of node-pg-migrate. My first instinct was to write the rollback inline, under a `-- migrate:down` block in the same file. I watched yoyo treat that block as part of the up step and cheerfully create and then drop my own tables. Every migration since keeps its rollback in a separate `<name>.rollback.sql`, which is uglier and honest.
 
-I did not add an ORM. I would rather read the SQL I am shipping than learn another mapping layer's opinions about joins, and the schema here is small enough that the trade is obviously worth it. A few weeks in I still read every query, because I wrote every query.
+I did not add an ORM. I would rather read the SQL I am shipping than learn another mapping layer's opinions about joins, and the schema here is small enough that the trade is obviously worth it.
 
 ## One SPA Instead Of Two Deployables
 
@@ -40,31 +48,11 @@ Three MCP servers end up wired in `.mcp.json`: the Playwright browser server, Ne
 
 The browser server is the one that taught me the most. It comes from nixpkgs through the repo flake rather than npx, wrapped with its own browser path, which means the command only resolves when the agent is started inside the dev shell. The committed journeys have the mirror of the same problem: they need `playwright-core` and a chromium out of `/nix/store`, and a hardcoded store path dies the next time something is garbage collected or the flake moves. A small resolver finds them at runtime instead, so nothing in the scripts assumes a hash is stable.
 
-```mermaid
-graph TD
-    Flake["flake devShell, nix develop or direnv"] --> PM["playwright-mcp, from nixpkgs"]
-    Flake --> PC["playwright-core plus a chromium, in /nix/store"]
-    PM --> MCP[".mcp.json"]
-    MCP --> Tools["23 browser tools, act on refs from the a11y tree"]
-    MCP --> Neon["Neon over HTTP, bearer read from .env"]
-    MCP --> Graf["Grafana in docker, transport forced to stdio"]
-    PC --> Store["store.cjs resolves the paths at runtime, no pinned hashes"]
-    Store --> Runners["e2e.cjs and inspect.cjs, run as-is for a PASS or FAIL line"]
-```
-
 What wore me down was drift. The journeys were written against the app as it was: a call to action that has since been reworded, a `/app` prefix that no longer exists, a Complete step that got renamed. Each one turns a run into script maintenance before it can tell me anything about the product, and there were weeks where the script was the thing I was debugging.
 
 The fix was not a better script. It was a decision order, written into the skill and left there. Driving the real browser and reading the accessibility tree is a verdict, so that is the default. A canned runner gets run as-is, for its PASS/FAIL line and nothing else. A runner that fails, misses a selector, or lacks the leg I need is a dead end, not a task, and editing one needs an explicit ask. I had already demoted the interactive path to a footnote once and promoted it back a day later, which is why the order is written down now instead of remembered.
 
-The scripts stay, because a deterministic PASS/FAIL line is worth having. They are a convenience, not the test suite, and drift is expected. What is not allowed is an agent discovering that halfway through verifying a feature and turning the verification into a refactor.
-
-## Splitting The Grader In Two
-
-Single-model feedback was flaky in a way that looked like randomness and was not. The model was writing prose and producing structured scores in the same breath, and the scores drifted with the prose.
-
-So I split it. A grader reads the transcript and writes prose. A second, cheap model gets the grader's short notes rather than the long transcript and emits constrained JSON. That split is what made ten dimensions across communication, substance and profile possible, because the interviewer is no longer in the business of grading itself. The grader reads like a person wrote it, the formatter is cheap enough to be replaceable, and a dimension it omits is dropped as not assessed instead of failing the run.
-
-## The Payment Rail, And A Trip To The Barangay Hall
+## The Payment Rail
 
 I started on Stripe, which is not available to a Philippine individual in the way I needed and carried fees I did not want to absorb. I researched Xendit, then moved the provider seam to PayMongo.
 
@@ -92,7 +80,7 @@ graph LR
     G3["Subscriptions and Card Vaulting are support-gated"] -.-> S
 ```
 
-Bring-your-own-key is the other half of the same reasoning. If someone brings their own provider credentials, they skip my cap without changing their tier, so the keys are Fernet-encrypted at rest with only a last-four hint readable back.
+Bring-your-own-key is the other half of the same reasoning. If someone brings their own provider credentials, they skip free cap (still limited to high caps) without changing their tier, so the keys are Fernet-encrypted at rest with only a last-four hint readable back.
 
 ## The Grounded Grader And Hardcore Mode
 
@@ -115,7 +103,7 @@ graph LR
     Img --> Bump["Job bumps the pinned tag in the gitops repo"]
     Bump --> Argo["ArgoCD, prune and selfHeal"]
     Argo --> Pre["PreSync Job, yoyo migrations from the app image"]
-    Pre --> Pods["Pods roll in the maxterview namespace"]
+    Pre --> Pods["Pods roll in namespace"]
     Pods --> Neon["Neon on its direct host, never the pooler"]
 ```
 
@@ -146,6 +134,18 @@ I wired Sentry, verified delivery from a real production bundle, and deleted it 
 The one leg it held alone became mine. A render crash swallowed by the error boundary never reaches `window.onerror`, so the boundary reports a browser error by hand, message and component stack, through the backend route everything else uses. That beacon is the entire frontend observability story and it holds no third-party credential.
 
 Sentry comes back the day there are real users and a decision to publish sourcemaps, because symbolication is the thing it is actually for.
+
+## The Agent Prose I Kept Deleting
+
+The other recurring fight was not with the product. It was with the writing my agent left in the repo.
+
+Comments restating the line underneath them. Banner comments sectioning a file that already had file boundaries. Docs explaining what the code plainly said. And in the interface, a caption under the composer explaining that enter sends and shift-enter makes a line break, on a screen I open every day. That last one is what got me, because it is not a wrong comment. It is a comment written for someone who cannot read their own app, and I read the diff.
+
+So the rules became the deliverable. AGENTS.md got rewritten eleven times in six days, eighteen times since August: doc bloat and restatement banned, one owner per fact, minimalism as the default rather than an aspiration, test economy, which says a test that guards no real failure mode is maintenance I have to carry and should be skipped, deletion preferred over addition, and no explainer chrome. That last rule says an interface never explains a control the user can already see, so a shortcut, a format or a limit belongs in a placeholder or a title, where it costs no pixels and cannot go stale against the UI.
+
+The one I use most is the comment test. A comment earns its line only by carrying the why that the code cannot: an invariant, a platform or version trap, an ordering or security constraint, a measured number, a rejected alternative. Everything else goes. Restatement dies. Banners die. Step labels that narrate the next statement die.
+
+There is an uncomfortable symmetry in it. I am the one who taught the agent to write that way, and the instruction file is now longer than most of the files it governs. Constraining the slop meant writing more instructions, which is the trade I said I did not want. The honest version is that AGENTS.md is now the most load-bearing document in the repo, and the only reason it earns the space is that it stands between me and a codebase written for someone who is not reading it.
 
 ## A Pipeline With No Metrics SDK
 
@@ -202,20 +202,14 @@ What ended it was not the breakage. It sounds like a screen reader, and the inte
 
 Going cloud only did not throw the day away. The sentence chunker, the playback queue, the take timer and the chat wiring all stayed, and only the two engines that cannot run were removed. I did it in forward commits rather than a reset, so the dead end sits in the log next to the reason it died.
 
-## Voice Is I/O Around The Turn I Already Had
-
-The rule that saved the design is that voice is input and output around a turn that already exists. The applicant's speech becomes text, the text goes through the same streamed chat route as typed text, and the reply is read aloud. The transcript stays the graded artifact.
-
-That rule is what let me refuse vendor realtime sessions. One of those owns the conversation, and if it owns the conversation it also owns my dials, my question arc budget, my hardcore judge, my move classes, my grader, the resume injection guard and my per-turn meter. Two bills and two sources of truth for a feature that is supposed to be I/O.
-
 ## Where The Neurons Go
 
 Both directions run on Cloudflare Workers AI inside a free allocation of **10,000 neurons per day**, shared by the whole account and reset at 00:00 UTC. I measured it against the live account instead of trusting a pricing page:
 
-| Direction | Model | Measured | Cost |
-| --- | --- | --- | --- |
+| Direction     | Model                    | Measured                                                                                            | Cost                                                                                           |
+| ------------- | ------------------------ | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | Transcription | `whisper-large-v3-turbo` | 6.8 to 17.5s for a 112 second clip through my own route, upload included, 10 segments, correct text | **87.26 neurons** reported by the response, which matches the published 46.63 per audio minute |
-| Voice | `@cf/deepgram/aura-1` | 0.42 to 1.03s per sentence, `audio/mpeg` | 1,363 to 2,727 neurons per 1k characters, estimated from the published rate |
+| Voice         | `@cf/deepgram/aura-1`    | 0.42 to 1.03s per sentence, `audio/mpeg`                                                            | 1,363 to 2,727 neurons per 1k characters, estimated from the published rate                    |
 
 The voice is the scarce resource, not the transcription. A day is roughly 2 to 7 runs where the answer budget alone would allow 14. `@cf/myshell-ai/melotts` is the model this account cannot run at all, answering `AiError: Internal server error` (code 3043) on every request while the same token drives the other two, which is how the default became Aura. That turned out better anyway, since Aura is the human voice and MeloTTS is the generic one that got the browser engines deleted.
 
@@ -249,18 +243,6 @@ The one real bug was mine, and it was StrictMode. React ran my effect, cancelled
 The part I did not plan and would keep is that a dead voice control now says why on screen. `GET /voice` gates both controls, so an unconfigured server shows a disabled toggle, a disabled microphone and a sentence naming the cause, instead of a button that fails when clicked. That came out of failing in front of myself, not foresight.
 
 The measured limit I am living with is the transcription wait, 7 to 18 seconds for a 112 second clip, because Whisper is batch and not streaming. It is fine for a demo and long for a product.
-
-## The Agent Prose I Kept Deleting
-
-The other recurring fight was not with the product. It was with the writing my agent left in the repo.
-
-Comments restating the line underneath them. Banner comments sectioning a file that already had file boundaries. Docs explaining what the code plainly said. And in the interface, a caption under the composer explaining that enter sends and shift-enter makes a line break, on a screen I open every day. That last one is what got me, because it is not a wrong comment. It is a comment written for someone who cannot read their own app, and I read the diff.
-
-So the rules became the deliverable. AGENTS.md got rewritten eleven times in six days, eighteen times since August: doc bloat and restatement banned, one owner per fact, minimalism as the default rather than an aspiration, test economy, which says a test that guards no real failure mode is maintenance I have to carry and should be skipped, deletion preferred over addition, and no explainer chrome. That last rule says an interface never explains a control the user can already see, so a shortcut, a format or a limit belongs in a placeholder or a title, where it costs no pixels and cannot go stale against the UI.
-
-The one I use most is the comment test. A comment earns its line only by carrying the why that the code cannot: an invariant, a platform or version trap, an ordering or security constraint, a measured number, a rejected alternative. Everything else goes. Restatement dies. Banners die. Step labels that narrate the next statement die.
-
-There is an uncomfortable symmetry in it. I am the one who taught the agent to write that way, and the instruction file is now longer than most of the files it governs. Constraining the slop meant writing more instructions, which is the trade I said I did not want. The honest version is that AGENTS.md is now the most load-bearing document in the repo, and the only reason it earns the space is that it stands between me and a codebase written for someone who is not reading it.
 
 ---
 
