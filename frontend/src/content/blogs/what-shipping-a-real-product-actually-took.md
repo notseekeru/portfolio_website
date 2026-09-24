@@ -6,7 +6,7 @@ description: Seven weeks building Maxterview, from an empty repo to a voiced int
 
 # Summary
 
-Maxterview is an AI interview simulator I built from an empty repository in August and have kept running since. A candidate creates a run, answers over a streamed chat, and gets a graded review with per-answer annotations, ten scored dimensions, a verdict and tips. This is the build log of everything that took, in the order it happened: the repo floor, the no-ORM data layer, the decision to ship one SPA instead of a server-rendered marketing site, the two-stage grader that made ten dimensions possible, the payment provider swap that needed documents and still cannot take money until a separate verification bar is cleared, the entitlements, the production path with its PreSync migration job, resumes as the grounding that stopped the grader inventing things, hardcore mode, a staging environment I built and deleted inside two days with ADR 0003 as the way back, observability that ended up as one log-only pipeline after I deleted Sentry, and a voice path where the interviewer speaks and the applicant talks through what is now a single engine with a measured daily budget.
+Maxterview is an AI interview simulator I built from an empty repository in August and have kept running since. A candidate creates a run, answers over a streamed chat, and gets a graded review with per-answer annotations, ten scored dimensions, a verdict and tips.
 
 Three things got deleted along the way. Staging, Sentry, and the browser speech engines. The post keeps them in, because in each case the decision to remove something was the part that made the product better.
 
@@ -35,12 +35,6 @@ Postgres itself is Neon, not a pod holding a volume. A PVC means volume sizing a
 The plan had Next.js. I dropped it. The landing page does not need server rendering for anything a static build cannot do, and I preferred one React and Vite and TypeScript application with shadcn/ui and react-router owning both the marketing page and the app itself. One build, one deployable, one place where a route change has to be considered.
 
 The cost is a slightly heavier first load on the marketing page. The gain is that the person who clicks Start free is already inside the app's router rather than crossing a deployment boundary.
-
-## The Loop The Product Actually Is
-
-The product is a loop. Create an interview, chat over server-sent events, complete the run, and land on a review with per-answer annotations, a grade, a verdict and tips, backed by dashboard charts and an archive and delete row menu.
-
-Everything that follows in this post is attached to that loop. That is also why a labelled checkpoint runner drives a real headless browser from the landing page through creating an interview. The browser kept catching regressions the static gate could not see, and paying for that runner once has been cheaper than every debugging session it prevented.
 
 ## The Tooling Tax, Or Why The Runner Stops Being The Test
 
@@ -250,8 +244,6 @@ The measured limit I am living with is the transcription wait, 7 to 18 seconds f
 
 # Conclusion
 
-Seven weeks ago this was an empty repository. What it took was a floor I did not enjoy building, a data layer I chose to keep visible, a grader split in two so it could not grade itself, a payment rail that needed documents and a kind clerk before it would even be accepted and still cannot take money until the Fully Verified bar is cleared, an environment I built and then deleted with the way back written down, an observability stack that got simpler after I deleted the tool everyone reaches for first, and a voice path that runs on one engine with a measured budget instead of an assumption.
-
-The three deletions are the shape of the thing. Staging went because a one-man project with no users does not need a rehearsal target, Sentry went because its own gap list killed it, and the browser speech engines went because a generic voice is worse than no voice when the interviewer is the product.
+Staging went because a one-man project with no users does not need a rehearsal target, Sentry went because its own gap list killed it, and the browser speech engines went because a generic voice is worse than no voice when the interviewer is the product.
 
 What is still open, in the order I intend to hit it. The money gate first, because it is the only one that decides whether this is a product: a Fully Verified PayMongo account, and a registered business type if cards are ever going to be on the live rail. An evaluation harness over the stored interviews I already have, frozen as fixtures and asserted before every prompt edit, because prompt changes currently ship unmeasured. Caching and a job queue, mostly so a retry survives a page change, which is overengineered for a product with no users and is also the part I want to build. And provider-managed recurring, waiting on PayMongo lifting the Subscriptions and Card Vaulting capability, with 30 days of premium standing in until it does.
