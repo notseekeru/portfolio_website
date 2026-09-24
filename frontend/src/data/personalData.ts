@@ -77,7 +77,7 @@ const personalData: PersonalData = {
 
     projects: [
         {
-            title: "Website Self-Hosting Security Pipeline Infrastructure",
+            title: "Platform — Self-Hosted Web Delivery on RPi5",
             description:
                 "Designed and deployed a self-hosted websites on RPi5 with a hardened Cloudflared → Nginx proxy-chain architecture featuring network segmentation, CSP/COOP/COEP security headers, multi-stage Docker builds, QEMU multi-arch (ARM64) support, Trivy CVE scanning in CD pipeline, and an SSL Labs A+ rating.",
             techStack: ["React", "TypeScript", "Vite", "Node.js", "Express", "Nginx", "Docker", "Cloudflare", "Trivy"],
