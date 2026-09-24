@@ -30,12 +30,6 @@ I did not add an ORM. I would rather read the SQL I am shipping than learn anoth
 
 Postgres itself is Neon, not a pod holding a volume. A PVC means volume sizing and a restore I would have had to rehearse; Neon is one I did not build, on a free tier that covered the whole build. The cost is latency, every query crossing the network to us-east-1, and a second vendor in the critical path. For one database with no users, owning the storage was the more expensive kind of free.
 
-## One SPA Instead Of Two Deployables
-
-The plan had Next.js. I dropped it. The landing page does not need server rendering for anything a static build cannot do, and I preferred one React and Vite and TypeScript application with shadcn/ui and react-router owning both the marketing page and the app itself. One build, one deployable, one place where a route change has to be considered.
-
-The cost is a slightly heavier first load on the marketing page. The gain is that the person who clicks Start free is already inside the app's router rather than crossing a deployment boundary.
-
 ## The Tooling Tax, Or Why The Runner Stops Being The Test
 
 Verifying any of this in a browser meant plumbing, and the plumbing fought back.
@@ -52,11 +46,9 @@ The fix was not a better script. It was a decision order, written into the skill
 
 I started on Stripe, which is not available to a Philippine individual in the way I needed and carried fees I did not want to absorb. I researched Xendit, then moved the provider seam to PayMongo.
 
-Then I found out that Subscriptions and Card Vaulting are support-enabled capabilities and that even plan creation answers 403 on this account. The rail I wanted, a recurring subscription with a saved card, was not available to me. What was available needed verification, and verification needed documents I did not have sitting in a drawer: a postal ID and a barangay clearance.
+Then I found out that Subscriptions and Card Vaulting are support-enabled capabilities and that even plan creation answers 403 on this account. The rail I wanted, a recurring subscription with a saved card, was not available to me. What was available needed verification, and verification needed documents I did not have. That meant going out to get them and hussle.
 
-That meant going out to get them, which is the undignified part of building a payment integration that nobody documents. What I did not expect was that it would be the best hour of the week. The clerk at the counter was helpful, wished me luck with the project, and processed the clearance for free. I came home with a document and, honestly, with more motivation than I had left the house with. It is the only part of this build that involved a person outside it being kind about it, and it landed on exactly the day the whole thing felt stalled.
-
-The account is verified, and that is where it stops. Taking real money needs a Fully Verified account, which is its own bar with its own paperwork, and live mode on an individual account is narrower than the feature list implies: the app asks PayMongo for `paymaya` and `card`, but only Maya, GrabPay and ShopeePay can be enabled live without a registered business type. So the rail works end to end against real delivered webhooks and it is still not ready, which is a different thing from being live, and I would rather write that down than call the billing done.
+After I got the documents, the account got verified, and that is where it stops. Taking real money needs a Fully Verified account, which is its own bar with its own paperwork, and live mode on an individual account is narrower than the feature list implies: the app asks PayMongo for `paymaya` and `card`, but only Maya, GrabPay and ShopeePay can be enabled live without a registered business type. So the rail works end to end against real delivered webhooks and it is still not ready, which is a different thing from being live, and I would rather write that down than call the billing done.
 
 ### Designing Around A Capability I Cannot Buy
 
@@ -77,14 +69,6 @@ graph LR
 ```
 
 Bring-your-own-key is the other half of the same reasoning. If someone brings their own provider credentials, they skip free cap (still limited to high caps) without changing their tier, so the keys are Fernet-encrypted at rest with only a last-four hint readable back.
-
-## The Grounded Grader And Hardcore Mode
-
-The grader was grading a stranger. It wrote confident feedback about achievements nobody had claimed, because a transcript is all it had. Attaching a resume fixed the root cause: the extracted text becomes the grounding for the questions and the rubric, so the model is measured against what the candidate actually did. The parse is capped at extraction time, pages, size and text, because a large PDF parsed in-process is a way to blow the request budget rather than a feature.
-
-Hardcore mode went the other direction. In a normal run, the judge is a soft signal. In hardcore it runs on every turn and an inaccuracy ends the run as a certain reject instead of a degraded score. It only works because the transcript is grounded, and it is the closest thing the product has to real screening pressure.
-
-The smaller things took the most passes. Per-answer tips landed three times before they were right, block underneath, then popup, then finally a small bulb beside the candidate's bubble at the same height, because the note belongs to that answer and nowhere else. The dashboard plots the newest five runs as an average instead of the last run, so a single bad interview stops pretending to be a trend. The charts mount one at a time through a queue, each slot handed back in the commit that mounted the previous chart, after I watched them all draw at once and cost frames I could see. The chat screen became full bleed with one icon-only composer pill, the microphone inside it, Finish moved into the header, and long answers folded behind a Show more control so a 90 second answer cannot push the reply off screen.
 
 ## Production, And The Moment It Was Real
 
@@ -132,8 +116,6 @@ The one leg it held alone became mine. A render crash swallowed by the error bou
 Sentry comes back the day there are real users and a decision to publish sourcemaps, because symbolication is the thing it is actually for.
 
 ## The Agent Prose I Kept Deleting
-
-The other recurring fight was not with the product. It was with the writing my agent left in the repo.
 
 Comments restating the line underneath them. Banner comments sectioning a file that already had file boundaries. Docs explaining what the code plainly said. And in the interface, a caption under the composer explaining that enter sends and shift-enter makes a line break, on a screen I open every day. That last one is what got me, because it is not a wrong comment. It is a comment written for someone who cannot read their own app, and I read the diff.
 
