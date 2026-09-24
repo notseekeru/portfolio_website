@@ -1,3 +1,7 @@
+// Diagram edit rules: additive only, never remove/rename/restructure existing nodes.
+// Mirror the current format: same ID style, quoted labels, elk layout, ports on nodes.
+// One node per real workload, no duplicate or placeholder nodes.
+// Source of truth: ~/gitops and ~/terraform. Flag additions before editing.
 export const infrastructureChart = `---
 config:
   layout: elk
@@ -8,6 +12,8 @@ flowchart TB
         Slack["Slack Channel"]
         CloudflareEdge["Cloudflare Edge (DNS + SSL)"]
         Infisical["Infisical Secret Platform"]
+        NeonDB["Neon Postgres (maxterview)"]
+        GrafanaCloud["Grafana Cloud (Loki + Alerts)"]
   end
 
  subgraph GitHub_Platform["🐙 GitHub Platform Ecosystem"]
@@ -105,14 +111,21 @@ flowchart TB
             TunnelPod["Cloudflared Tunnel Pod"]
 
             subgraph Workloads["Namespaces & Pods"]
-                subgraph Portfolio_App["Portfolio Stack"]
+                subgraph Portfolio_App["Portfolio Stack (ns portfolio)"]
                     Portfolio_Frontend_Pod["Portfolio Frontend"]
                 end
 
-                subgraph Diagram_App["Migrated Diagram Stack"]
+                subgraph Diagram_App["Migrated Diagram Stack (ns diagram)"]
                     Frontend2["React/Vite Frontend (Diagram)"]
                     Backend2["Node JS Backend"]
                     Postgres_Pod[("PostgreSQL Pod")]
+                end
+
+                subgraph Maxterview_App["Maxterview Stack (ns maxterview)"]
+                    Frontend3["React/Vite Frontend (Maxterview)"]
+                    Backend3["FastAPI Backend"]
+                    Migration_Job["PreSync Migration Job"]
+                    Alloy_Max["Grafana Alloy (maxterview)"]
                 end
             end
         end
@@ -150,7 +163,13 @@ flowchart TB
     CloudflareEdge -- Secure Tunnel --> TunnelPod
     TunnelPod --> Ingress
     Ingress --> Portfolio_Frontend_Pod & Frontend2 & Backend2
+    Ingress --> Frontend3 & Backend3
     Backend2 --> Postgres_Pod
+
+    Backend3 --> NeonDB
+    Migration_Job --> NeonDB
+    Alloy_Max --> GrafanaCloud
+    GrafanaCloud --> Slack
 
     AManager -- Webhook Alerts --> Slack
 
