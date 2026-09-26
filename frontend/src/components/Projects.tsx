@@ -25,6 +25,8 @@ const iconMap: Record<string, IconType> = {
     SiC,
 };
 
+const displayAddress = (p: ProjectItem) => (p.link ?? p.github ?? "").replace(/^https?:\/\//, "").replace(/\/$/, "");
+
 export default function Projects() {
     const { ref: sectionRef, inView: sectionInView } = useInView();
     const { ref: headerRef, inView: headerInView } = useInView();
@@ -58,6 +60,14 @@ interface ProjectCardProps {
 }
 
 function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
+    const address = displayAddress(project);
+    const actions: { href?: string; label: string }[] = [];
+    if (project.link) actions.push({ href: project.link, label: "Live site" });
+    if (project.github) actions.push({ href: project.github, label: "Source code" });
+    // No live target and no repo is a state, not a gap: the bar still carries the card's artifact.
+    const cells = actions.length ? actions : [{ label: project.blogs?.length ? "Writeup" : "Details" }];
+    const cellClass = (i: number) => `flex items-center gap-2 px-5 py-3 font-mono text-xs transition-colors hover:bg-ink/40 ${i === 0 ? "text-accent" : "text-muted hover:text-accent"}`;
+
     return (
         <article
             className="animate-fade-in-up cursor-pointer min-w-0 w-full"
@@ -81,24 +91,20 @@ function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
                                 <span className="h-2 w-2 rounded-full bg-accent/60" />
                                 <span className="h-2 w-2 rounded-full bg-muted/50" />
                             </span>
-                            <span className="ml-2 flex-1 truncate rounded-sm bg-surface px-2 py-0.5 text-[10px] font-mono text-muted">{project.link ? project.link.replace(/https?:\/\//, "").split("/")[0] : project.title}</span>
-                            <span className="flex shrink-0 items-center gap-1 pl-1">
-                                {project.github && (
-                                    <a href={project.github} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="flex h-6 items-center justify-center rounded-sm px-1.5 text-muted hover:text-accent transition-colors" title="GitHub repository">
-                                        <GitHubIcon size={13} />
-                                    </a>
-                                )}
-                                {project.favorite && (
-                                    <span className="flex h-6 items-center px-1 text-amber" title="Personal favorite">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                        </svg>
-                                    </span>
-                                )}
-                            </span>
+                            {address ? <span className="ml-2 min-w-0 flex-1 truncate rounded-sm bg-surface px-2 py-0.5 text-[10px] font-mono text-muted">{address}</span> : <span className="flex-1" />}
+                            {project.favorite && (
+                                <span className="flex h-6 shrink-0 items-center px-1 text-amber" title="Personal favorite">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                    </svg>
+                                </span>
+                            )}
                         </div>
                         <div className="relative aspect-video bg-ink/40 overflow-hidden flex items-center justify-center">
                             {project.status && <span className="absolute left-3 top-3 z-10 border border-accent/40 bg-ink/80 px-2 py-0.5 text-[10px] font-mono text-accent">{project.status}</span>}
+                            <span className="absolute right-3 top-3 z-10 flex h-6 w-6 items-center justify-center border border-border bg-ink/80 text-muted group-hover:border-accent/40 group-hover:text-accent transition-colors" aria-hidden="true">
+                                <ChevronRight size={12} />
+                            </span>
                             {project.video ? (
                                 <video src={project.video} autoPlay muted loop playsInline className="h-full w-full object-contain" />
                             ) : project.image ? (
@@ -123,14 +129,21 @@ function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
                             </div>
                         )}
 
-                        {project.link && (
-                            <div className="mt-4 flex items-center gap-1 text-accent text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                Visit project
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                                    <path d="M7 17L17 7M17 7H7M17 7V17" />
-                                </svg>
-                            </div>
-                        )}
+                        <div className={`-mx-5 -mb-5 mt-4 grid border-t border-border ${cells.length > 1 ? "grid-cols-2 divide-x divide-border" : "grid-cols-1"}`}>
+                            {cells.map((cell, i) =>
+                                cell.href ? (
+                                    <a key={cell.label} href={cell.href} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={cellClass(i)}>
+                                        {cell.label === "Source code" ? <GitHubIcon size={13} /> : <ExternalArrow size={12} />}
+                                        {cell.label}
+                                    </a>
+                                ) : (
+                                    <button key={cell.label} type="button" onClick={onOpen} className={`${cellClass(i)} text-left`}>
+                                        <ChevronRight size={13} />
+                                        {cell.label}
+                                    </button>
+                                ),
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -144,6 +157,23 @@ function ProjectIcon({ icon, size = 28 }: { icon: string; size?: number }) {
     return null;
 }
 
+function ExternalArrow({ size = 14 }: { size?: number }) {
+    return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0" aria-hidden="true">
+            <path d="M7 17L17 7M17 7H7M17 7V17" />
+        </svg>
+    );
+}
+
+function ChevronRight({ size = 14 }: { size?: number }) {
+    return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+        </svg>
+    );
+}
+
 interface ProjectModalProps {
     project: ProjectItem;
     onClose: () => void;
@@ -151,6 +181,7 @@ interface ProjectModalProps {
 
 function ProjectModal({ project, onClose }: ProjectModalProps) {
     const [relatedBlogs, setRelatedBlogs] = useState<BlogPost[]>([]);
+    const address = displayAddress(project);
 
     useEffect(() => {
         const previous = document.body.style.overflow;
@@ -194,7 +225,7 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
                             <span className="h-2.5 w-2.5 rounded-full bg-accent/60" />
                             <span className="h-2.5 w-2.5 rounded-full bg-muted/50" />
                         </span>
-                        <span className="ml-3 flex-1 truncate rounded-sm bg-surface px-3 py-1 text-xs font-mono text-muted">{project.link ? project.link.replace(/https?:\/\//, "") : project.title}</span>
+                        {address ? <span className="ml-3 min-w-0 flex-1 truncate rounded-sm bg-surface px-3 py-1 text-xs font-mono text-muted">{address}</span> : <span className="flex-1" />}
                     </div>
                     <div className="relative h-56 sm:h-72 lg:h-[32rem] bg-ink/60 overflow-hidden flex items-center justify-center">
                         {project.status && <span className="absolute left-4 top-4 z-10 border border-accent/40 bg-ink/80 px-2.5 py-1 text-xs font-mono text-accent">{project.status}</span>}
@@ -241,32 +272,31 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
                                             <div className="text-sm text-bone group-hover/link:text-accent transition-colors">{blog.title}</div>
                                             {blog.date && <div className="text-xs text-zinc-600 font-mono mt-0.5">{new Date(blog.date).toLocaleDateString("en-US", { year: "numeric", month: "short" })}</div>}
                                         </div>
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-600 group-hover/link:text-accent shrink-0 transition-colors" aria-hidden="true">
-                                            <line x1="5" y1="12" x2="19" y2="12" />
-                                            <polyline points="12 5 19 12 12 19" />
-                                        </svg>
+                                        <span className="text-zinc-600 group-hover/link:text-accent transition-colors">
+                                            <ChevronRight size={14} />
+                                        </span>
                                     </Link>
                                 ))}
                             </div>
                         </div>
                     )}
 
-                    <div className="flex items-center gap-6 pt-6 border-t border-border">
-                        {project.link && (
-                            <a href={project.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-accent text-base font-mono hover:underline underline-offset-2">
-                                Visit project
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                                    <path d="M7 17L17 7M17 7H7M17 7V17" />
-                                </svg>
-                            </a>
-                        )}
-                        {project.github && (
-                            <a href={project.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-zinc-300 text-base font-mono hover:text-accent transition-colors">
-                                <GitHubIcon size={16} />
-                                Source
-                            </a>
-                        )}
-                    </div>
+                    {(project.link || project.github) && (
+                        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-6 border-t border-border">
+                            {project.link && (
+                                <a href={project.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-accent text-base font-mono hover:underline underline-offset-2">
+                                    <ExternalArrow size={16} />
+                                    Live site
+                                </a>
+                            )}
+                            {project.github && (
+                                <a href={project.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-muted text-base font-mono hover:text-accent transition-colors">
+                                    <GitHubIcon size={16} />
+                                    Source code
+                                </a>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>,
