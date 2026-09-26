@@ -75,7 +75,6 @@ const personalData: PersonalData = {
         },
     ],
 
-    // Order is the pitch: live + repo work first, in-progress last.
     projects: [
         {
             title: "SRE — Observability Stack with LGTM Stack + OTLP Tracing",
@@ -90,15 +89,15 @@ const personalData: PersonalData = {
             blogs: ["observing-the-lab", "sre-steps", "telemetry-madness"],
         },
         {
-            title: "Kubernetes Platform — Terraform Bootstrap + ArgoCD GitOps",
+            title: "Platform — Self-Hosted k3s, ArgoCD GitOps and Edge Hardening",
             description:
-                "One Terraform module bootstraps the deploy plane on a self-hosted k3s cluster (infra/k3s): ingress-nginx and ArgoCD via Helm, a namespace plus its secret set per app, a PostgreSQL 18 StatefulSet on a local-path PVC, GHCR pull secrets, and the Argo root Application applied through the kubectl provider. A separate gitops repo owns everything after that as an app-of-apps: four ArgoCD Applications (portfolio, diagram, maxterview, infra) syncing with prune and selfHeal, a kustomize base with one prod overlay, nginx ingress carrying CSP, rate limits and 300s timeouts for the SSE chat stream, a PreSync migration Job, and a single Cloudflare Tunnel fronting portfolio, diagram and maxterview.seekeru.tech. State sits in an R2 S3 backend with lockfile, secrets are injected from Infisical at plan time, and CI stops at fmt and validate because applies are human-gated by design.",
-            techStack: ["Terraform", "k3s", "ArgoCD", "Kubernetes", "Helm", "Kustomize", "Cloudflare Tunnel", "Infisical", "PostgreSQL", "R2"],
+                "Runs three live domains (portfolio, diagram and maxterview.seekeru.tech) on a self-hosted k3s cluster behind one Cloudflare Tunnel, reconciled by ArgoCD and bootstrapped by Terraform: ingress-nginx and ArgoCD installed via Helm, a namespace and its secret set created per app, a PostgreSQL 18 StatefulSet on a local-path PVC, GHCR pull secrets, and the Argo root Application applied through the kubectl provider. A separate gitops repo owns everything after that as an app-of-apps: four ArgoCD Applications syncing with prune and selfHeal, a kustomize base with one prod overlay, ingress carrying CSP/COOP/COEP and rate limits plus 300s timeouts tuned for the SSE chat stream, and a PreSync migration Job. Images are multi-stage arm64 builds via QEMU, gated by Trivy CVE scanning in the CD pipeline, with an SSL Labs A+ on the edge. State sits in an R2 S3 backend with a lockfile, secrets are injected from Infisical at plan time, and CI stops at fmt and validate because applies are human-gated by design.",
+            techStack: ["Terraform", "k3s", "ArgoCD", "Kubernetes", "Helm", "Kustomize", "Cloudflare Tunnel", "Nginx", "Docker", "Trivy"],
             favorite: true,
             video: "/project2.webm",
             github: "https://github.com/notseekeru/gitops",
             icon: "SiTerraform",
-            blogs: ["cloud-automation-veins"],
+            blogs: ["imposter-syndrome", "the-serverless-trap", "server-security-measures", "cloud-automation-veins"],
         },
         {
             title: "Product Engineering — Maxterview AI Interview Simulator",
@@ -109,16 +108,6 @@ const personalData: PersonalData = {
             video: "/maxterview.mp4",
             link: "https://maxterview.seekeru.tech",
             icon: "SiReact",
-        },
-        {
-            title: "Platform — Self-Hosted Web Delivery on RPi5",
-            description:
-                "Designed and deployed a self-hosted websites on RPi5 with a hardened Cloudflared → Nginx proxy-chain architecture featuring network segmentation, CSP/COOP/COEP security headers, multi-stage Docker builds, QEMU multi-arch (ARM64) support, Trivy CVE scanning in CD pipeline, and an SSL Labs A+ rating.",
-            techStack: ["React", "TypeScript", "Vite", "Node.js", "Express", "Nginx", "Docker", "Cloudflare", "Trivy"],
-            favorite: true,
-            video: "/project1.webm",
-            icon: "SiReact",
-            blogs: ["imposter-syndrome", "the-serverless-trap", "server-security-measures"],
         },
         {
             title: "Infrastructure as Code — Ansible Automation & Idempotency",
@@ -132,6 +121,14 @@ const personalData: PersonalData = {
             blogs: ["cloud-automation-veins", "server-security-measures"],
         },
         {
+            title: "Secrets Management — Infisical as Source of Truth for Every Repo",
+            description:
+                "One secrets layer for every repo that needs cloud variables, replacing scattered Ansible Vault files, .tfvars and .env files with Infisical Cloud plus its CLI: Terraform providers and the R2 state backend, Ansible playbooks, Docker builds and the Node and FastAPI apps all resolve from one source of truth. Designed the source-of-truth and consumer folder structure with dynamic references, then built per-environment inheritance where a staging environment inherited prod values as per-key references and overrode only the five that must differ (database, identity and payment keys), with plan-time guards that refused the other environment database endpoint in both directions, because an inherited value would otherwise point staging migrations at the production database. Staging itself was later dropped as unearned cost, one environment and no users did not justify a second namespace, secret set and quota consumer, and the exact rebuild path is documented. Still the injection path for Terraform via infisical run, and reusable across Ansible, Docker and Node.js apps through the same CLI.",
+            techStack: ["Infisical", "Terraform", "Ansible", "Docker", "Node.js"],
+            image: "/project9.png",
+            icon: "FaLock",
+        },
+        {
             title: "AWS — 3-Tier Terraform Stack on Free-Tier Rails",
             description:
                 "Provisioned a 3-tier AWS stack in inline HCL with no public VPC modules: Cloudflare CNAME → ALB → ASG (2× t4g.micro, AL2023 arm64 via SSM AMI param) → private single-AZ RDS PostgreSQL, plus a private S3 bucket served through CloudFront with OAC and an ACM certificate DNS-validated through Cloudflare. Added billing rails — a $1 zero-spend tripwire budget and a credit-cap budget firing at 95% actual / 90% forecast — wired to one SNS topic with a CloudWatch CPU alarm, so `make destroy` plus aws-nuke allowlisting keeps monthly spend at zero. Debugged a credential namespace collision where the Cloudflare R2 S3-compatible state backend and the real AWS provider both consumed the native AWS_ACCESS_KEY_ID, resolved by partitioning secrets into TF_VAR_R2_* and pinning the provider's S3 endpoint back to its region. Reached 39 resources with a drift-free terraform plan across repeated destroy and re-apply cycles.",
@@ -143,33 +140,15 @@ const personalData: PersonalData = {
             blogs: ["aws-on-a-budget"],
         },
         {
-            title: "Homelab — Services and Virtualization",
+            title: "Environment — Homelab Services, Virtualization and NixOS",
             description:
-                "Operate a Raspberry Pi 5-based homelab running Pi-hole DNS, Plex media server, Portainer container management, game servers, etc. Applied Linux hardening (UFW, SSH key-only, Tailscale overlay), automated apt updates, and enforced Tailscale-only access across all services with network segmentation. Run guest VMs on both Hyper-V and VMware Workstation, using VMware NAT/Bridged/Host-only modes and debugging VM-to-host and VM-to-LAN reachability plus in-network DHCP/DNS resolution.",
-            techStack: ["Raspberry Pi", "Docker", "Tailscale", "Pi-hole", "Grafana", "Hyper-V", "VMware"],
+                "Runs my daily driver and my home services from config. One NixOS flake with a shared base and per-host deltas for desktop, laptop and server outputs, deployed on the laptop as my daily driver: Flakes, Home-Manager and direnv, a declarative tmux sessionizer, Neovim with LSP, and atomic rollback-capable rebuilds via nixos-rebuild. The Raspberry Pi 5 homelab runs Pi-hole DNS, Plex, Portainer and game servers under UFW, SSH key-only access and a Tailscale-only overlay, with network segmentation and automated apt updates. Guest VMs on Hyper-V and VMware Workstation use NAT, Bridged and Host-only modes, which is where I debug VM-to-host and VM-to-LAN reachability along with in-network DHCP and DNS resolution.",
+            techStack: ["NixOS", "Flakes", "Home-Manager", "Raspberry Pi", "Docker", "Tailscale", "Pi-hole", "UFW", "Hyper-V", "VMware"],
             favorite: true,
             video: "/project6.webm",
-            icon: "SiRaspberrypi",
-            blogs: ["server-security-measures", "observing-the-lab"],
-        },
-        {
-            title: "NixOS Declarative Workflow — Flakes + Home-Manager + Neovim",
-            description:
-                "Transitioned to a fully declarative NixOS stack with Flakes, Home-Manager, and direnv for reproducible multi-node configs. Modularized host-specific configs so every machine inherits the same baseline. Declarative tmux-init script and Neovim configuration. Achieved atomic, rollback-capable system rebuilds via nixos-rebuild.",
-            techStack: ["NixOS", "Flakes", "Home-Manager", "direnv", "neovim", "tmux"],
-            favorite: true,
-            image: "/project8.png",
             github: "https://github.com/notseekeru/nixos-config",
             icon: "SiNixos",
-            blogs: ["declarative-identity"],
-        },
-        {
-            title: "Centralized Secrets Management with Infisical Cloud + CLI",
-            description:
-                "Migrated from fragmented secret storage (Ansible Vault, .tfvars, .env) to a single source of truth using Infisical Cloud. Designed source-of-truth and consumer folder structure with dynamic secret references, then extended it into per-environment inheritance: a staging environment that inherits prod's values as per-key references while overriding only the five that must differ (database, identity and payment keys). Integrated with Terraform via infisical run for injection into apply, and added plan-time guards in both directions that refuse the other environment's database endpoint, because an inherited value would otherwise point staging's migrations at the production database. Also can be applied to various projects such as Ansible, Docker, and Node.js apps via the Infisical CLI.",
-            techStack: ["Infisical", "Terraform", "Ansible"],
-            image: "/project9.png",
-            icon: "FaLock",
+            blogs: ["declarative-identity", "server-security-measures", "observing-the-lab"],
         },
         {
             title: "Raw L7 TCP/HTTP 1.1 Engine & L7 Reverse Proxy + Load Balancer",
@@ -195,9 +174,9 @@ const personalData: PersonalData = {
             description:
                 "Rebuilt an HTTP server from the sockets up in C with no framework and no HTTP library: socket, bind on INADDR_ANY:8080, listen, then an accept loop that serves each client with one send and closes, so the response is body only. That is why the Makefile's get target uses curl --http0.9, because a conventional client rejects a reply that has no status line or headers. The whole thing is one translation unit, main.c includes its own kv_helper.c, and kv_helper is where the memory work lives: a KVPair allocated on the heap with a NULL check after every allocation and a partial-free path, so a failed value allocation returns the key allocation instead of leaking it. The rest of the pass was correctness under load: one send for the full message, sockaddr_in zeroed before bind, error handling on every syscall, and a loop that keeps serving after a failed accept. What I actually took from it is knowing which bytes are mine, which is the only reason the project exists.",
             techStack: ["C", "Sockets", "Linux", "Make", "curl"],
+            status: "in progress",
             github: "https://github.com/notseekeru/custom-http-c",
             icon: "SiC",
-            status: "in progress",
         },
     ],
 };
