@@ -90,13 +90,13 @@ const personalData: PersonalData = {
             blogs: ["observing-the-lab", "sre-steps", "telemetry-madness"],
         },
         {
-            title: "Cloud Infrastructure  — Terraform & Kubernetes + ArgoCD GitOps",
+            title: "Kubernetes Platform — Terraform Bootstrap + ArgoCD GitOps",
             description:
-                "Provisioned DigitalOcean infrastructure with Terraform using modular .tf files and secure variable management, integrated dynamic Ansible inventories, deployed a 3-node Kubernetes cluster with ArgoCD GitOps, and hardened containers with tmpfs/readonly root filesystems. Extended the same GitOps pattern to a self-hosted k3s cluster with two environments rendered from one kustomize base (separate namespace, secret and managed database per env), both reconciled by ArgoCD.",
-            techStack: ["Terraform", "DigitalOcean", "Kubernetes", "ArgoCD", "Ansible", "GitHub Actions"],
+                "One Terraform module bootstraps the deploy plane on a self-hosted k3s cluster (infra/k3s): ingress-nginx and ArgoCD via Helm, a namespace plus its secret set per app, a PostgreSQL 18 StatefulSet on a local-path PVC, GHCR pull secrets, and the Argo root Application applied through the kubectl provider. A separate gitops repo owns everything after that as an app-of-apps: four ArgoCD Applications (portfolio, diagram, maxterview, infra) syncing with prune and selfHeal, a kustomize base with one prod overlay, nginx ingress carrying CSP, rate limits and 300s timeouts for the SSE chat stream, a PreSync migration Job, and a single Cloudflare Tunnel fronting portfolio, diagram and maxterview.seekeru.tech. State sits in an R2 S3 backend with lockfile, secrets are injected from Infisical at plan time, and CI stops at fmt and validate because applies are human-gated by design.",
+            techStack: ["Terraform", "k3s", "ArgoCD", "Kubernetes", "Helm", "Kustomize", "Cloudflare Tunnel", "Infisical", "PostgreSQL", "R2"],
             favorite: true,
             video: "/project2.webm",
-            github: "https://github.com/notseekeru/terraform",
+            github: "https://github.com/notseekeru/gitops",
             icon: "SiTerraform",
             blogs: ["cloud-automation-veins"],
         },
