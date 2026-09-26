@@ -104,6 +104,7 @@ const personalData: PersonalData = {
             techStack: ["Grafana", "Prometheus", "Loki", "Tempo", "Alloy", "OpenTelemetry", "AlertManager", "Docker"],
             favorite: true,
             video: "/project3.webm",
+            link: "https://diagram.seekeru.tech",
             github: "https://github.com/notseekeru/diagram_website",
             icon: "SiGrafana",
             blogs: ["observing-the-lab", "sre-steps", "telemetry-madness"],
