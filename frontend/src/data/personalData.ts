@@ -2,7 +2,6 @@ export interface ExperienceItem {
     company: string;
     title: string;
     duration: string;
-    responsibilities: string;
 }
 
 export interface EducationItem {
@@ -63,7 +62,6 @@ const personalData: PersonalData = {
             company: "N/A",
             title: "N/A",
             duration: "N/A",
-            responsibilities: "N/A",
         },
     ],
 

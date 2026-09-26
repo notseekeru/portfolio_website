@@ -58,7 +58,7 @@ export async function buildPortfolioMarkdown(): Promise<string> {
 
     const intro = [`# ${name}`, "", title ?? "", status ? `_${status}_` : "", bio ? `\n${bio}`.trim() : "", `\n**Location:** ${[location, email].filter(Boolean).join(" · ")}`, "", `- GitHub: ${github ?? ""}`, `- LinkedIn: ${linkedin ?? ""}`].filter((line) => line.trim() !== "").join("\n");
 
-    const exp = (experience ?? []).map((x) => [`### ${x.title} — ${x.company}`, x.duration ? `_${x.duration}_` : "", x.responsibilities].filter(Boolean).join("\n")).join("\n\n");
+    const exp = (experience ?? []).map((x) => [`### ${x.title} — ${x.company}`, x.duration ? `_${x.duration}_` : ""].filter(Boolean).join("\n")).join("\n\n");
 
     const edu = (education ?? []).map((ed) => [`### ${ed.degree} — ${ed.institution}`, ed.duration ? `_${ed.duration}_` : ""].filter(Boolean).join("\n")).join("\n\n");
 
