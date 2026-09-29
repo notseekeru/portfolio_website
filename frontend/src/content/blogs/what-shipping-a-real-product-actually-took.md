@@ -48,7 +48,7 @@ I started on Stripe, which is not available to a Philippine individual in the wa
 
 Then I found out that Subscriptions and Card Vaulting are support-enabled capabilities and that even plan creation answers 403 on this account. The rail I wanted, a recurring subscription with a saved card, was not available to me. What was available needed verification, and verification needed documents I did not have. That meant going out to get them and hussle.
 
-After I got the documents, the account got verified, and that is where it stops. Taking real money needs a Fully Verified account, which is its own bar with its own paperwork, and live mode on an individual account is narrower than the feature list implies: the app asks PayMongo for `paymaya` and `card`, but only Maya, GrabPay and ShopeePay can be enabled live without a registered business type. So the rail works end to end against real delivered webhooks and it is still not ready, which is a different thing from being live, and I would rather write that down than call the billing done.
+After I got the documents, the account got verified, and that cleared the bar for real money. Live mode on an individual account is still narrower than the feature list implies: the app asks PayMongo for `paymaya` and `card`, but only the QR and e-wallet rails can be enabled live without a registered business type. So the rail I shipped renders an InstaPay QR through the app, I scanned it with GCash, and 99 pesos moved. The signed webhook landed, the `subscriptions` row wrote, and the switch in the app flipped to paid. Not a direct GCash charge, a QR gateway that any InstaPay bank or e-wallet can scan, which is a wider rail than the one I originally asked for. The rail is no longer working end to end against delivered webhooks. It took my money.
 
 ### Designing Around A Capability I Cannot Buy
 
@@ -58,12 +58,11 @@ The recurring rail is blocked, so I put 30 days of premium on the same `current_
 
 ```mermaid
 graph LR
-    U["Upgrade, period mode"] --> PI["PayMongo payment intent, payment_method_allowed: paymaya, card"]
+    U["Upgrade, period mode"] --> PI["PayMongo payment intent, payment_method_allowed: qrph"]
     PI --> WH["Signed webhook, payment.paid"]
     WH --> S["subscriptions row, plan premium, current_period_end plus 30 days"]
     S --> T["resolve_tier"]
     T --> Q["free tier keeps the daily cap, premium lifts it"]
-    G1["Live keys need a Fully Verified account"] -.-> PI
     G2["Cards need a registered business type"] -.-> PI
     G3["Subscriptions and Card Vaulting are support-gated"] -.-> S
 ```
@@ -228,4 +227,4 @@ The measured limit I am living with is the transcription wait, 7 to 18 seconds f
 
 Staging went because a one-man project with no users does not need a rehearsal target, Sentry went because its own gap list killed it, and the browser speech engines went because a generic voice is worse than no voice when the interviewer is the product.
 
-What is still open, in the order I intend to hit it. The money gate first, because it is the only one that decides whether this is a product: a Fully Verified PayMongo account, and a registered business type if cards are ever going to be on the live rail. An evaluation harness over the stored interviews I already have, frozen as fixtures and asserted before every prompt edit, because prompt changes currently ship unmeasured. Caching and a job queue, mostly so a retry survives a page change, which is overengineered for a product with no users and is also the part I want to build. And provider-managed recurring, waiting on PayMongo lifting the Subscriptions and Card Vaulting capability, with 30 days of premium standing in until it does.
+What is still open, in the order I intend to hit it. A registered business type, which is the only thing left between here and cards on the live rail: the InstaPay QR takes money today from any bank or e-wallet that can scan it, and every other method the app asks for is still refused. An evaluation harness over the stored interviews I already have, frozen as fixtures and asserted before every prompt edit, because prompt changes currently ship unmeasured. Caching and a job queue, mostly so a retry survives a page change, which is overengineered for a product with no users and is also the part I want to build. And provider-managed recurring, waiting on PayMongo lifting the Subscriptions and Card Vaulting capability, with 30 days of premium standing in until it does.
