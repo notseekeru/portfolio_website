@@ -176,6 +176,14 @@ const personalData: PersonalData = {
             github: "https://github.com/notseekeru/custom-http-c",
             icon: "SiC",
         },
+        {
+            title: "Automation — Self-Hosted n8n Behind Cloudflare Zero Trust",
+            description:
+                "Ran n8n self-hosted behind a Cloudflared tunnel and Nginx reverse proxy, exposing webhooks only through Cloudflare Zero Trust. Built an AI Gmail labeler as the first pipeline: trigger, transformation nodes, then an agent call for classification, so inbox triage runs deterministically instead of by hand. Hardened after a Docker Scout audit flagged CVSS 9.8 in n8n and Cloudflared, then pinned every lab image to a semantic version to stop state drift.",
+            techStack: ["n8n", "Docker", "Nginx", "Cloudflare Zero Trust", "Cloudflared"],
+            icon: "SiN8N",
+            blogs: ["your-workflow-might-be-obsolete"],
+        },
     ],
 };
 
