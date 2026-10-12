@@ -44,26 +44,24 @@ export default function InfrastructureDiagram() {
     }, [chartInView]);
 
     return (
-        <div id="infrastructure-diagram" className="py-24">
-            <div className="max-w-6xl mx-auto px-6">
-                <m.div variants={stagger(0.07)} initial="hidden" whileInView="show" viewport={revealViewport} className="mb-16">
-                    <m.span variants={slideIn} className="font-mono text-xs tracking-widest text-accent">
-                        ARCHITECTURE
-                    </m.span>
-                    <m.h1 variants={maskRise} className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">
-                        Infrastructure
-                    </m.h1>
-                    <m.p variants={fade} className="text-muted max-w-lg">
-                        End-to-end homelab breakdown — edge to a Raspberry Pi 5.
-                    </m.p>
-                </m.div>
+        <div className="max-w-6xl mx-auto px-6">
+            <m.div variants={stagger(0.07)} initial="hidden" whileInView="show" viewport={revealViewport} className="mb-16">
+                <m.span variants={slideIn} className="font-mono text-xs tracking-widest text-accent">
+                    ARCHITECTURE
+                </m.span>
+                <m.h1 variants={maskRise} className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">
+                    Infrastructure
+                </m.h1>
+                <m.p variants={fade} className="text-muted max-w-lg">
+                    End-to-end homelab breakdown — edge to a Raspberry Pi 5.
+                </m.p>
+            </m.div>
 
-                <m.div ref={chartRef} variants={fade} initial="hidden" whileInView="show" viewport={revealViewport}>
-                    <div className="flex flex-col h-[750px]">
-                        <InteractiveMermaid chart={infrastructureChart} />
-                    </div>
-                </m.div>
-            </div>
+            <m.div ref={chartRef} variants={fade} initial="hidden" whileInView="show" viewport={revealViewport}>
+                <div className="flex flex-col h-[750px]">
+                    <InteractiveMermaid chart={infrastructureChart} />
+                </div>
+            </m.div>
         </div>
     );
 }

@@ -1,15 +1,29 @@
-import { useEffect, Fragment } from "react";
+import { useEffect, Fragment, lazy, Suspense } from "react";
 import { useLocation } from "react-router-dom";
+import { useInView } from "../hooks/useInView";
 import Hero from "../components/Hero";
-import InfrastructureDiagram from "../components/InfrastructureDiagram";
 import Blog from "../components/Blog";
 import Projects from "../components/Projects";
 import Contact from "../components/Contact";
 
+const InfrastructureDiagram = lazy(() => import("../components/InfrastructureDiagram"));
+
+// Anchor and padding sit on this wrapper so nav links and scroll-spy find the section before
+// mermaid is fetched; the height reservation keeps the page from jumping when it swaps in.
+function DeferredDiagram() {
+    const { ref, inView } = useInView({ rootMargin: "600px 0px" });
+
+    return (
+        <div id="infrastructure-diagram" ref={ref} className={`py-24 ${inView ? "" : "min-h-[900px]"}`}>
+            <Suspense fallback={null}>{inView && <InfrastructureDiagram />}</Suspense>
+        </div>
+    );
+}
+
 const sections = [
     { id: "home", Component: Hero },
     { id: "projects", Component: Projects },
-    { id: "infrastructure-diagram", Component: InfrastructureDiagram },
+    { id: "infrastructure-diagram", Component: DeferredDiagram },
     { id: "blog", Component: Blog },
     { id: "contact", Component: Contact },
 ] as const;
