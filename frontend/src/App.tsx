@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, ViewTransition } from "react";
+import { LazyMotion, MotionConfig, domAnimation } from "motion/react";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -11,21 +12,27 @@ const BlogPost = lazy(() => import("./pages/BlogPost"));
 export default function App() {
     return (
         <ErrorBoundary>
-            <BrowserRouter>
-                <div className="min-h-screen flex flex-col">
-                    <Navbar />
-                    <main className="flex-1">
-                        <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-muted font-mono">Loading...</div>}>
-                            <Routes>
-                                <Route path="/" element={<Home />} />
-                                <Route path="/blog/:slug" element={<BlogPost />} />
-                                <Route path="*" element={<NotFound />} />
-                            </Routes>
-                        </Suspense>
-                    </main>
-                    <Footer />
-                </div>
-            </BrowserRouter>
+            <LazyMotion features={domAnimation} strict>
+                <MotionConfig reducedMotion="user">
+                    <BrowserRouter>
+                        <div className="min-h-screen flex flex-col">
+                            <Navbar />
+                            <main className="flex-1">
+                                <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-muted font-mono">Loading...</div>}>
+                                    <ViewTransition enter="page" update="page" default="none">
+                                        <Routes>
+                                            <Route path="/" element={<Home />} />
+                                            <Route path="/blog/:slug" element={<BlogPost />} />
+                                            <Route path="*" element={<NotFound />} />
+                                        </Routes>
+                                    </ViewTransition>
+                                </Suspense>
+                            </main>
+                            <Footer />
+                        </div>
+                    </BrowserRouter>
+                </MotionConfig>
+            </LazyMotion>
         </ErrorBoundary>
     );
 }

@@ -1,21 +1,23 @@
 import { Link } from "react-router-dom";
+import * as m from "motion/react-m";
 import personalData from "../data/personalData";
+import { fade, revealViewport, stagger } from "../utils/reveal";
 import { GitHubIcon, LinkedInIcon } from "./icons/Icons";
 
 export default function Footer() {
     return (
         <footer className="border-t border-border py-10">
-            <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="text-center md:text-left">
+            <m.div variants={stagger(0.08)} initial="hidden" whileInView="show" viewport={revealViewport} className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                <m.div variants={fade} className="text-center md:text-left">
                     <p className="font-serif text-bone">
                         {personalData.name}
                         <span className="text-muted mx-2">·</span>
                         <span className="text-muted text-sm">{personalData.title}</span>
                     </p>
                     <p className="text-xs text-muted mt-1">{new Date().getFullYear()} · Built with React + Vite + Tailwind</p>
-                </div>
+                </m.div>
 
-                <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+                <m.nav variants={fade} className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
                     {[
                         { label: "Home", to: "/#home" },
                         { label: "Projects", to: "/#projects" },
@@ -27,17 +29,17 @@ export default function Footer() {
                             {link.label}
                         </Link>
                     ))}
-                </nav>
+                </m.nav>
 
-                <div className="flex items-center gap-4">
+                <m.div variants={fade} className="flex items-center gap-4">
                     <a href={personalData.github} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-accent transition-colors" aria-label="GitHub">
                         <GitHubIcon />
                     </a>
                     <a href={personalData.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-accent transition-colors" aria-label="LinkedIn">
                         <LinkedInIcon />
                     </a>
-                </div>
-            </div>
+                </m.div>
+            </m.div>
         </footer>
     );
 }

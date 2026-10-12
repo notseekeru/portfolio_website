@@ -37,7 +37,7 @@ export default function Home() {
     }, [location]);
 
     return (
-        <div className="animate-fade-in">
+        <div>
             {sections.map(({ id, Component }, i) => (
                 <Fragment key={id}>
                     {i > 0 && <Divider />}

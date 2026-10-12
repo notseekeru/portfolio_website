@@ -1,6 +1,8 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import * as m from "motion/react-m";
 import { getBlogBySlug, type BlogPost as BlogPostType } from "../utils/blogLoader";
+import { fade, maskRise, stagger } from "../utils/reveal";
 import { parseMarkdown } from "../utils/markdown";
 import { ArrowLeftIcon } from "../components/icons/Icons";
 import MermaidRenderer from "../components/MermaidRenderer";
@@ -71,16 +73,24 @@ export default function BlogPost() {
     const htmlContent = post && html ? html : "";
 
     return (
-        <div className="min-h-screen pt-28 pb-24 animate-fade-in">
-            <div className="max-w-3xl mx-auto px-6">
-                <Link to="/#blog" className="inline-flex items-center gap-2 text-sm font-mono text-muted hover:text-accent transition-colors duration-200 mb-10">
-                    <ArrowLeftIcon size={14} />
-                    Back to Blog
-                </Link>
+        <div className="min-h-screen pt-28 pb-24">
+            <m.div variants={stagger(0.08)} initial="hidden" animate="show" className="max-w-3xl mx-auto px-6">
+                <m.div variants={fade}>
+                    <Link to="/#blog" className="inline-flex items-center gap-2 text-sm font-mono text-muted hover:text-accent transition-colors duration-200 mb-10">
+                        <ArrowLeftIcon size={14} />
+                        Back to Blog
+                    </Link>
+                </m.div>
 
-                <div className="animate-fade-in-up">
-                    {formattedDate && <span className="font-mono text-xs text-accent/70">{formattedDate}</span>}
-                    <h1 className="font-display text-3xl lg:text-5xl text-bone mt-2 mb-6 leading-tight">{post.title}</h1>
+                <m.div variants={stagger(0.06)}>
+                    {formattedDate && (
+                        <m.span variants={fade} className="font-mono text-xs text-accent/70">
+                            {formattedDate}
+                        </m.span>
+                    )}
+                    <m.h1 variants={maskRise} className="font-display text-3xl lg:text-5xl text-bone mt-2 mb-6 leading-tight">
+                        {post.title}
+                    </m.h1>
 
                     {post.image && (
                         <div className="rounded-xl overflow-hidden border border-border mb-10">
@@ -100,10 +110,10 @@ export default function BlogPost() {
 
                     {/* biome-ignore lint/security/noDangerouslySetInnerHtml: blog content is rendered from sanitized markdown */}
                     <div ref={contentRef} className="blog-prose" dangerouslySetInnerHTML={{ __html: htmlContent }} />
-                    <SyntaxHighlighter containerRef={contentRef} deps={[slug, post?.content]} />
-                    <MermaidRenderer containerRef={contentRef} deps={[slug, post?.content]} />
-                </div>
-            </div>
+                </m.div>
+                <SyntaxHighlighter containerRef={contentRef} deps={[slug, post?.content]} />
+                <MermaidRenderer containerRef={contentRef} deps={[slug, post?.content]} />
+            </m.div>
         </div>
     );
 }

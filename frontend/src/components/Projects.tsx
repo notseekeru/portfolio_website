@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
+import { AnimatePresence } from "motion/react";
+import * as m from "motion/react-m";
 import personalData from "../data/personalData";
+import { fade, maskRise, pop, slideIn, stagger, revealViewport } from "../utils/reveal";
 import { GitHubIcon } from "./icons/Icons";
-import { useInView } from "../hooks/useInView";
 import { loadBlogs, type BlogPost } from "../utils/blogLoader";
 import type { ProjectItem } from "../data/personalData";
 
@@ -29,38 +31,41 @@ const iconMap: Record<string, IconType> = {
 const displayAddress = (p: ProjectItem) => (p.link ?? p.github ?? "").replace(/^https?:\/\//, "").replace(/\/$/, "");
 
 export default function Projects() {
-    const { ref: sectionRef, inView: sectionInView } = useInView();
-    const { ref: headerRef, inView: headerInView } = useInView();
     const [activeProject, setActiveProject] = useState<ProjectItem | null>(null);
 
     return (
-        <div id="projects" ref={sectionRef} className={`py-16 sm:py-20 lg:py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
+        <div id="projects" className="py-16 sm:py-20 lg:py-24">
             <div className="max-w-6xl mx-auto px-6">
-                <div ref={headerRef} className={`transition-all duration-500 mb-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
-                    <span className="font-mono text-xs tracking-widest text-accent">01 / WORK</span>
-                    <h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">Projects</h1>
-                    <p className="text-muted max-w-lg">Things I've built, broken, and learned from.</p>
-                </div>
+                <m.div variants={stagger(0.07)} initial="hidden" whileInView="show" viewport={revealViewport} className="mb-16">
+                    <m.span variants={slideIn} className="font-mono text-xs tracking-widest text-accent">
+                        01 / WORK
+                    </m.span>
+                    <m.h1 variants={maskRise} className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">
+                        Projects
+                    </m.h1>
+                    <m.p variants={fade} className="text-muted max-w-lg">
+                        Things I've built, broken, and learned from.
+                    </m.p>
+                </m.div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {personalData.projects.map((project, i) => (
-                        <ProjectCard key={project.title} project={project} index={i} onOpen={() => setActiveProject(project)} />
+                <m.div variants={stagger(0.06)} initial="hidden" whileInView="show" viewport={revealViewport} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {personalData.projects.map((project) => (
+                        <ProjectCard key={project.title} project={project} onOpen={() => setActiveProject(project)} />
                     ))}
-                </div>
+                </m.div>
             </div>
 
-            {activeProject && <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />}
+            <AnimatePresence>{activeProject && <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />}</AnimatePresence>
         </div>
     );
 }
 
 interface ProjectCardProps {
     project: ProjectItem;
-    index: number;
     onOpen: () => void;
 }
 
-function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
+function ProjectCard({ project, onOpen }: ProjectCardProps) {
     const address = displayAddress(project);
     const actions: { href?: string; label: string }[] = [];
     if (project.link) actions.push({ href: project.link, label: "Live site" });
@@ -70,9 +75,10 @@ function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
     const cellClass = (i: number) => `flex items-center gap-2 px-5 py-3 font-mono text-xs transition-colors hover:bg-ink/40 ${i === 0 ? "text-accent" : "text-muted hover:text-accent"}`;
 
     return (
-        <article
-            className="animate-fade-in-up cursor-pointer min-w-0 w-full"
-            style={{ animationDelay: `${index * 0.07}s` }}
+        <m.article
+            variants={pop}
+            whileHover={{ y: -4 }}
+            className="cursor-pointer min-w-0 w-full"
             onClick={onOpen}
             onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
@@ -148,7 +154,7 @@ function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
                     </div>
                 </div>
             </div>
-        </article>
+        </m.article>
     );
 }
 
@@ -216,8 +222,17 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
 
     return createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-zinc-950/70 backdrop-blur-md animate-fade-in cursor-default" />
-            <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-border bg-surface rounded-2xl shadow-2xl animate-fade-in-up" role="dialog" aria-modal="true" aria-label={project.title}>
+            <m.button type="button" aria-label="Close" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="absolute inset-0 bg-zinc-950/70 backdrop-blur-md cursor-default" />
+            <m.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 16 }}
+                transition={{ duration: 0.28, ease: "easeOut" }}
+                className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-border bg-surface rounded-2xl shadow-2xl"
+                role="dialog"
+                aria-modal="true"
+                aria-label={project.title}
+            >
                 <div className="relative overflow-hidden border-b border-border">
                     {/* browser chrome */}
                     <div className="flex items-center gap-2 bg-ink/60 px-4 h-9">
@@ -299,7 +314,7 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
                         </div>
                     )}
                 </div>
-            </div>
+            </m.div>
         </div>,
         document.body,
     );

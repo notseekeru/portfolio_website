@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { AnimatePresence } from "motion/react";
+import * as m from "motion/react-m";
 import { loadBlogs, type BlogPost } from "../utils/blogLoader";
-import { useInView } from "../hooks/useInView";
+import { fade, maskRise, slideIn, stagger, revealViewport } from "../utils/reveal";
 
 const POSTS_PER_PAGE = 6;
 
@@ -17,31 +19,42 @@ export default function Blog() {
     const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
     const visibleBlogs = blogs.slice(startIndex, startIndex + POSTS_PER_PAGE);
 
-    const { ref: sectionRef, inView: sectionInView } = useInView();
-    const { ref: headerRef, inView: headerInView } = useInView();
-
     return (
-        <div id="blog" ref={sectionRef} className={`py-16 sm:py-20 lg:py-24 transition-opacity duration-300 ${sectionInView ? "opacity-100" : "opacity-0"}`}>
+        <div id="blog" className="py-16 sm:py-20 lg:py-24">
             <div className="max-w-6xl mx-auto px-6">
-                <div ref={headerRef} className={`mb-16 ${headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"} transition-all duration-500`}>
-                    <span className="font-mono text-xs tracking-widest text-accent">02 / WRITING</span>
-                    <h1 className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">Blog</h1>
-                    <p className="text-muted max-w-lg">
+                <m.div variants={stagger(0.07)} initial="hidden" whileInView="show" viewport={revealViewport} className="mb-16">
+                    <m.span variants={slideIn} className="font-mono text-xs tracking-widest text-accent">
+                        02 / WRITING
+                    </m.span>
+                    <m.h1 variants={maskRise} className="font-display text-4xl lg:text-6xl text-bone mt-3 mb-5">
+                        Blog
+                    </m.h1>
+                    <m.p variants={fade} className="text-muted max-w-lg">
                         Thoughts, guides, and things I've learned along the way.
                         <span className="text-xs block mt-1">&gt; AI assisted writing.</span>
-                    </p>
-                </div>
+                    </m.p>
+                </m.div>
 
                 {blogs.length === 0 ? (
                     <p className="text-muted text-center py-20">No posts yet. Check back soon.</p>
                 ) : (
-                    <ol className="divide-y divide-border border-y border-border">
-                        {visibleBlogs.map((post, i) => (
-                            <li key={post.slug}>
-                                <BlogRow post={post} index={startIndex + i} first={startIndex + i === 0} />
-                            </li>
-                        ))}
-                    </ol>
+                    <AnimatePresence mode="wait">
+                        <m.ol
+                            key={currentPage}
+                            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } }, exit: { opacity: 0, transition: { duration: 0.15, staggerChildren: 0.02, staggerDirection: -1 } } }}
+                            initial="hidden"
+                            whileInView="show"
+                            exit="exit"
+                            viewport={revealViewport}
+                            className="divide-y divide-border border-y border-border"
+                        >
+                            {visibleBlogs.map((post, i) => (
+                                <m.li key={post.slug} variants={slideIn}>
+                                    <BlogRow post={post} index={startIndex + i} first={startIndex + i === 0} />
+                                </m.li>
+                            ))}
+                        </m.ol>
+                    </AnimatePresence>
                 )}
 
                 {totalPages > 1 && (

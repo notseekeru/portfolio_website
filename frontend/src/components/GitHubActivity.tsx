@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import * as m from "motion/react-m";
 import personalData from "../data/personalData";
+import { revealViewport, stagger, wave } from "../utils/reveal";
 import { GitHubIcon } from "./icons/Icons";
 
 // Public instance of grubersjoe/github-contributions-api. The portfolio repo is private, so a
@@ -13,6 +15,9 @@ const HEAT = ["bg-border/60", "bg-heat-1", "bg-heat-2", "bg-heat-3", "bg-heat-4"
 const ROW = 18; // h-3.5 (14px) + gap-1 (4px)
 const COLS = Math.ceil(WINDOW / 7);
 const PENDING = "animate-pulse bg-border/40";
+// The reserved grid does not pulse: it and the wave would otherwise fade the same cells twice.
+const RESERVED = "bg-border/40";
+const GRID = stagger(0.012);
 
 interface Day {
     d: string;
@@ -57,6 +62,21 @@ export default function GitHubActivity() {
         ? weeks.map((week, i) => ({ key: week[0].d, label: month(week[0].d) !== month(weeks[Math.max(i - 1, 0)][0].d) ? MONTHS[month(week[0].d)] : undefined, cells: week }))
         : Array.from({ length: COLS }, (_, i) => ({ key: `s${i}`, cells: Array.from({ length: 7 }, (_, j) => ({ d: `s${i}-${j}`, c: -1, l: -1 })) }));
 
+    // Motion binds whileInView at mount, so enabling it after the fetch left every column stuck at hidden. The loading grid stays outside motion.
+    const column = (col: { key: string; cells: Day[] }, i: number) => {
+        const style = i === 0 && short ? { marginTop: short * ROW } : undefined;
+        const spans = col.cells.map((day) => <span key={day.d} title={day.c < 0 ? undefined : `${day.c} contribution${day.c === 1 ? "" : "s"} on ${day.d}`} className={`h-3.5 w-3.5 ${day.l < 0 ? RESERVED : (HEAT[day.l] ?? HEAT[0])}`} />);
+        return days ? (
+            <m.div key={col.key} variants={wave} style={style} className="flex w-3.5 shrink-0 flex-col gap-1">
+                {spans}
+            </m.div>
+        ) : (
+            <div key={col.key} style={style} className="flex w-3.5 shrink-0 flex-col gap-1">
+                {spans}
+            </div>
+        );
+    };
+
     return (
         <div className="mt-16 border-t border-border pt-8">
             <div className="overflow-x-auto pb-1">
@@ -76,15 +96,15 @@ export default function GitHubActivity() {
                         ))}
                     </div>
 
-                    <div className="mt-1 flex gap-1" role="img" aria-busy={!days} aria-label={days ? `GitHub contribution calendar: ${t} contributions in the last year` : "GitHub contribution calendar: loading"}>
-                        {cols.map((col, i) => (
-                            <div key={col.key} style={i === 0 && short ? { marginTop: short * ROW } : undefined} className="flex w-3.5 shrink-0 flex-col gap-1">
-                                {col.cells.map((day) => (
-                                    <span key={day.d} title={day.c < 0 ? undefined : `${day.c} contribution${day.c === 1 ? "" : "s"} on ${day.d}`} className={`h-3.5 w-3.5 ${day.l < 0 ? PENDING : (HEAT[day.l] ?? HEAT[0])}`} />
-                                ))}
-                            </div>
-                        ))}
-                    </div>
+                    {days ? (
+                        <m.div variants={GRID} initial="hidden" whileInView="show" viewport={revealViewport} className="mt-1 flex gap-1" role="img" aria-label={`GitHub contribution calendar: ${t} contributions in the last year`}>
+                            {cols.map(column)}
+                        </m.div>
+                    ) : (
+                        <div className="mt-1 flex gap-1" role="img" aria-busy aria-label="GitHub contribution calendar: loading">
+                            {cols.map(column)}
+                        </div>
+                    )}
 
                     <div className="mt-4 flex items-center justify-end gap-2 font-mono text-xs text-muted">
                         Less

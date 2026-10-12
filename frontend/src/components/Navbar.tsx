@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from "react";
+import { AnimatePresence } from "motion/react";
+import * as m from "motion/react-m";
 import { Link, useLocation } from "react-router-dom";
+import { slideIn, stagger } from "../utils/reveal";
 
 import personalData from "../data/personalData";
 import CopyPortfolio from "./CopyPortfolio";
@@ -90,9 +93,10 @@ export default function Navbar() {
                                           }
                                         : undefined
                                 }
-                                className="text-sm text-muted hover:text-accent transition-colors duration-200"
+                                className="group relative text-sm text-muted hover:text-accent transition-colors duration-200"
                             >
                                 {link.label}
+                                <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-accent transition-transform duration-300 group-hover:scale-x-100" />
                             </Link>
                         </li>
                     ))}
@@ -111,32 +115,36 @@ export default function Navbar() {
                 </button>
             </nav>
 
-            <div className={`md:hidden bg-ink/95 backdrop-blur-md border-b border-border overflow-hidden transition-all duration-200 ${menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
-                <ul className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4">
-                    {navLinks.map((link) => (
-                        <li key={link.path}>
-                            <Link
-                                to={link.path}
-                                onClick={(e) => {
-                                    if (link.path.startsWith("/#") && location.pathname === "/") {
-                                        e.preventDefault();
-                                        const targetId = link.path.substring(2);
-                                        const el = document.getElementById(targetId);
-                                        if (el) {
-                                            el.scrollIntoView({ behavior: "smooth" });
-                                            window.history.pushState({}, "", link.path);
-                                        }
-                                        setMenuOpen(false);
-                                    }
-                                }}
-                                className="block text-sm text-muted hover:text-accent transition-colors"
-                            >
-                                {link.label}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+            <AnimatePresence initial={false}>
+                {menuOpen && (
+                    <m.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.22, ease: "easeOut" }} className="md:hidden bg-ink/95 backdrop-blur-md border-b border-border overflow-hidden">
+                        <m.ul variants={stagger(0.06)} initial="hidden" animate="show" className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4">
+                            {navLinks.map((link) => (
+                                <m.li key={link.path} variants={slideIn}>
+                                    <Link
+                                        to={link.path}
+                                        onClick={(e) => {
+                                            if (link.path.startsWith("/#") && location.pathname === "/") {
+                                                e.preventDefault();
+                                                const targetId = link.path.substring(2);
+                                                const el = document.getElementById(targetId);
+                                                if (el) {
+                                                    el.scrollIntoView({ behavior: "smooth" });
+                                                    window.history.pushState({}, "", link.path);
+                                                }
+                                                setMenuOpen(false);
+                                            }
+                                        }}
+                                        className="block text-sm text-muted hover:text-accent transition-colors"
+                                    >
+                                        {link.label}
+                                    </Link>
+                                </m.li>
+                            ))}
+                        </m.ul>
+                    </m.div>
+                )}
+            </AnimatePresence>
         </header>
     );
 }
