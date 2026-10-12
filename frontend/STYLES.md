@@ -38,14 +38,22 @@ Base (`@layer base`): page bg `ink`, text `bone`; custom 6px scrollbar.
 Accent usage rules: `accent` (teal) = interactive (links, CTAs, hover states); `amber` = non-interactive highlights (badges, initial blocks). Do not apply teal to both roles.
 ## Motion
 
-Keyframed in `index.css`, used as utilities. Motion is intentionally conservative — reserve for section-level reveals, not every card:
+One move per surface so no two sections read the same. Vocabulary lives in `src/utils/reveal.ts`; every reveal is once per mount.
 
-| Utility | Timing | Use |
-|---------|--------|-----|
-| `animate-fade-in` | 0.3s | Generic reveals |
-| `animate-fade-in-up` | 0.5s | Large blocks entering view |
+| Variant | Move | Applied to |
+|---------|------|------------|
+| `maskRise` | clip-path wipe up | section headings, post title, hero h1 |
+| `slideIn` | x -28 | eyebrows, mobile menu items, blog rows |
+| `pop` | scale 0.95 + y 12 | project cards, contact cards |
+| `wave` | y 0 -8 0 | heatmap columns |
+| `rise` | y 24 | hero subtitle and CTA row |
+| `fade` | opacity only | body copy, footer, diagram frame |
 
-Scroll-triggered: `useInView` hook gates reveals. Avoid per-card stagger spam.
+`stagger(each)` builds the parent, children inherit the label. Below-fold content uses `whileInView` + `revealViewport`; hero and post headers use `animate`.
+
+Roots are `LazyMotion domAnimation strict` and `MotionConfig reducedMotion="user"` in `App.tsx`. Import `m` from `motion/react-m`, never `motion`: `strict` throws on the full component. Route changes are React's `<ViewTransition>`, styled by the `.page` snapshot rules in `index.css`, not motion.
+
+Off limits: `layoutId` and drag (they pull in `domMax`), and the legacy `animate-fade-in` keyframe, still used by the BlogPost loading and not-found states.
 
 ## Layout Conventions
 
