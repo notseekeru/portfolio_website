@@ -52,19 +52,17 @@ async function latestBlogsSection(cap: number): Promise<string> {
 }
 
 export async function buildPortfolioMarkdown(): Promise<string> {
-    const { status, title, location, email, bio, github, linkedin, experience, education, projects, name } = personalData;
+    const { status, title, location, email, bio, github, linkedin, education, projects, name } = personalData;
 
     const note = `> *This markdown was from the portfolio website with convenient copy button for parsing/AI evaluation purposes, so you don't have to ctrl + a, ctrl + c, and paste it with missing details from outside the DOM.*\n`;
 
     const intro = [`# ${name}`, "", title ?? "", status ? `_${status}_` : "", bio ? `\n${bio}`.trim() : "", `\n**Location:** ${[location, email].filter(Boolean).join(" · ")}`, "", `- GitHub: ${github ?? ""}`, `- LinkedIn: ${linkedin ?? ""}`].filter((line) => line.trim() !== "").join("\n");
 
-    const exp = (experience ?? []).map((x) => [`### ${x.title} — ${x.company}`, x.duration ? `_${x.duration}_` : ""].filter(Boolean).join("\n")).join("\n\n");
-
     const edu = (education ?? []).map((ed) => [`### ${ed.degree} — ${ed.institution}`, ed.duration ? `_${ed.duration}_` : ""].filter(Boolean).join("\n")).join("\n\n");
 
     const sectionIf = (titleRow: string, content: string) => (content.trim() ? `\n\n# ${titleRow}\n\n${content.trim()}\n` : "");
 
-    const sections = [note, intro, sectionIf("Experience", exp), sectionIf("Education", edu), sectionIf("Projects", projectsSection(projects)), sectionIf("Architecture", ["```mermaid", infrastructureChart, "```"].join("\n")), sectionIf("Latest Blog Posts", await latestBlogsSection(LATEST_BLOG_CAP))];
+    const sections = [note, intro, sectionIf("Education", edu), sectionIf("Projects", projectsSection(projects)), sectionIf("Architecture", ["```mermaid", infrastructureChart, "```"].join("\n")), sectionIf("Latest Blog Posts", await latestBlogsSection(LATEST_BLOG_CAP))];
 
     sections.push("", "---", "", `_Generated from https://portfolio.seekeru.tech — full portfolio, ${new Date().toISOString().slice(0, 10)}._`, "");
 
