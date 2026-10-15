@@ -1,4 +1,4 @@
-FROM node:lts-alpine3.24@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1 AS base
+FROM node:lts-alpine3.24@sha256:44fce696f38ba8c987c4db89954051000bbd05ffd8d8659ba15ed4a8602e937f AS base
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ FROM base AS builder
 # The publishable key is not a secret — it ships in dist/assets/*.js by design.
 RUN npm run build
 
-FROM nginxinc/nginx-unprivileged:1.31.6@sha256:929e1d5e610e8aa89a1715ba44dce5edb4d42c172a208c171233292f472560c5 AS prod
+FROM nginxinc/nginx-unprivileged:1.31.7@sha256:94193d5c4c5df716f412bb08eb97956d98fe6b59886f0bc57d6d3a3402a88a02 AS prod
 
 # Base image snapshots lag Debian point releases (deb13uN); patch OS packages at build.
 # nginx itself is a local .deb at prio 100, so `upgrade` cannot un-pin the tag.
