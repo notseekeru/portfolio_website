@@ -15,7 +15,8 @@ export default function App() {
             <LazyMotion features={domAnimation} strict>
                 <MotionConfig reducedMotion="user">
                     <BrowserRouter>
-                        <div className="min-h-screen flex flex-col">
+                        <div className="relative isolate min-h-screen flex flex-col">
+                            <div aria-hidden="true" className="dot-field -z-10" />
                             <Navbar />
                             <main className="flex-1">
                                 <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-muted font-mono">Loading...</div>}>

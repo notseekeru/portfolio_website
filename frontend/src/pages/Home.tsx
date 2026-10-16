@@ -1,4 +1,4 @@
-import { useEffect, Fragment, lazy, Suspense } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { useLocation } from "react-router-dom";
 import { useInView } from "../hooks/useInView";
 import Hero from "../components/Hero";
@@ -28,14 +28,6 @@ const sections = [
     { id: "contact", Component: Contact },
 ] as const;
 
-function Divider() {
-    return (
-        <div className="max-w-6xl mx-auto px-6">
-            <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-        </div>
-    );
-}
-
 export default function Home() {
     const location = useLocation();
 
@@ -53,12 +45,9 @@ export default function Home() {
     return (
         <div>
             {sections.map(({ id, Component }, i) => (
-                <Fragment key={id}>
-                    {i > 0 && <Divider />}
-                    <div id={id}>
-                        <Component />
-                    </div>
-                </Fragment>
+                <div key={id} id={id} className={i % 2 === 1 ? "bg-surface" : undefined}>
+                    <Component />
+                </div>
             ))}
         </div>
     );

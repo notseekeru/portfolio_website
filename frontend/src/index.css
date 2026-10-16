@@ -21,6 +21,30 @@
     .animate-fade-in {
         animation: fadeIn 0.3s ease-out forwards;
     }
+
+    .dot-field {
+        position: fixed;
+        inset: -96px;
+        pointer-events: none;
+        background-image: radial-gradient(circle, color-mix(in srgb, var(--color-bone) 6%, transparent) 1px, transparent 1.4px), radial-gradient(circle, color-mix(in srgb, var(--color-accent) 18%, transparent) 1px, transparent 1.6px);
+        background-size:
+            24px 24px,
+            96px 96px;
+        -webkit-mask-image: radial-gradient(ellipse 92% 70% at 50% 40%, var(--color-ink) 10%, color-mix(in srgb, var(--color-ink) 50%, transparent) 55%, transparent 100%);
+        mask-image: radial-gradient(ellipse 92% 70% at 50% 40%, var(--color-ink) 10%, color-mix(in srgb, var(--color-ink) 50%, transparent) 55%, transparent 100%);
+    }
+}
+
+@keyframes dotDrift {
+    to {
+        transform: translate3d(-96px, -96px, 0);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .dot-field {
+        animation: dotDrift 120s linear infinite;
+    }
 }
 
 @keyframes fadeIn {
