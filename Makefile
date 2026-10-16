@@ -22,7 +22,7 @@ buildcache:
 logs:
 	$(DEV_CMD) logs -f
 
-PORTS = 5173
+PORTS = 5174
 
 check-ports:
 	@scripts/port-claimer.sh --self $(DEV_PROJECT) $(PORTS)

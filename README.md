@@ -29,7 +29,7 @@ Single-page portfolio website: React 19 + TypeScript + Vite + Tailwind 4, contai
 Start the dev container (lints and typechecks on `make up`; source mounts in `/app`):
 
 ```bash
-make up        # builds + starts dev stack on :5173
+make up        # builds + starts dev stack on :5174
 ```
 
 The `Makefile` wraps Docker Compose. Useful targets:
@@ -106,7 +106,7 @@ Register it in your agent (example config):
 }
 ```
 
-Start the dev stack first so the agent can drive http://localhost:5173:
+Start the dev stack first so the agent can drive http://localhost:5174:
 
 ```bash
 make up
