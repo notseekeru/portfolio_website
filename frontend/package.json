@@ -12,7 +12,6 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "@mermaid-js/layout-elk": "^0.2.3",
         "@types/unist": "^3.0.3",
         "mermaid": "^12.2.0",
         "motion": "14.1.0",

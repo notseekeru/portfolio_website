@@ -1,11 +1,8 @@
-import elkLayouts from "@mermaid-js/layout-elk";
 import mermaid from "mermaid";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
-
-mermaid.registerLayoutLoaders(elkLayouts);
 
 const MERMAID_THEME = {
     bg: "#15120e",
