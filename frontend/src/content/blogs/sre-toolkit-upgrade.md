@@ -80,12 +80,12 @@ Between steps the sweep waits 60 seconds: fifteen of silence, up to thirty of cl
 
 Before touching prod I ran the whole workload on my laptop against the stub, and it passed at 100 VUs. So I went in expecting a number in the hundreds, on hardware far worse than the machine I deploy on, and prod failed the very first rung.
 
-| Target      | VUs | Window | p50   | p95    | max   | rps  | Verdict |
-| ----------- | --- | ------ | ----- | ------ | ----- | ---- | ------- |
-| laptop      | 10  | 10s    | 2.4ms | 11.6ms | 288ms | 54.0 | pass    |
-| prod        | 10  | 3m     | 155ms | 654ms  | 2.80s | 16.7 | pass    |
-| prod        | 20  | 3m     | 205ms | 1.25s  | 17.6s | 21.6 | fail    |
-| prod        | 100 | 3m     | 1.17s | 3.44s  | 8.54s | 38.3 | fail    |
+| Target | VUs | Window | p50   | p95    | max   | rps  | Verdict |
+| ------ | --- | ------ | ----- | ------ | ----- | ---- | ------- |
+| laptop | 10  | 10s    | 2.4ms | 11.6ms | 288ms | 54.0 | pass    |
+| prod   | 10  | 3m     | 155ms | 654ms  | 2.80s | 16.7 | pass    |
+| prod   | 20  | 3m     | 205ms | 1.25s  | 17.6s | 21.6 | fail    |
+| prod   | 100 | 3m     | 1.17s | 3.44s  | 8.54s | 38.3 | fail    |
 
 Three of my instincts were wrong in the same direction. I blamed my own rig. I assumed there had to be something wrong in the code. I trusted the laptop number over the box I actually deploy on.
 
@@ -99,14 +99,14 @@ The tail was routes paying several round trips in a row, each one its own checko
 
 So the fix was never the queries. Six changes, all of them on round trips, read size or the pool:
 
-| Change             | Before                    | After                         |
-| ------------------ | ------------------------- | ----------------------------- |
-| `/stats/analytics` | five checkouts            | one statement                 |
+| Change             | Before                    | After                          |
+| ------------------ | ------------------------- | ------------------------------ |
+| `/stats/analytics` | five checkouts            | one statement                  |
 | `/templates`       | a seed write, then a read | the read, seeded only if empty |
-| `/usage`           | two checkouts             | one                           |
+| `/usage`           | two checkouts             | one                            |
 | `GET /interviews`  | every run the owner had   | 50 per page, archived filtered |
-| Home counters      | derived in the browser    | one statement                 |
-| pool               | 10                        | `DB_POOL_MAX`                 |
+| Home counters      | derived in the browser    | one statement                  |
+| pool               | 10                        | `DB_POOL_MAX`                  |
 
 The list read is the one I want to be honest about. It grew inside every window, 159 rows at 10 VUs, 241 at 20, 415 at 100, and it was never the slowest route in the report. Pagination shipped because the code was wrong, not because a measurement earned it. The N-sweep that would have settled it never ran.
 
@@ -126,12 +126,12 @@ At 20 connections and 100 VUs, 505ms of a 719ms p50 was spent waiting for a conn
 
 Raising the pool to 40 turned 55 VUs from a failure into a pass and cut the wait at 100 VUs from 505ms to 209ms. Raising it to 80 made the app slower at the tail while removing the wait entirely.
 
-| Pool | VUs | Verdict         | p95    | rps  | Wait p50 | Query mean | Memory |
-| ---- | --- | --------------- | ------ | ---- | -------- | ---------- | ------ |
-| 20   | 55  | fail            | 1.096s | 50.0 | 170ms    | 112ms      | 50%    |
-| 40   | 55  | pass            | 832ms  | 70.3 | 5ms      | 150ms      | 52%    |
-| 40   | 100 | fail            | 1.64s  | 66.7 | 209ms    | 163ms      | 56%    |
-| 80   | 100 | fail            | 1.87s  | 75.0 | 6ms      | 248ms      | 74%    |
+| Pool | VUs | Verdict | p95    | rps  | Wait p50 | Query mean | Memory |
+| ---- | --- | ------- | ------ | ---- | -------- | ---------- | ------ |
+| 20   | 55  | fail    | 1.096s | 50.0 | 170ms    | 112ms      | 50%    |
+| 40   | 55  | pass    | 832ms  | 70.3 | 5ms      | 150ms      | 52%    |
+| 40   | 100 | fail    | 1.64s  | 66.7 | 209ms    | 163ms      | 56%    |
+| 80   | 100 | fail    | 1.87s  | 75.0 | 6ms      | 248ms      | 74%    |
 
 Read the two 100 VU rows next to each other. At 80 connections nothing waits for a connection, and the request p95 gets worse anyway, because every query now runs against a busier Neon. The mean query goes from 163ms to 248ms and the pod's memory from 56 to 74 percent of its limit.
 
@@ -148,9 +148,7 @@ Forty ships. The pod's memory is what caps the pool, and Neon's compute is what 
 | 2026-10-23 | pool 40                     | 55           | 70        | 100        |
 | 2026-10-23 | pool 80                     | 55 (latency) | 71        | 100        |
 
-Only 10 VUs is confirmed three times over three windows of five minutes. The 32 and the 55 are single windows, and the boundary moves about ten percent, which is the whole distance between saying the boundary sits between 32 and 55 and claiming that it is 55.
-
-55 is also the SLO boundary and not the product ceiling. At 100 VUs the error rate stays under one percent and p99 is inside its gate, while p95 and the checks fail. The app keeps serving past the number, it just stops being acceptable by my own definition of acceptable.
+55 is the SLO boundary and not the product ceiling. At 100 VUs the error rate stays under one percent and p99 is inside its gate, while p95 and the checks fail. The app keeps serving past the number, it just stops being acceptable by my own definition of acceptable.
 
 A VU is a whole interview compressed into about 21 seconds, which is why the rps number is the one to keep. 70 requests a second is real enough for one Pi with no autoscaler, holding full interviews with a database in another region.
 
