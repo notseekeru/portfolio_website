@@ -234,3 +234,5 @@ What is still open, in the order I intend to hit it. A registered business type,
 ## Update (October 24, 2026)
 
 OTLP metrics and traces shipped two days after this post, so the pipeline is no longer log-only. The dashboard now reads request duration, pool wait and query time from Prometheus, and a trace id in every log line joins the two.
+
+The browser part is not a test suite I run, it is a skill the agent runs. It opens the real app, clicks through it the way a person would, and reads back what the page actually shows, and in one session it loaded and re-read that page 47 times. That is how it found duplicate date labels on the analytics chart, four ticks for fifteen runs, and a checkout bug that had been there since the payment rail shipped, because every earlier test took a stand-in path and never touched the real checkout. It also withdrew two reports of its own that turned out to be wrong, which is the part I trust most.
