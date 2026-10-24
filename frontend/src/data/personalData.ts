@@ -92,6 +92,13 @@ const personalData: PersonalData = {
             blogs: ["observing-the-lab", "sre-steps", "telemetry-madness"],
         },
         {
+            title: "SRE — Load Testing & Capacity Boundary (k6 on k3s)",
+            description:
+                "Load tested the deployment the SRE work had only been watching, because a dashboard nobody has proven under load is a guess. Built a sweep with gates instead of opinions, moved the boundary twice by fixing round trips and the pool, and shipped the numbers I could defend next to the ones I could not.",
+            techStack: ["k6", "Grafana", "Prometheus", "OpenTelemetry", "Kubernetes", "k3s", "Neon", "Tailscale", "Python"],
+            blogs: ["sre-toolkit-upgrade"],
+        },
+        {
             title: "Infrastructure as Code — Ansible Automation & Idempotency",
             description:
                 "Transitioned to IaC with modular Ansible roles for security hardening, user management, and Dockerization across RPi5 and cloud nodes. Implemented Ansible Vault for secrets, achieved 100% molecule-tested idempotency, enforced automated CI/CD linting via GitHub Actions, and built self-healing infrastructure using declarative state patterns.",
