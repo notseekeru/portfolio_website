@@ -228,3 +228,9 @@ The measured limit I am living with is the transcription wait, 7 to 18 seconds f
 Staging went because a one-man project with no users does not need a rehearsal target, Sentry went because its own gap list killed it, and the browser speech engines went because a generic voice is worse than no voice when the interviewer is the product.
 
 What is still open, in the order I intend to hit it. A registered business type, which is the only thing left between here and cards on the live rail: the InstaPay QR takes money today from any bank or e-wallet that can scan it, and every other method the app asks for is still refused. An evaluation harness over the stored interviews I already have, frozen as fixtures and asserted before every prompt edit, because prompt changes currently ship unmeasured. Caching and a job queue, mostly so a retry survives a page change, which is overengineered for a product with no users and is also the part I want to build. And provider-managed recurring, waiting on PayMongo lifting the Subscriptions and Card Vaulting capability, with 30 days of premium standing in until it does.
+
+---
+
+## Update (October 24, 2026)
+
+OTLP metrics and traces shipped two days after this post, so the pipeline is no longer log-only. The dashboard now reads request duration, pool wait and query time from Prometheus, and a trace id in every log line joins the two.
