@@ -70,7 +70,7 @@ const personalData: PersonalData = {
             blogs: ["imposter-syndrome", "the-serverless-trap", "server-security-measures"],
         },
         {
-            title: "Cloud Infrastructure  — Terraform & Kubernetes + ArgoCD GitOps",
+            title: "Cloud Native  — Terraform & Kubernetes + ArgoCD GitOps",
             description:
                 "Provisioned DigitalOcean infrastructure with Terraform using modular .tf files and secure variable management, integrated dynamic Ansible inventories, deployed a 3-node Kubernetes cluster with ArgoCD GitOps, and hardened containers with tmpfs/readonly root filesystems. Extended the same GitOps pattern to a self-hosted k3s cluster with two environments rendered from one kustomize base (separate namespace, secret and managed database per env), both reconciled by ArgoCD.",
             techStack: ["Terraform", "DigitalOcean", "Kubernetes", "ArgoCD", "Ansible", "GitHub Actions"],
@@ -81,7 +81,7 @@ const personalData: PersonalData = {
             blogs: ["cloud-automation-veins"],
         },
         {
-            title: "SRE — Observability Stack with LGTM Stack + OTLP Tracing",
+            title: "SRE — Local Observability with LGTM Stack + OTLP Tracing",
             description:
                 "Designed a full Loki/Grafana/Tempo/Prometheus + Alloy observability stack with unified OTLP ingestion across logs, metrics and traces. Implemented OpenTelemetry-based distributed tracing, built a Four Golden Signals dashboard, automated Docker log discovery, configured Slack alerting via AlertManager, and validated MTTR/MTTD through chaos engineering experiments (Postgres blackout).",
             techStack: ["Grafana", "Prometheus", "Loki", "Tempo", "Alloy", "OpenTelemetry", "AlertManager", "Docker"],
@@ -92,7 +92,7 @@ const personalData: PersonalData = {
             blogs: ["observing-the-lab", "sre-steps", "telemetry-madness"],
         },
         {
-            title: "SRE — Load Testing & Capacity Boundary (k6 on k3s)",
+            title: "SRE — Load Testing, Application Benchmarking, and Improving System Design (k6 on k3s)",
             description:
                 "Load tested the deployment the SRE work had only been watching, because a dashboard nobody has proven under load is a guess. Built a sweep with gates instead of opinions, moved the boundary twice by fixing round trips and the pool, and shipped the numbers I could defend next to the ones I could not.",
             techStack: ["k6", "Grafana", "Prometheus", "OpenTelemetry", "Kubernetes", "k3s", "Neon", "Tailscale", "Python"],
@@ -139,7 +139,7 @@ const personalData: PersonalData = {
             blogs: ["digging-the-wire"],
         },
         {
-            title: "NixOS Declarative Workflow — Flakes + Home-Manager + Neovim",
+            title: "NixOS Workflow — Flakes + Home-Manager + Tmux + Neovim",
             description:
                 "Transitioned to a fully declarative NixOS stack with Flakes, Home-Manager, and direnv for reproducible multi-node configs. Modularized host-specific configs so every machine inherits the same baseline. Declarative tmux-init script and Neovim configuration. Achieved atomic, rollback-capable system rebuilds via nixos-rebuild.",
             techStack: ["NixOS", "Flakes", "Home-Manager", "direnv", "neovim", "tmux"],
@@ -169,7 +169,7 @@ const personalData: PersonalData = {
             blogs: ["aws-on-a-budget"],
         },
         {
-            title: "Product Engineering — Maxterview AI Interview Simulator",
+            title: "Product — Maxterview AI Interview Simulator",
             description:
                 "Built and shipped an AI interview simulator end to end: FastAPI plus a React/Vite SPA where a candidate creates an interview, answers over SSE, and gets a graded review with per-answer annotations, ten scored dimensions, a verdict and tips. Split the feedback into a grader that reads the transcript and writes prose plus a cheap formatter that emits constrained JSON, so ten dimensions across communication, substance and profile stay gradable without the interviewer grading itself. Added a provider-agnostic entitlement (one subscriptions row, one resolve_tier, PayMongo behind a single module) and Fernet-encrypted bring-your-own-key storage with a last-four hint. Shipped voice as I/O around the turn the app already had instead of a vendor realtime session: Cloudflare Workers AI Whisper for answers and Aura-1 for replies, cached per line and metered inside the free 10,000 neuron daily allocation. Runs on k3s behind ArgoCD with a PreSync migration Job, Trivy-scanned images pinned by tag in a gitops repo, Neon on its direct host because the pooler breaks asyncpg's prepared statements, and an observability pipeline that ships structlog JSON, OTLP metrics and traces from the pod through one Alloy receiver into Grafana Cloud, with the trace id in every log line and the app holding no telemetry write credential.",
             techStack: ["Python", "FastAPI", "React", "TypeScript", "PostgreSQL", "Neon", "Kubernetes", "ArgoCD", "Terraform", "Cloudflare", "PayMongo"],
@@ -181,7 +181,7 @@ const personalData: PersonalData = {
         {
             title: "Systems Programming — HTTP Server in C with Raw Sockets",
             description:
-                "Rebuilt an HTTP server from the sockets up in C with no framework and no HTTP library: socket, bind on INADDR_ANY:8080, listen, then an accept loop that serves each client with one send and closes, so the response is body only. That is why the Makefile's get target uses curl --http0.9, because a conventional client rejects a reply that has no status line or headers. The whole thing is one translation unit, main.c includes its own kv_helper.c, and kv_helper is where the memory work lives: a KVPair allocated on the heap with a NULL check after every allocation and a partial-free path, so a failed value allocation returns the key allocation instead of leaking it. The rest of the pass was correctness under load: one send for the full message, sockaddr_in zeroed before bind, error handling on every syscall, and a loop that keeps serving after a failed accept. What I actually took from it is knowing which bytes are mine, which is the only reason the project exists.",
+                "Rebuilt an HTTP server from the sockets up in C with no framework and no HTTP library: socket, bind on INADDR_ANY:8080, listen, then an accept loop that serves each client with one send and closes, so the response is body only. That is why the Makefile's get target uses curl --http0.9, because a conventional client rejects a reply that has no status line or headers. The whole thing is one translation unit, main.c includes its own kv_helper.c, and kv_helper is where the memory work lives: a KVPair allocated on the heap with a NULL check after every allocation and a partial-free path, so a failed value allocation returns the key allocation instead of leaking it. The rest of the pass was correctness under load: one send for the full message, sockaddr_in zeroed before bind, error handling on every syscall, and a loop that keeps serving after a failed accept. What I actually took from it is knowing how low level systems or computers work internally and verify myself.",
             techStack: ["C", "Sockets", "Linux", "Make", "curl"],
             github: "https://github.com/notseekeru/custom-http-c",
             icon: "SiC",
