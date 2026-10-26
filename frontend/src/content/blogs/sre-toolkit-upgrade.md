@@ -23,6 +23,8 @@ The gap between the two posts is the thing to admit first. Back then I generated
 
 So the specification, order, and knowledge came before any run this time. How do I actually benchmark and measure an application, at what load does prod stop behaving acceptably, and which resource runs out first. Three questions, and every table below exists to answer one of them.
 
+Benchmarking here means measuring the app against a stated bar, not guessing from a dashboard.
+
 ## Planning of Specifications
 
 The spec took a week, and it was a lot of thinking. I ran the plan past ChatGPT, Gemini and DeepSeek in parallel(all webui), off the same inspiration that started this thread, Arjay McCandless's $12 VPS load testing series, and then had each one audit what the others produced.
@@ -62,21 +64,21 @@ graph TD
     CL --> SM["smoke, 10 VUs for 10s"]
     SM -->|fail| AB["abort the sweep"]
     SM -->|pass| LAD["ladder, 100 VUs then doubling"]
-    LAD -->|pass| UP{"ladder left"}
+    LAD -->|pass| UP{"levels left"}
     UP -->|yes| LAD
     UP -->|no| ST["stop, raise the VU ceiling"]
     LAD -->|fail an SLO| SRCH["binary search the gap"]
     SRCH --> CON["confirm, 3 windows of 5 minutes"]
     CON -->|all three pass| BND["boundary, read off the CSV and Grafana"]
     CON -->|any run fails| SRCH
-    BND --> CW["close the window, cleanup only"]
+    BND --> CW["close the perf window, cleanup only"]
 ```
 
 The smoke is the rig's own check and it is not optional. Ten VUs for ten seconds, before any ladder, and a failure there aborts the sweep because the app or the generator is broken and no number after it means anything.
 
 The one time I skipped it, I turned a sixteen second check into a five minute failed level and spent the rest of the night reasoning about a capacity result that was really a broken run. It is the cheapest lesson in the post.
 
-Between windows the sweep waits 60 seconds: fifteen of silence, up to thirty of cleanup, fifteen more. That gap stays inside the driver's idle timeout and inside Neon's scale to zero, so the gap costs neither the pool nor the compute wake. The cleanup runs under the sweep's own account, which is why every window starts from the same one.
+Between levels the sweep waits 60 seconds: fifteen of silence, up to thirty of cleanup, fifteen more. That gap stays inside the driver's idle timeout and inside Neon's scale to zero, so the gap costs neither the pool nor the compute wake. The cleanup runs under the sweep's own account, which is why every level starts from the same one.
 
 ## The Laptop Local Benchmark
 
