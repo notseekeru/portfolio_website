@@ -80,6 +80,10 @@ The one time I skipped it, I turned a sixteen second check into a five minute fa
 
 Between levels the sweep waits 60 seconds: fifteen of silence, up to thirty of cleanup, fifteen more. That gap stays inside the driver's idle timeout and inside Neon's scale to zero, so the gap costs neither the pool nor the compute wake. The cleanup runs under the sweep's own account, which is why every level starts from the same one.
 
+## What Changed After This Run
+
+The harness moved after these runs. The method above stays because it produced the numbers in this post. The ladder window is now 2 minutes and the confirmation is one 5-minute run, not three. If that run fails, the sweep stops. I shortened it because the sweep was taking too long, and I accept the cost: fewer samples make the tails noisier, and one run is weaker proof than the old three. I will put the comparison back when the next dataset lands.
+
 ## The Laptop Local Benchmark
 
 Before touching prod I ran the whole workload on my laptop against the docker containers, and it passed at 100 VUs, a run I did not record, so it is not in the table. So I went in expecting a number in the hundreds, on hardware far worse than the machine I deploy on, and prod failed the very first 100 VUs.
