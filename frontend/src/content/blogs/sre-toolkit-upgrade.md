@@ -82,7 +82,7 @@ Between levels the sweep waits 60 seconds: fifteen of silence, up to thirty of c
 
 ## What Changed After This Run
 
-The harness moved after these runs. The method above stays because it produced the numbers in this post. The ladder window is now 2 minutes and the confirmation is one 5-minute run, not three. If that run fails, the sweep stops. I shortened it because the sweep was taking too long, and I accept the cost: fewer samples make the tails noisier, and one run is weaker proof than the old three. I will put the comparison back when the next dataset lands.
+The harness moved after these runs. The method above stays because it produced the numbers in this post. The ladder window is now 2 minutes and the confirmation is one 5-minute run, not three. If that run fails, the sweep stops. I shortened it because the sweep was taking too long, and I accept the cost: fewer samples make the swing noisier, and one run is weaker proof than the old three. I will put the comparison back when the next dataset lands.
 
 ## The Laptop Local Benchmark
 
@@ -103,7 +103,7 @@ What settled it was the machine being bored. At 100 VUs it sat at 0.27 of four c
 
 I went looking for a slow query and there was none. The slowest statement stayed under 2.12s at p99, which cannot explain a 17.6s max at 20 VUs.
 
-The tail was routes paying several round trips in a row, each one its own checkout from a pool of ten. Analytics at 4.8s p95 across five sequential queries. Templates at 3.8s with a seed write before its read. Usage at 2.9s across two.
+The slow end was routes paying several round trips in a row, each one its own checkout from a pool of ten. Analytics at 4.8s p95 across five sequential queries. Templates at 3.8s with a seed write before its read. Usage at 2.9s across two.
 
 So the fix was never the queries. Six changes, all of them on round trips, read size or the pool:
 
@@ -132,7 +132,7 @@ After the six changes the bottleneck moved to the one place the app could not fi
 
 At 20 connections and 100 VUs, 505ms of a 719ms p50 was spent waiting for a connection, while the mean query time stayed flat between 97 and 116ms across every window at 10 and 20 connections. The database never slowed. The queue formed because a request's two or three queries arrive in a burst, and ten or twenty checkouts cannot absorb a burst.
 
-Raising the pool to 40 turned 55 VUs from a failure into a pass and cut the wait at 100 VUs from 505ms to 209ms. Raising it to 80 made the app slower at the tail while removing the wait entirely.
+Raising the pool to 40 turned 55 VUs from a failure into a pass and cut the wait at 100 VUs from 505ms to 209ms. Raising it to 80 made the app slower at the slow end while removing the wait entirely.
 
 | Pool | VUs | Verdict | p95    | rps  | Wait p50 | Query mean | Memory |
 | ---- | --- | ------- | ------ | ---- | -------- | ---------- | ------ |
@@ -143,7 +143,7 @@ Raising the pool to 40 turned 55 VUs from a failure into a pass and cut the wait
 
 Read the two 100 VU rows next to each other. At 80 connections nothing waits for a connection, and the request p95 gets worse anyway, because every query now runs against a busier Neon. The mean query goes from 163ms to 248ms and the pod's memory from 56 to 74 percent of its limit.
 
-Pool capacity is connections over mean query time, so 20 gives 172 queries a second, 40 gives 245, and 80 gives 323. Each doubling buys less than the one before, 43 percent then 32 percent, and the tail and the memory pay for it. A warm `SELECT 1` from inside the pod is 37ms at the median, so co-location could save that floor and could never save the inflation.
+Pool capacity is connections over mean query time, so 20 gives 172 queries a second, 40 gives 245, and 80 gives 323. Each doubling buys less than the one before, 43 percent then 32 percent, and the swing and the memory pay for it. A warm `SELECT 1` from inside the pod is 37ms at the median, so co-location could save that floor and could never save the inflation.
 
 Forty ships. The pod's memory is what caps the pool, and Neon's compute is what inflates as it grows.
 
