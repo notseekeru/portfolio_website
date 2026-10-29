@@ -9,9 +9,7 @@ github: https://github.com/notseekeru/maxterview_website
 
 Maxterview is an interview simulator: a candidate creates an interview, the interviewer's opener streams into the page, they answer turn by turn, and the run closes with a graded review. That session is the unit of load, and one virtual user runs exactly one.
 
-It runs on one Raspberry Pi 5 with one replica, no autoscaler, and a Neon database in another region. I did not know what load that holds, and I had no honest way of finding out, so I wrote the experiment down first and ran it afterwards.
-
-The answer was 10 users at the start, 32 after six changes to round trips, and 55 once the pool went to 40. At 55 it is the gate that fails and not the app: 20 connections fails on p95, 40 passes, and 80 passes p95 but loses a stream. 70 requests a second is what a single Pi serves while running whole interviews. The boundary is the headline. The part I did not expect to get was knowing how to load test.
+It runs on one Raspberry Pi 5 with one replica, no autoscaler, and a Neon database in another region. I did not know what load that holds, and I had no honest way of finding out, so I wrote the experiment down first and ran it afterwards to fix it.
 
 ---
 
@@ -39,13 +37,13 @@ The useful part was not the agreement. Where two of them contradicted each other
 
 I set the SLO myself, because the number is only meaningful against a stated bar.
 
-| Indicator   | Gate           |
-| ----------- | -------------- |
-| p50 latency | reported, none |
-| p95 latency | under 1s       |
-| p99 latency | under 5s       |
-| error rate  | under 1%       |
-| throughput  | reported, none |
+| Indicator   | Gate                    |
+| ----------- | ----------------------- |
+| p50 latency | reported, none          |
+| p95 latency | under 1s                |
+| p99 latency | under 5s                |
+| error rate  | under 1%                |
+| throughput  | reported, none          |
 | correctness | whole session completes |
 
 Correctness is the half I would not drop. Latency says nothing about whether an interview actually finished, so every iteration walks a session end to end: the run was created, the opener streamed to the browser, the transcript holds one reply per user turn, the run closed cleanly, and the graded review came back. A fast reply with a dead stream is a failed request, and p95 will never tell you.
@@ -54,7 +52,7 @@ Throughput is reported and never gated, because a level fixes the VUs and the RP
 
 The model routes sit outside the latency gates for the same reason the alert rules exclude them. With the model stubbed, the ceiling there is a vendor's quota, not my Raspberry Pi.
 
-## The Sweep, And Why Only One Window Counts
+## The Sweep
 
 A sweep is the whole experiment, and it walks levels: 10 VUs, then 20, then 100. A level is a stage at one VU target: a 30 second ramp, a 60 second hold, then a 3 minute measurement window. Only the window counts. Gating a ramp measures the ramp.
 
@@ -80,11 +78,7 @@ The one time I skipped it, I turned a sixteen second check into a five minute fa
 
 Between levels the sweep waits 60 seconds: fifteen of silence, up to thirty of cleanup, fifteen more. That gap stays inside the driver's idle timeout and inside Neon's scale to zero, so the gap costs neither the pool nor the compute wake. The cleanup runs under the sweep's own account, which is why every level starts from the same one.
 
-## What Changed After This Run
-
-The harness moved after these runs. The method above stays because it produced the numbers in this post. The ladder window is now 2 minutes and the confirmation is one 5-minute run, not three. If that run fails, the sweep stops. I shortened it because the sweep was taking too long and the shorter windows spend less Neon compute on the free tier. I accept the cost: fewer samples make the swing noisier, and one run is weaker proof than the old three. I will put the comparison back when the next dataset lands.
-
-## The Laptop Local Benchmark
+## Local Benchmark
 
 Before touching prod I ran the whole workload on my laptop against the docker containers, and it passed at 100 VUs, a run I did not record, so it is not in the table. So I went in expecting a number in the hundreds, on hardware far worse than the machine I deploy on, and prod failed the very first 100 VUs.
 
@@ -107,14 +101,14 @@ The slow end was routes paying several round trips in a row, each one its own ch
 
 So the fix was never the queries. Six changes, all of them on round trips, read size or the pool:
 
-| Change                | Before                    | After                          |
-| --------------------- | ------------------------- | ------------------------------ |
-| Analytics page        | five checkouts            | one statement                  |
-| Templates page        | a seed write, then a read | the read, seeded only if empty |
-| Usage page            | two checkouts             | one                            |
-| Interview list        | every run the owner had   | 50 per page, archived filtered |
-| Home counters         | derived in the browser    | one statement                  |
-| Connection pool       | 10                        | now a setting                  |
+| Change          | Before                    | After                          |
+| --------------- | ------------------------- | ------------------------------ |
+| Analytics page  | five checkouts            | one statement                  |
+| Templates page  | a seed write, then a read | the read, seeded only if empty |
+| Usage page      | two checkouts             | one                            |
+| Interview list  | every run the owner had   | 50 per page, archived filtered |
+| Home counters   | derived in the browser    | one statement                  |
+| Connection pool | 10                        | now a setting                  |
 
 The list read is the one I want to be honest about. It grew inside every window, 159 rows at 10 VUs, 241 at 20, 415 at 100, and it was never the slowest route in the report. Pagination shipped because the code was wrong, not because a measurement earned it. The N-sweep that would have settled it never ran.
 
@@ -126,7 +120,7 @@ There is a second reason it stayed out. If I had added a cache before the first 
 
 Not having it also gave the pool something to reveal, which is the next section.
 
-## The Pool Was The Queue
+## The Pool
 
 After the six changes the bottleneck moved to the one place the app could not fix: the pool of connections.
 
@@ -149,11 +143,11 @@ Forty ships. The pod's memory is what caps the pool, and Neon's compute is what 
 
 ## What The Boundary Is Worth
 
-| When       | Config                      | Passed once  | rps there | First fail |
-| ---------- | --------------------------- | ------------ | --------- | ---------- |
-| 2026-10-22 | pool 10, before the changes | 10           | 17        | 20         |
-| 2026-10-23 | optimized changes (pool 20) | 32           | 50        | 55         |
-| 2026-10-23 | pool 40                     | 55           | 70        | 100        |
+| When       | Config                      | Passed once | rps there | First fail |
+| ---------- | --------------------------- | ----------- | --------- | ---------- |
+| 2026-10-22 | pool 10, before the changes | 10          | 17        | 20         |
+| 2026-10-23 | optimized changes (pool 20) | 32          | 50        | 55         |
+| 2026-10-23 | pool 40                     | 55          | 70        | 100        |
 
 55 is the SLO boundary and not the product ceiling. At 100 VUs the error rate stays under one percent and p99 is inside its gate, while p95 and the session check fail. The app keeps serving past the number, it just stops being acceptable by my own definition of acceptable.
 
@@ -179,10 +173,6 @@ The full sweep is also paused, because it has spent about 90 percent of Neon's c
 
 # Conclusion
 
-The number I can defend is 55 VUs at 40 connections, reached from 10, with 32 and 55 behind it, and 70 requests a second. The number I would not have had a month ago is any of them.
-
 What changed is method, not heroics. A spec written before the runs. Gates that fail a level instead of a chart I form an opinion about. A smoke that refuses to let a broken rig become a capacity result. Recording what the number excludes, since the edge, the model and real users are all outside this one.
 
-The three fights I enjoyed were the same three that hurt: keeping the document honest when the evidence moved, reading what the pool numbers actually meant, and building a rig I could trust enough to blame the app.
-
-Next is the edge sweep, correctness gated at a rate so one dropped stream cannot lie about a five minute window, per-VU identities with auth back in the measured path, and eventually the cache question I keep postponing. Every one of those is a run I now know how to set up.
+The three fights I enjoyed were the same three that hurt: keeping the document honest when the evidence moved, reading what the pool numbers actually meant, and building a setup I could trust enough to blame the app and improve it.
