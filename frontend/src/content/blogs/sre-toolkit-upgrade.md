@@ -82,7 +82,7 @@ Between levels the sweep waits 60 seconds: fifteen of silence, up to thirty of c
 
 ## What Changed After This Run
 
-The harness moved after these runs. The method above stays because it produced the numbers in this post. The ladder window is now 2 minutes and the confirmation is one 5-minute run, not three. If that run fails, the sweep stops. I shortened it because the sweep was taking too long, and I accept the cost: fewer samples make the swing noisier, and one run is weaker proof than the old three. I will put the comparison back when the next dataset lands.
+The harness moved after these runs. The method above stays because it produced the numbers in this post. The ladder window is now 2 minutes and the confirmation is one 5-minute run, not three. If that run fails, the sweep stops. I shortened it because the sweep was taking too long and the shorter windows spend less Neon compute on the free tier. I accept the cost: fewer samples make the swing noisier, and one run is weaker proof than the old three. I will put the comparison back when the next dataset lands.
 
 ## The Laptop Local Benchmark
 
