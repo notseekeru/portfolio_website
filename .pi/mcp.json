@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "playwright": {
-      "command": "/nix/store/p9jvzal2sgrgngg3vrbskvh48qkk5819-playwright-mcp-0.0.76/bin/playwright-mcp",
-      "args": ["--headless", "--browser", "chromium"],
+      "command": "nix",
+      "args": ["run", "nixpkgs#playwright-mcp", "--", "--headless", "--browser", "chromium"],
       "env": {}
     }
   }
