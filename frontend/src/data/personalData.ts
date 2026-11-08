@@ -158,15 +158,15 @@ const personalData: PersonalData = {
             icon: "FaLock",
         },
         {
-            title: "AWS — 3-Tier Terraform Stack on Free-Tier Rails",
+            title: "AWS Serverless on One Box",
             description:
-                "Provisioned a 3-tier AWS stack in inline HCL with no public VPC modules: Cloudflare CNAME → ALB → ASG (2× t4g.micro, AL2023 arm64 via SSM AMI param) → private single-AZ RDS PostgreSQL, plus a private S3 bucket served through CloudFront with OAC and an ACM certificate DNS-validated through Cloudflare. Added billing rails — a $1 zero-spend tripwire budget and a credit-cap budget firing at 95% actual / 90% forecast — wired to one SNS topic with a CloudWatch CPU alarm, so `make destroy` plus aws-nuke allowlisting keeps monthly spend at zero. Debugged a credential namespace collision where the Cloudflare R2 S3-compatible state backend and the real AWS provider both consumed the native AWS_ACCESS_KEY_ID, resolved by partitioning secrets into TF_VAR_R2_* and pinning the provider's S3 endpoint back to its region. Reached 39 resources with a drift-free terraform plan across repeated destroy and re-apply cycles.",
-            techStack: ["Terraform", "AWS", "ALB", "ASG", "RDS", "CloudFront", "S3", "Cloudflare R2", "Infisical"],
+                "Moved a real app onto AWS serverless and Event Driven Design to learn how it works. One t4g.micro runs nginx, the Cloudflare tunnel and the NAT, four Lambdas run the app and the jobs behind a Function URL, background work goes through SQS with a dead letter queue, and secrets moved from Secrets Manager and KMS to SSM SecureString with no automatic rotation. No ALB, no NAT gateway, no CloudFront and no ACM, so the fixed cost is one EC2 box handle ingress and egress bounds. Also frontend pulls from S3.",
+            techStack: ["Terraform", "AWS", "Lambda", "SQS", "SSM", "RDS", "Cloudflare", "GitHub Actions", "Infisical"],
             favorite: true,
-            status: "in progress",
+            status: "live",
             github: "https://github.com/notseekeru/terraform",
             icon: "FaAws",
-            blogs: ["aws-on-a-budget"],
+            blogs: ["moving-my-app-to-aws-serverless"],
         },
         {
             title: "Product — Maxterview AI Interview Simulator",

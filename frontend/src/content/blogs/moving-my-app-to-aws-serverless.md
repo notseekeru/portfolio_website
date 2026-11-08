@@ -1,0 +1,91 @@
+---
+title: Moving My App to AWS Serverless
+date: 2026-11-08
+description: I moved a real app to AWS serverless to learn how it works. one EC2 box, four Lambdas, and a queue for the slow work.
+github: https://github.com/notseekeru/terraform
+---
+
+# Summary
+
+I moved a real app to AWS serverless because I wanted to learn it, not because the old setup was broken. One small box holds the Cloudflare tunnel, nginx and the outbound NAT, and four Lambdas do the work. There is no ALB, no NAT gateway, no CloudFront and no ACM. Cost decided the design, and the trade is that one box is a single point of failure.
+
+---
+
+## The 3-Tier I Built In August
+
+Earlier this year I built a 3-tier stack. An ALB in front of an ASG, a private RDS, S3 behind CloudFront, and a certificate I validated through a CNAME by hand. It ran, and the plan was clean every time I destroyed and re-applied it.
+
+The problem was not that it failed. It was that two app instances behind an ALB, plus a CDN, plus a certificate, is a lot of infrastructure to keep alive for one app. It was a rehearsal, not a system I would run, so I stopped treating it like one. I so ditched it, didn't really feel proud of it mostly since it was hand-crafted with AI prose during the process held control most of it.
+
+Now I just noticed that, the design it gave me was kinda lowkey trash and so discarded it since it didn't fit what I wanted which was something like a event-driven serverless architecture. And so I set the plan in motion it to design it myself, assesing tradeoffs and optimization, and just really honing in why that service fits into my stack that I run.
+
+## What I Wanted To Learn
+
+Two things. How AWS managed pieces behave when they are the actual product instead of boxes in a diagram. A Function URL instead of a load balancer, a queue that handles its own retries, a schedule that is one line of Terraform. And how event-driven work feels, since a queue means the request can finish before the work does, and a dead letter queue is where the work that failed sits so I can look at it later.
+
+## How It Is Wired
+
+```mermaid
+graph TD
+    U["browser"] --> CF["Cloudflare tunnel"]
+    CF --> EDGE["t4g.micro runs nginx, the tunnel and the NAT"]
+    EDGE -->|"Function URL"| API["api Lambda, in VPC"]
+    API --> RDS["RDS PostgreSQL, private"]
+    Q["SQS queue + DLQ"] --> WK["worker Lambda, in VPC"]
+    WK --> RDS
+    MIG["migrate Lambda, in VPC"] --> EDGE
+    WK -->|"outbound calls"| EDGE
+    P["probe Lambda, outside the VPC"] -->|"public host, every 5 min"| EDGE
+```
+
+The box takes traffic in and lets the private subnets reach the internet. Cloudflare's tunnel ends there, nginx answers, and the API Lambda is reached through its Function URL.
+
+I had NAT filed as a detail in my first pass, then had to correct myself. The worker needs RDS, RDS is private, so the worker has to sit in the VPC, and once it is in the VPC something has to carry its outbound traffic. That something is the box, and it is why the cheapest version still has one piece I cannot remove.
+
+## Workaround
+
+If you guys don't know a ALB and NAT Gateway are, they are managed appliances AWS keeps running inside your VPC, and both bill the same way. A fee for existing every hour, then a fee for the work they do.
+
+But what they do essentially is first NAT is like the outbound gateway which is like when you need to connect outside. So when your services needs to access somewhere public out of your VPC, for example your private vpc like inside a lambda needs to call another api then it will need an outbound connection to request for that api, and that becomes hard specially if your lamda is in a private vpc.
+
+Second is the ALB which is the inbound gateway which is like the intake of your traffic. So when someone opens your app the request lands there first before it reaches anything inside the vpc, then it reads the host and the path so it knows which service is being asked for, checks if the targets behind it are healthy, and hands the request to one of them. And that is basically the whole job, and it does it the entire time it exists, so even with nobody using your app it is still there and still charging by the hour, and then it adds capacity units on top for the connections, the requests and the rule checks it had to do.
+
+An ALB in Singapore is $0.0252 an hour before a single request arrives, which is around $18 a month for a load balancer doing nothing.
+
+The NAT gateway is worse. Same region, $0.059 an hour, about $43 a month, plus $0.059 for every gigabyte that passes through it in either direction. It translates private addresses into one public address, and it charges more per month than the instance that replaced it.
+
+So the comparison stopped being close. One t4g.micro is $0.0106 an hour, about $7.74 a month, and it holds the tunnel, answers nginx and routes the private subnets, which is three jobs for less than the NAT charges to do one.
+
+No NAT gateway, no ALB, no CloudFront, no ACM, so the fixed cost is one EC2 instance and the Lambdas bill for what they use.
+
+The other side of that is the trade. A reboot is an outage for ingress and outbound traffic, nothing fails over because nothing can, and the probe had to live outside the VPC, because its whole job is noticing that the edge is the broken part and it cannot do that from inside the network the edge carries.
+
+## Why The Box Is EC2
+
+But here is the thing about a lambda, it only runs when something calls it, so it cannot keep a tunnel open, it cannot listen on a port, and it cannot be the next hop in a route table, which means the way into this stack needs a process that stays alive the whole time. That is the hybrid part, one box that never sleeps at the edge and then the event-driven functions behind it doing the actual work.
+
+And the box is not decoration either, the private route table's default route points at that instance's network interface and source and destination checking is off so it is allowed to forward traffic, which is exactly what a nat appliance does anyway, except this one also answers nginx and holds the tunnel.
+
+The first deploy also could not work in one pass and that took me a while to see. The functions are container images so a function cannot exist until its image exists in ecr, and then the edge cannot boot until the Function URL it proxies to exists, so on a cold account it is a circle where there is no image in the store to host, no function, no url, no edge. Which is why the module has a create_functions flag and the first apply deliberately runs twice.
+
+## Why There Is No Failover
+
+Currently the database is `multi_az = false`, the edge instance lives in one availability zone, and both private subnets share one route table whose default route points at that same box. So an AZ event or one bad reboot takes ingress and egress down together, and the second subnet does not help.
+
+And that is a choice, not something I forgot. Failover is a monthly bill for something that sits idle basically all the time, because a multi az rds doubles the database, a second nat box doubles the edge, and then something has to sit in front and decide when to move traffic, which is the load balancer I already removed from this design.
+
+So rebuild is my failover. The stack is Terraform end to end, and recovery is a re-apply from terraform. The fresh boot is kinda like a cold start so instead of a warm standby running next to me for a year, I chose recovery time over uptime, and I would rather pay once during an incident than every month for capacity I never really use but this is just basic tradeoffs.
+
+It is worth being clear about the probe too. Every five minutes it hits the public host and the alarm fires when that fails, it just really tells me "hey there's something wrong around the app" and im there to fix it on-call when the email arrives.
+
+Multi-region is the same argument one level up. A second region is a second copy of the database, the images, the parameters and a tunnel pointed somewhere else, and none of it gets exercised until I start needing .
+
+Secrets moved from Secrets Manager and KMS to SSM SecureString, and I wrote the loss down next to it. No automatic rotation. That is now a task I own instead of a property of the service.
+
+The provider key is the one that scared me. It could get lent to a stored provider URL, and a 401 with no bearer token is what showed the request leaving naked. It is never lent now, and a provider URL that points inside the VPC is refused, because that failure is a request from inside my own network carrying my own credentials. This was when my instinct on networking catched a bug.
+
+# Conclusion
+
+What I got out of this is a stack I can read line by line. I know what each piece does, what it costs, and what happens first when it breaks. The queue keeps slow work out of the request, the probe finds the edge down before a user does, and that flag is why a missing image cannot take the whole stack with it.
+
+The next step is to load test this the way I tested the Pi, instead of assuming it holds. The Pi still runs the product, and this stack is here to make AWS something I have used and not just read about.
