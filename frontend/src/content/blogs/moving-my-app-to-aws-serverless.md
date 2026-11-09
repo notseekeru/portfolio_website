@@ -56,6 +56,12 @@ The NAT gateway is worse. Same region, $0.059 an hour, about $43 a month, plus $
 
 So the comparison stopped being close. One t4g.micro is $0.0106 an hour, about $7.74 a month, and it holds the tunnel, answers nginx and routes the private subnets, which is three jobs for less than the NAT charges to do one.
 
+| Piece       | Per hour | Per month | What you get                                                                  |
+| ----------- | -------- | --------- | ----------------------------------------------------------------------------- |
+| ALB         | $0.0252  | $18.40    | inbound gateway, plus capacity units for the connections and rules it handles |
+| NAT gateway | $0.059   | $43.07    | outbound translation, plus $0.059 for every gigabyte both ways                |
+| t4g.micro   | $0.0106  | $7.74     | tunnel, nginx and NAT in one box                                              |
+
 No NAT gateway, no ALB, no CloudFront, no ACM, so the fixed cost is one EC2 instance and the Lambdas bill for what they use.
 
 The other side of that is the trade. A reboot is an outage for ingress and outbound traffic, nothing fails over because nothing can, and the probe had to live outside the VPC, because its whole job is noticing that the edge is the broken part and it cannot do that from inside the network the edge carries.
