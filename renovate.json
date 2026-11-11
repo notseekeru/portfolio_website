@@ -28,6 +28,7 @@
       "matchManagers": ["github-actions"],
       "groupName": "GitHub Actions dependencies",
       "separateMajorMinor": false,
+      "pinDigests": true,
       "description": "Bump all action refs (checkout@v6 etc.) in one PR."
     },
     {
