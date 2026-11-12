@@ -15,6 +15,8 @@ I moved a real app to AWS serverless because I wanted to learn it, not because t
 
 Earlier this year I built a 3-tier stack. An ALB in front of an ASG, a private RDS, S3 behind CloudFront, and a certificate I validated through a CNAME by hand. It ran, and the plan was clean every time I destroyed and re-applied it.
 
+![The August three-tier stack: a browser resolves Cloudflare DNS to an ALB with an HTTPS listener and an ACM certificate, forwards to an ASG of one to three t4g.micro nginx instances, then to a private RDS PostgreSQL instance. A separate static path goes from the browser to CloudFront to a private S3 bucket through origin access control.](/aws-three-tier-legacy.png)
+
 The problem was not that it failed. It was that two app instances behind an ALB, plus a CDN, plus a certificate, is a lot of infrastructure to keep alive for one app. It was a rehearsal, not a system I would run, so I stopped treating it like one. I so ditched it, didn't really feel proud of it mostly since it was hand-crafted with AI prose during the process held control most of it.
 
 Now I just noticed that, the design it gave me was kinda lowkey trash and so discarded it since it didn't fit what I wanted which was something like a event-driven serverless architecture. And so I set the plan in motion it to design it myself, assesing tradeoffs and optimization, and just really honing in why that service fits into my stack that I run.
@@ -25,18 +27,7 @@ Two things. How AWS managed pieces behave when they are the actual product inste
 
 ## How It Is Wired
 
-```mermaid
-graph TD
-    U["browser"] --> CF["Cloudflare tunnel"]
-    CF --> EDGE["t4g.micro runs nginx, the tunnel and the NAT"]
-    EDGE -->|"Function URL"| API["api Lambda, in VPC"]
-    API --> RDS["RDS PostgreSQL, private"]
-    Q["SQS queue + DLQ"] --> WK["worker Lambda, in VPC"]
-    WK --> RDS
-    MIG["migrate Lambda, in VPC"] --> EDGE
-    WK -->|"outbound calls"| EDGE
-    P["probe Lambda, outside the VPC"] -->|"public host, every 5 min"| EDGE
-```
+![Paper-coloured architecture diagram. A browser reaches Cloudflare, which tunnels to one t4g.micro edge instance running cloudflared, nginx and NAT. The edge serves a static build synced from S3 and proxies /api to the API Lambda's Function URL. Inside the VPC, the API writes to a private RDS PostgreSQL instance and enqueues work on an SQS review queue; a worker Lambda consumes the queue and writes to RDS, retrying three times before the dead letter queue. A migrate Lambda runs schema changes on apply. Outside the VPC, EventBridge fires a probe Lambda every five minutes against /api/healthz. CloudWatch alarms on Lambda errors, DLQ depth and EC2 status notify an SNS topic, which emails you; AWS Budgets notify the same topic.](/aws-serverless-flow.png)
 
 The box takes traffic in and lets the private subnets reach the internet. Cloudflare's tunnel ends there, nginx answers, and the API Lambda is reached through its Function URL.
 
@@ -50,17 +41,19 @@ But what they do essentially is first NAT is like the outbound gateway which is 
 
 Second is the ALB which is the inbound gateway which is like the intake of your traffic. So when someone opens your app the request lands there first before it reaches anything inside the vpc, then it reads the host and the path so it knows which service is being asked for, checks if the targets behind it are healthy, and hands the request to one of them. And that is basically the whole job, and it does it the entire time it exists, so even with nobody using your app it is still there and still charging by the hour, and then it adds capacity units on top for the connections, the requests and the rule checks it had to do.
 
+| Piece       | Per hour | Per month | What you get                                                                  |
+| ----------- | -------- | --------- | ----------------------------------------------------------------------------- |
+| ALB         | $0.0252  | $18.40    | inbound gateway, plus capacity units for the connections and rules it handles |
+| NAT gateway | $0.059   | $43.07    | outbound translation, plus $0.059 for every gigabyte both ways                |
+| t4g.micro   | $0.0106  | $7.74     | tunnel, nginx and NAT in one box                                              |
+
 An ALB in Singapore is $0.0252 an hour before a single request arrives, which is around $18 a month for a load balancer doing nothing.
 
 The NAT gateway is worse. Same region, $0.059 an hour, about $43 a month, plus $0.059 for every gigabyte that passes through it in either direction. It translates private addresses into one public address, and it charges more per month than the instance that replaced it.
 
 So the comparison stopped being close. One t4g.micro is $0.0106 an hour, about $7.74 a month, and it holds the tunnel, answers nginx and routes the private subnets, which is three jobs for less than the NAT charges to do one.
 
-| Piece       | Per hour | Per month | What you get                                                                  |
-| ----------- | -------- | --------- | ----------------------------------------------------------------------------- |
-| ALB         | $0.0252  | $18.40    | inbound gateway, plus capacity units for the connections and rules it handles |
-| NAT gateway | $0.059   | $43.07    | outbound translation, plus $0.059 for every gigabyte both ways                |
-| t4g.micro   | $0.0106  | $7.74     | tunnel, nginx and NAT in one box                                              |
+![Paper cost comparison. An ALB at $18.40 a month and a NAT gateway at $43.07 a month total $61.47 for both jobs, against one t4g.micro edge instance at $7.74 a month that runs cloudflared, nginx and the NAT. Two bars scaled to the monthly cost put the edge at a small fraction of the pair.](/aws-cost-comparison.png)
 
 No NAT gateway, no ALB, no CloudFront, no ACM, so the fixed cost is one EC2 instance and the Lambdas bill for what they use.
 
