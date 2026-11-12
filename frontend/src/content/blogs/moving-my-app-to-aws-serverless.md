@@ -1,7 +1,7 @@
 ---
 title: Moving My App to AWS Serverless
 date: 2026-11-08
-description: I moved a real app to AWS serverless to learn how it works. one EC2 box, four Lambdas, and a queue for the slow work.
+description: I moved a real app to AWS serverless to learn how it works. one EC2 box, Lambdas, and a queue for the slow work.
 github: https://github.com/notseekeru/terraform
 ---
 
@@ -64,15 +64,11 @@ So the comparison stopped being close. One t4g.micro is $0.0106 an hour, about $
 
 No NAT gateway, no ALB, no CloudFront, no ACM, so the fixed cost is one EC2 instance and the Lambdas bill for what they use.
 
-The other side of that is the trade. A reboot is an outage for ingress and outbound traffic, nothing fails over because nothing can, and the probe had to live outside the VPC, because its whole job is noticing that the edge is the broken part and it cannot do that from inside the network the edge carries.
-
-## Why The Box Is EC2
+But ofcourse there is a tradeoff. A reboot is an outage for ingress and outbound traffic, nothing fails over because nothing can, and the probe had to live outside the VPC, because its whole job is noticing that the edge is the broken part and it cannot do that from inside the network the edge carries.
 
 But here is the thing about a lambda, it only runs when something calls it, so it cannot keep a tunnel open, it cannot listen on a port, and it cannot be the next hop in a route table, which means the way into this stack needs a process that stays alive the whole time. That is the hybrid part, one box that never sleeps at the edge and then the event-driven functions behind it doing the actual work.
 
 And the box is not decoration either, the private route table's default route points at that instance's network interface and source and destination checking is off so it is allowed to forward traffic, which is exactly what a nat appliance does anyway, except this one also answers nginx and holds the tunnel.
-
-The first deploy also could not work in one pass and that took me a while to see. The functions are container images so a function cannot exist until its image exists in ecr, and then the edge cannot boot until the Function URL it proxies to exists, so on a cold account it is a circle where there is no image in the store to host, no function, no url, no edge. Which is why the module has a create_functions flag and the first apply deliberately runs twice.
 
 ## Why There Is No Failover
 
@@ -80,18 +76,12 @@ Currently the database is `multi_az = false`, the edge instance lives in one ava
 
 And that is a choice, not something I forgot. Failover is a monthly bill for something that sits idle basically all the time, because a multi az rds doubles the database, a second nat box doubles the edge, and then something has to sit in front and decide when to move traffic, which is the load balancer I already removed from this design.
 
-So rebuild is my failover. The stack is Terraform end to end, and recovery is a re-apply from terraform. The fresh boot is kinda like a cold start so instead of a warm standby running next to me for a year, I chose recovery time over uptime, and I would rather pay once during an incident than every month for capacity I never really use but this is just basic tradeoffs.
+So rebuild is my failover. The stack is in Terraform end to end, so and recovery from snapshots is a re-apply from terraform. The fresh boot is kinda like a cold start so instead of a warm standby running next to me for a year, I chose recovery time over uptime, and I would rather pay once during an incident than every month for capacity I never really use but this is just basic tradeoffs.
 
-It is worth being clear about the probe too. Every five minutes it hits the public host and the alarm fires when that fails, it just really tells me "hey there's something wrong around the app" and im there to fix it on-call when the email arrives.
+Multi-region is the same argument one level up. A second region is a second copy of the database, the images, the parameters and a tunnel pointed somewhere else, and none of it gets exercised until I start needing.
 
-Multi-region is the same argument one level up. A second region is a second copy of the database, the images, the parameters and a tunnel pointed somewhere else, and none of it gets exercised until I start needing .
-
-Secrets moved from Secrets Manager and KMS to SSM SecureString, and I wrote the loss down next to it. No automatic rotation. That is now a task I own instead of a property of the service.
-
-The provider key is the one that scared me. It could get lent to a stored provider URL, and a 401 with no bearer token is what showed the request leaving naked. It is never lent now, and a provider URL that points inside the VPC is refused, because that failure is a request from inside my own network carrying my own credentials. This was when my instinct on networking catched a bug.
+And beside, if I wanted I could just turn on some few buttons to turn on multi-az and failovers and vuala I can now write to my resume that seemingly "Architected Multi-az failover full stack application system" like dude that is something you don't even manage because you're on aws.
 
 # Conclusion
 
-What I got out of this is a stack I can read line by line. I know what each piece does, what it costs, and what happens first when it breaks. The queue keeps slow work out of the request, the probe finds the edge down before a user does, and that flag is why a missing image cannot take the whole stack with it.
-
-The next step is to load test this the way I tested the Pi, instead of assuming it holds. The Pi still runs the product, and this stack is here to make AWS something I have used and not just read about.
+What I got out of this is a stack I can read line by line. I know what each piece does, what it costs, and what happens first when it breaks. There was alot of details and thought process I didn't put out since I didn't wanna make this blog long but if you want to talk about it then you can contact me through my social media links, Thanks for reading!
