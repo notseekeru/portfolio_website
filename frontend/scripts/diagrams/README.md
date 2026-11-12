@@ -52,7 +52,7 @@ Title for the service, one subtitle for the concrete value. Add a `.label` only 
 
 ## Icons
 
-`icons/` holds the square service icons from the [AWS Architecture Icons](https://aws.amazon.com/architecture/icons/) package, 80px each. Use them under AWS's icon terms. The package has no service square for NAT Gateway, so `NAT.png` is the official 48px resource SVG with its fill switched to white, scaled 1.18x and centered on an 80px `#8C4FFF` square. The Cloudflare mark is inline SVG from [simple-icons](https://github.com/simple-icons/simple-icons).
+`icons/` holds the square service icons from the [AWS Architecture Icons](https://aws.amazon.com/architecture/icons/) package, 80px each. Use them under AWS's icon terms. The vendored set has no service square for NAT Gateway, so `NAT.png` is the official 48px resource SVG with its fill switched to white, scaled 1.18x and centered on an 80px `#8C4FFF` square. The Cloudflare mark is inline SVG from [simple-icons](https://github.com/simple-icons/simple-icons).
 
 The general glyphs (`Client.png`, `Email.png`) stay dark line art because they are not AWS services. Do not mix the resource outline icons back in for AWS services. To add a service, take its 80px `Arch_*_64.png` from the package's `Architecture-Service-Icons` folder and save it as `icons/<Service>.png`.
 
@@ -64,4 +64,4 @@ Inter and JetBrains Mono, the same families the site loads, plus DejaVu fallback
 
 The serverless page owns runtime, alarms and the probe schedule. Deploys (GitHub OIDC, ECR) and config (SSM) are not drawn. A deploy figure would own those, not this one.
 
-The labels follow the stack the post describes, values included (`multi_az = false`, `maxReceiveCount` 3, the hourly rates). Do not add a service the post does not run.
+The labels follow the stack behind the post and the rates in its cost table (`multi_az = false`, `maxReceiveCount = 3`). Do not add a service the stack does not run.
