@@ -44,7 +44,7 @@ export default function InfrastructureDiagram() {
     }, [chartInView]);
 
     return (
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-shell mx-auto px-6 sm:px-8 lg:px-12">
             <m.div variants={stagger(0.07)} initial="hidden" whileInView="show" viewport={revealViewport} className="mb-16">
                 <m.span variants={slideIn} className="font-mono text-xs tracking-widest text-accent">
                     ARCHITECTURE

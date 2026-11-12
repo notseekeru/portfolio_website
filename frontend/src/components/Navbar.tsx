@@ -62,7 +62,7 @@ export default function Navbar() {
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-ink/90 backdrop-blur-md border-b border-border" : "bg-transparent"}`}>
-            <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <nav className="max-w-shell mx-auto px-6 sm:px-8 lg:px-12 h-16 flex items-center justify-between">
                 <Link
                     to="/"
                     onClick={() => {
@@ -118,7 +118,7 @@ export default function Navbar() {
             <AnimatePresence initial={false}>
                 {menuOpen && (
                     <m.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.22, ease: "easeOut" }} className="md:hidden bg-ink/95 backdrop-blur-md border-b border-border overflow-hidden">
-                        <m.ul variants={stagger(0.06)} initial="hidden" animate="show" className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4">
+                        <m.ul variants={stagger(0.06)} initial="hidden" animate="show" className="max-w-shell mx-auto px-6 sm:px-8 lg:px-12 py-4 flex flex-col gap-4">
                             {navLinks.map((link) => (
                                 <m.li key={link.path} variants={slideIn}>
                                     <Link

@@ -7,7 +7,7 @@ import { GitHubIcon, LinkedInIcon } from "./icons/Icons";
 export default function Footer() {
     return (
         <footer className="border-t border-border py-10">
-            <m.div variants={stagger(0.08)} initial="hidden" whileInView="show" viewport={revealViewport} className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <m.div variants={stagger(0.08)} initial="hidden" whileInView="show" viewport={revealViewport} className="max-w-shell mx-auto px-6 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
                 <m.div variants={fade} className="text-center md:text-left">
                     <p className="font-serif text-bone">
                         {personalData.name}

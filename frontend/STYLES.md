@@ -57,7 +57,7 @@ Off limits: `layoutId` and drag (they pull in `domMax`), and the legacy `animate
 
 ## Layout Conventions
 
-- Page width: `max-w-6xl`, horizontal padding `px-6`.
+- Page shell: `max-w-shell` (87.5rem, from `--container-shell`), padding `px-6 sm:px-8 lg:px-12`.
 - Asymmetric grids (e.g. hero `grid-cols-[1.1fr_0.9fr]`) preferred over centered stacks.
 - Cards: `bg-surface` + `border-border` (straight corners preferred over heavy rounded/glow).
 - Typography: headings `font-display` (serif); big hero scale (`text-5xl`/`7xl`); labels via `font-mono`, minimal letter-spacing (no `tracking-[0.3em] uppercase` cliché).
