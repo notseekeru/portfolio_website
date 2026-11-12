@@ -20,14 +20,17 @@ render() {
     html=$1
     size=$2
     out="$(pwd)/../../public/$3"
-    "$CHROME" --headless=new --disable-gpu --hide-scrollbars --no-sandbox \
+    tmp="$out.tmp.png"
+    rm -f "$tmp"
+    if ! "$CHROME" --headless=new --disable-gpu --hide-scrollbars --no-sandbox \
         --window-size="$size" --force-device-scale-factor=2 \
         --virtual-time-budget=8000 --run-all-compositor-stages-before-draw \
-        --screenshot="$out" "file://$(pwd)/$html" >/dev/null 2>&1
-    test -f "$out" || {
+        --screenshot="$tmp" "file://$(pwd)/$html" >/dev/null 2>&1 || [ ! -f "$tmp" ]; then
+        rm -f "$tmp"
         printf '%s\n' "render failed: $html" >&2
         exit 1
-    }
+    fi
+    mv "$tmp" "$out"
     printf '%s\n' "wrote public/$3"
 }
 
