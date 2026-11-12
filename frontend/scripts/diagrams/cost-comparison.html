@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 900px;
+        height: 430px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    .lane {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+        z-index: 3;
+    }
+    .node {
+        position: absolute;
+        padding: 12px 14px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .node .head { display: flex; gap: 10px; align-items: center; }
+    .node img { width: 26px; height: 26px; flex: none; }
+    .node .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .node .sub { margin-top: 3px; font-size: 12px; color: var(--muted); line-height: 1.3; }
+    .price { position: absolute; right: 14px; top: 14px; text-align: right; }
+    .price .big { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
+    .price .unit { font-size: 12px; color: var(--muted); }
+    .rate {
+        position: absolute;
+        right: 14px;
+        bottom: 12px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+    }
+    .plus { position: absolute; left: 228px; top: 134px; font-size: 18px; color: var(--muted); z-index: 3; }
+    .total {
+        position: absolute;
+        left: 40px;
+        top: 266px;
+        width: 400px;
+        height: 40px;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding-top: 10px;
+        border-top: 1px solid rgba(27, 24, 18, 0.18);
+        z-index: 3;
+    }
+    .total .cap { font-size: 11.5px; color: var(--muted); }
+    .total .big { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+    .total .unit { font-size: 12px; color: var(--muted); }
+
+    .edge { left: 500px; top: 50px; width: 360px; height: 256px; background: #edf2e9; border-color: rgba(47, 107, 79, 0.38); }
+    .edge .head { align-items: flex-start; }
+    .edge .chips { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+    .edge .chip {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 28px;
+        padding: 0 9px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 5px;
+    }
+    .edge .chip .name { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 11.5px; }
+    .edge .chip .role { font-size: 11px; color: var(--muted); }
+    .edge .foot {
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        bottom: 12px;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+    }
+    .edge .foot .big { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; }
+    .edge .foot .unit { font-size: 12px; color: var(--muted); }
+    .edge .foot .rate { position: static; }
+
+    .bar {
+        position: absolute;
+        height: 24px;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        padding-left: 12px;
+        font-size: 11px;
+        font-weight: 500;
+        z-index: 2;
+    }
+    .bar.dark { background: var(--ink); color: var(--paper); }
+    .bar.green { background: var(--accent); color: var(--paper); }
+    .value {
+        position: absolute;
+        height: 24px;
+        line-height: 24px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 11.5px;
+        color: var(--ink);
+        z-index: 3;
+    }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <div class="lane" style="left:40px; top:26px;">managed appliances</div>
+    <div class="lane" style="left:500px; top:26px;">one instance</div>
+
+    <div class="node" style="left:40px; top:50px; width:400px; height:88px;">
+        <div class="head">
+            <img src="icons/ELB.png" alt="" />
+            <div>
+                <div class="title">ALB</div>
+                <div class="sub">inbound gateway</div>
+            </div>
+        </div>
+        <div class="price"><span class="big">$18.40</span><span class="unit">/mo</span></div>
+        <div class="rate">$0.0252/hr</div>
+    </div>
+
+    <div class="plus">+</div>
+
+    <div class="node" style="left:40px; top:158px; width:400px; height:88px;">
+        <div class="head">
+            <img src="icons/NAT.png" alt="" />
+            <div>
+                <div class="title">NAT gateway</div>
+                <div class="sub">outbound translation</div>
+            </div>
+        </div>
+        <div class="price"><span class="big">$43.07</span><span class="unit">/mo</span></div>
+        <div class="rate">$0.059/hr</div>
+    </div>
+
+    <div class="total">
+        <span class="cap">ALB + NAT gateway, always on</span>
+        <span><span class="big">$61.47</span><span class="unit">/mo</span></span>
+    </div>
+
+    <div class="node edge">
+        <div class="head">
+            <img src="icons/EC2.png" alt="" />
+            <div>
+                <div class="title">t4g.micro</div>
+                <div class="sub">edge instance</div>
+            </div>
+        </div>
+        <div class="chips">
+            <div class="chip"><span class="name">cloudflared</span><span class="role">tunnel</span></div>
+            <div class="chip"><span class="name">nginx</span><span class="role">ingress</span></div>
+            <div class="chip"><span class="name">NAT</span><span class="role">egress</span></div>
+        </div>
+        <div class="foot">
+            <span><span class="big">$7.74</span><span class="unit">/mo</span></span>
+            <span class="rate">$0.0106/hr</span>
+        </div>
+    </div>
+
+    <div class="lane" style="left:40px; top:322px;">monthly cost</div>
+
+    <div class="bar dark" style="left:40px; top:346px; width:640px;">ALB + NAT</div>
+    <div class="value" style="left:694px; top:346px;">$61.47</div>
+
+    <div class="bar green" style="left:40px; top:380px; width:81px;">edge</div>
+    <div class="value" style="left:135px; top:380px;">$7.74</div>
+</div>
+</body>
+</html>
