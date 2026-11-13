@@ -90,38 +90,7 @@ No more manually running `npm audit` and chasing outdated transitive deps. No mo
 
 ## The Final State
 
-```mermaid
-graph TD
-    subgraph Local
-        Makefile[make apply]
-    end
-
-    subgraph Terraform
-        DO_API[DigitalOcean API] --> K8s[Kubernetes Cluster]
-        K8s --> Helm_Argo[Helm: ArgoCD]
-        K8s --> Helm_Nginx[Helm: Ingress NGINX]
-        K8s --> DO_DB[Managed PostgreSQL]
-    end
-
-    subgraph GitOps
-        Static_Repo[Static Site Repo: SHA Tags] --> GitOps_Repo[GitOps Repo: Manifests]
-        Diagram_Repo[Diagram App Repo: SHA Tags] --> GitOps_Repo
-        GitOps_Repo --> ArgoCD[ArgoCD Sync]
-        ArgoCD --> Cluster_State[Cluster State]
-        Cluster_State -->|Self-Heal| ArgoCD
-    end
-
-    subgraph Edge
-        Cloudflare[Cloudflare DNS + SSL] --> Cloudflared[Cloudflare Tunnel]
-        Cloudflared --> Ingress[Ingress NGINX]
-        Ingress --> Services[K8s Services]
-        Services --> Pods[App Replicas]
-    end
-
-    Makefile --> Terraform
-    Static_Repo -.->|Dependabot| Static_Repo
-    Diagram_Repo -.->|Dependabot| Diagram_Repo
-```
+![Paper stack diagram in three zones. Terraform: make apply calls the DigitalOcean API, which creates the Kubernetes cluster; the cluster connects to managed PostgreSQL, and Helm installs ArgoCD and Ingress NGINX. GitOps: the static site and diagram app repos with SHA tags and Dependabot feed the GitOps repo, ArgoCD syncs it to the cluster state, and the cluster state reports back for self-heal. Edge: Cloudflare DNS and SSL to the tunnel to Ingress NGINX to Kubernetes Services to app replicas.](/cloud-automation-stack.png)
 
 One `make apply` provisions the cluster, installs ArgoCD and Ingress NGINX via Helm, points ArgoCD at the GitOps repo, and the cluster reconciles. I've run `make destroy` more times than I can count. Every rebuild comes out identical.
 
