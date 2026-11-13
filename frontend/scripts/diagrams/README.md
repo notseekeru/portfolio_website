@@ -9,16 +9,26 @@ nix shell nixpkgs#chromium
 ./render.sh
 ```
 
-`CHROME=/path/to/chrome` overrides detection. The script renders each page at 2x and overwrites the PNG the post references, so commit the PNG after a source change. Chromium needs network for the webfonts on a cold font cache; without it the fallback font changes line breaks.
+`CHROME=/path/to/chrome` overrides detection. The script renders each page at 2x and overwrites the PNG the post references, so commit the PNG after a source change. Chromium needs network for the webfonts on a cold font cache; without it the fallback font changes line breaks. A re-render can shift antialiasing by a hair even when the source did not change; check before committing a stray PNG diff.
+
+The post uses the output as `![alt](/name.png)` in place of its Mermaid block; the alt describes the flow, not the file. Add the page to `render.sh`; that file owns the page-to-PNG map and the canvas size.
+
+## Figure types
+
+- Stack: a zone or column per layer, cards with AWS squares or brand marks. Use it for a topology.
+- Flow: a vertical chain or a snake, `.step` cards with line icons, loops on the margin, `.note` beside the card it constrains. Use it for a procedure.
+- Comparison: a few cards plus a scaled bar, numbers on the cards. Use it when the claim is a ratio.
+
+The canvas is the label budget. The post shows it at prose width, so a wider canvas buys layout room and costs type size; match the width to the density and check at post width. Start from the closest existing page; its CSS is the template.
 
 ## Structure
 
 Each page is one `#canvas`. Fixed coordinates instead of a layout engine: the arrows are hand-routed, and a reflow would move cards away from their paths.
 
-- `.node` cards placed by inline `left`, `top`, `width`, `height`
+- `.node` for stack cards, `.step` for flow cards, `.note` for constraints, placed by inline `left`, `top`, `width`, `height`
 - an SVG `#wires` layer, one path per connector
-- a dashed `.vpc` and lane labels
-- z-order: vpc, wires, nodes, labels
+- a dashed `.vpc` or `.zone` with a `.zone-label` pill or lane labels
+- z-order: zone, wires, cards, labels
 
 Canvas sizes live in `render.sh`. The size passed there, the `#canvas` width/height and the SVG `viewBox` are one value written in three places; change all three together or the screenshot crops. The nodes, wires and labels carry the geometry, so a change to one is a change to its coordinates.
 
@@ -33,6 +43,7 @@ The pages are screenshot sources, not app pages: Biome skips this folder so app-
 - Solid strokes are request and data paths. Dashed amber is scheduled work or an artifact sync, such as the probe and the S3 dist sync. Dashed ink borders are network boundaries. Dotted muted links are constraints or detail callouts.
 - Long subtitles are the usual breakage. Judge the render at the width the post shows it, not full size.
 - Icons ride at the card's fixed size. Every card that names an AWS service gets the square service icon, never a resource outline.
+- Flow cards are `.step`, with the icon in the left padding; `.note` is the constraint variant and `.decide` the amber-edged decision. Copy an existing flow page when starting one.
 
 A card and its wire:
 
@@ -54,9 +65,13 @@ Title for the service, one subtitle for the concrete value. Add a `.label` only 
 
 ## Icons
 
-`icons/` holds the square service icons from the [AWS Architecture Icons](https://aws.amazon.com/architecture/icons/) package, 80px each. Use them under AWS's icon terms. The vendored set has no service square for NAT Gateway, so `NAT.png` is the official 48px resource SVG with its fill switched to white, scaled 1.18x and centered on an 80px `#8C4FFF` square. Stack figures give non-AWS tools their brand mark from [simple-icons](https://github.com/simple-icons/simple-icons) at the same 26px slot, brand colour written into the SVG; Cloudflare is inline. Flow figures use a line icon from [Lucide](https://lucide.dev) at the same slot, stroke set to ink. A few icons carry a semantic stroke: green for start, confirm, sync and playback, amber for decisions, cost and migrations, red for the webhook, aborts and blocked constraints.
+`icons/` holds the square service icons from the [AWS Architecture Icons](https://aws.amazon.com/architecture/icons/) package, 80px each. Use them under AWS's icon terms. The vendored set has no service square for NAT Gateway, so `NAT.png` is the official 48px resource SVG with its fill switched to white, scaled 1.18x and centered on an 80px `#8C4FFF` square.
+
+Stack figures give non-AWS tools their brand mark from [simple-icons](https://github.com/simple-icons/simple-icons) at the same 26px slot, brand colour written into the SVG; Cloudflare is inline. Flow figures use a line icon from [Lucide](https://lucide.dev) at the same slot, stroke set to ink. A few icons carry a semantic stroke: green for start, confirm, sync and playback, amber for decisions, cost and migrations, red for the webhook, aborts and blocked constraints.
 
 The general glyphs (`Client.png`, `Email.png`) stay dark line art because they are not AWS services. Do not mix the resource outline icons back in for AWS services. To add a service, take its 80px `Arch_*_64.png` from the package's `Architecture-Service-Icons` folder and save it as `icons/<Service>.png`.
+
+Fetch a brand or line mark from `https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/<slug>.svg` or `https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/<slug>.svg`, set `fill` for a brand or `stroke` for a line icon, and save it under `icons/brands/` or `icons/line/`. The semantic stroke lives in the SVG, not the page CSS.
 
 ## Fonts and color
 
@@ -64,6 +79,6 @@ Inter and JetBrains Mono, the same families the site loads, plus DejaVu fallback
 
 ## Scope
 
-The serverless page owns runtime, alarms and the probe schedule. Deploys (GitHub OIDC, ECR) and config (SSM) are not drawn. A deploy figure would own those, not this one.
+For the serverless page, deploys (GitHub OIDC, ECR) and config (SSM) are not drawn; a deploy figure for that stack would own them.
 
-The labels follow the stack behind the post and the rates in its cost table (`multi_az = false`, `maxReceiveCount = 3`). Do not add a service the stack does not run.
+Labels and values follow the stack each post describes. Do not add a service that stack does not run.
