@@ -26,37 +26,7 @@ My one hard rule: **standard library only**. No routing framework, no middleware
 
 The architecture was simple. A client opens a TCP connection to the Layer 4 balancer on `:9000`, which round-robins it to one of two backend HTTP engines on `:8080` and `:8081`, then just relays bytes both ways. Protocol-agnostic by design — it balances raw TCP streams, not HTTP requests, because it has no business knowing what HTTP is.
 
-```mermaid
-flowchart LR
-       subgraph Client["Client"]
-           C["curl / browser"]
-       end
-
-       subgraph L4["Layer 4 Proxy · :9000"]
-           LB["raw TCP listener
-               accept loop"]
-           RR["round-robin
-               counter % 2"]
-           R1["bidirectional relay
-               io.Copy"]
-       end
-
-       subgraph Backends["Backend Engines · hand-rolled HTTP/1.1"]
-           BE1["engine :8080"]
-           BE2["engine :8081"]
-           L7["per-conn goroutine
-               5s deadline · keep-alive loop
-               bufio: request-line → headers → query
-               build + write response"]
-       end
-
-       C -->|"TCP :9000"| LB
-       LB --> RR
-       RR -->|"conn → :8080"| BE1
-       RR -->|"conn → :8081"| BE2
-       BE1 -.-> L7
-       BE2 -.-> L7
-```
+![Paper architecture of the proxy. curl or a browser opens TCP to the Layer 4 proxy on :9000, which accepts, round-robins with counter % 2, and relays bytes with io.Copy to one of two hand-rolled HTTP/1.1 engines on :8080 and :8081. Each engine runs a per-connection goroutine with a 5 second deadline and keep-alive loop, buffers the request line, headers and query with bufio, then writes the response.](/digging-the-wire.png)
 
 That diagram is the whole project in one picture — every box something I'd wire together by hand. For the first time a load balancer wasn't a mystery box on a slide; it was a shape I could see.
 
