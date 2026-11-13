@@ -24,6 +24,8 @@ Canvas sizes live in `render.sh`. The size passed there, the `#canvas` width/hei
 
 Open a page in a browser before rendering. The canvas is already at final size, so what you see is the layout minus the 2x export.
 
+The pages are screenshot sources, not app pages: Biome skips this folder so app-level accessibility rules do not flag them.
+
 ## Editing
 
 - Move a card and its wire in the same edit. The path coordinates are the card edges; moving one without the other detaches the arrow.
