@@ -34,7 +34,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding: 12px 14px;
+        padding: 12px 14px 12px 50px;
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 8px;
@@ -48,7 +48,7 @@
 
     .note {
         position: absolute;
-        padding: 11px 13px;
+        padding: 11px 13px 11px 50px;
         background: #f6f1e6;
         border: 1px solid var(--line);
         border-radius: 8px;
@@ -57,6 +57,7 @@
     .note .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 9.5px; color: var(--muted); }
     .note .title { margin-top: 4px; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
     .note .sub { margin-top: 3px; font-size: 12px; color: var(--muted); line-height: 1.35; }
+    .step img.ic, .note img.ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; }
 </style>
 </head>
 <body>
@@ -84,42 +85,50 @@
     </svg>
 
     <div class="step" style="left:60px; top:40px; width:260px; height:70px;">
+        <img class="ic" src="icons/line/circle-arrow-up.svg" alt="" />
         <div class="title">Upgrade</div>
         <div class="sub">period mode</div>
     </div>
 
     <div class="step" style="left:60px; top:140px; width:260px; height:84px;">
+        <img class="ic" src="icons/line/qr-code.svg" alt="" />
         <div class="title">PayMongo intent</div>
         <div class="sub"><span class="mono">payment_method_allowed: qrph</span></div>
     </div>
 
     <div class="step" style="left:60px; top:254px; width:260px; height:84px;">
+        <img class="ic" src="icons/line/webhook.svg" alt="" />
         <div class="title">Webhook</div>
         <div class="sub">signed · <span class="mono">payment.paid</span></div>
     </div>
 
     <div class="step" style="left:60px; top:368px; width:260px; height:96px;">
+        <img class="ic" src="icons/line/database.svg" alt="" />
         <div class="title">Subscription row</div>
         <div class="sub">premium · <span class="mono">current_period_end</span><br />+ 30 days</div>
     </div>
 
     <div class="step" style="left:60px; top:494px; width:260px; height:70px;">
+        <img class="ic" src="icons/line/key.svg" alt="" />
         <div class="title cmd">resolve_tier</div>
         <div class="sub">reads the subscription row</div>
     </div>
 
     <div class="step" style="left:60px; top:594px; width:260px; height:84px;">
+        <img class="ic" src="icons/line/gauge.svg" alt="" />
         <div class="title">Daily cap</div>
         <div class="sub">free keeps it, premium lifts it</div>
     </div>
 
     <div class="note" style="left:420px; top:150px; width:300px; height:100px;">
+        <img class="ic" src="icons/line/credit-card.svg" alt="" />
         <div class="tag">constraint</div>
         <div class="title">Cards</div>
         <div class="sub">need a registered business type</div>
     </div>
 
     <div class="note" style="left:420px; top:380px; width:300px; height:110px;">
+        <img class="ic" src="icons/line/lock.svg" alt="" />
         <div class="tag">constraint</div>
         <div class="title">Card Vaulting</div>
         <div class="sub">subscriptions and vaulting are support-gated</div>

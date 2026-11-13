@@ -34,7 +34,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding: 12px 14px;
+        padding: 12px 14px 12px 50px;
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 8px;
@@ -48,7 +48,7 @@
 
     .note {
         position: absolute;
-        padding: 11px 13px;
+        padding: 11px 13px 11px 50px;
         background: #f6f1e6;
         border: 1px solid var(--line);
         border-radius: 8px;
@@ -57,6 +57,7 @@
     .note .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 9.5px; color: var(--muted); }
     .note .title { margin-top: 4px; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
     .note .sub { margin-top: 3px; font-size: 12px; color: var(--muted); line-height: 1.35; }
+    .step img.ic, .note img.ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; }
 </style>
 </head>
 <body>
@@ -88,57 +89,68 @@
     </svg>
 
     <div class="step" style="left:60px; top:30px; width:320px; height:64px;">
+        <img class="ic" src="icons/line/mic.svg" alt="" />
         <div class="title">Mic</div>
         <div class="sub">one take, 180 s cap, live meter</div>
     </div>
 
     <div class="step" style="left:60px; top:108px; width:320px; height:64px;">
+        <img class="ic" src="icons/line/audio-lines.svg" alt="" />
         <div class="title cmd">POST /api/voice/stt</div>
         <div class="sub">speech to text</div>
     </div>
 
     <div class="step" style="left:60px; top:186px; width:320px; height:64px;">
+        <img class="ic" src="icons/line/cpu.svg" alt="" />
         <div class="title">Whisper</div>
-        <div class="sub"><span class="mono">whisper-large-v3-turbo</span> · 87 neurons per 112 s</div>
+        <div class="sub"><span class="mono">whisper-large-v3-turbo</span> · 87 neurons</div>
     </div>
 
     <div class="step" style="left:60px; top:264px; width:320px; height:64px;">
+        <img class="ic" src="icons/line/file-text.svg" alt="" />
         <div class="title">Transcript</div>
         <div class="sub">lands in the answer box</div>
     </div>
 
     <div class="step" style="left:60px; top:342px; width:320px; height:64px;">
+        <img class="ic" src="icons/line/message-square.svg" alt="" />
         <div class="title">Chat</div>
         <div class="sub">the same SSE route as typed text</div>
     </div>
 
     <div class="step" style="left:60px; top:420px; width:320px; height:64px;">
+        <img class="ic" src="icons/line/split.svg" alt="" />
         <div class="title">Sentence chunker</div>
         <div class="sub">140 characters, then 320</div>
     </div>
 
     <div class="step" style="left:60px; top:498px; width:320px; height:64px;">
+        <img class="ic" src="icons/line/volume-2.svg" alt="" />
         <div class="title cmd">POST /api/voice/tts</div>
         <div class="sub">Aura-1, one request per line</div>
     </div>
 
     <div class="step" style="left:60px; top:576px; width:320px; height:64px;">
+        <img class="ic" src="icons/line/play.svg" alt="" />
         <div class="title">Playback queue</div>
         <div class="sub">next line fetched while this one plays</div>
     </div>
 
     <div class="step" style="left:60px; top:654px; width:320px; height:64px;">
+        <img class="ic" src="icons/line/captions.svg" alt="" />
         <div class="title">Caption</div>
         <div class="sub">revealed up to the spoken line</div>
     </div>
 
     <div class="note" style="left:440px; top:60px; width:380px; height:80px;">
+        <img class="ic" src="icons/line/lock.svg" alt="" />
         <div class="tag">constraint</div>
         <div class="title">Voice gate</div>
         <div class="sub"><span class="mono">GET /api/voice</span> gates both controls</div>
     </div>
 
     <div class="note" style="left:440px; top:300px; width:380px; height:90px;">
+        <img class="ic" src="icons/line/coins.svg" alt="" />
         <div class="tag">constraint</div>
         <div class="title">Daily budget</div>
         <div class="sub">10,000 neurons a day, shared by the account</div>

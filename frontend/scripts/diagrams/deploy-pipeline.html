@@ -34,7 +34,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding: 12px 14px;
+        padding: 12px 14px 12px 50px;
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 8px;
@@ -43,6 +43,7 @@
     }
     .step .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
     .step .sub { margin-top: 4px; font-size: 11.5px; color: var(--muted); line-height: 1.35; }
+    .step img.ic, .note img.ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; }
 </style>
 </head>
 <body>
@@ -65,41 +66,49 @@
     </svg>
 
     <div class="step" style="left:40px; top:70px; width:190px; height:96px;">
+        <img class="ic" src="icons/line/git-commit.svg" alt="" />
         <div class="title">Green commit</div>
         <div class="sub">on main</div>
     </div>
 
     <div class="step" style="left:250px; top:70px; width:190px; height:96px;">
+        <img class="ic" src="icons/line/workflow.svg" alt="" />
         <div class="title">CI</div>
         <div class="sub">ruff, pytest, biome, tsc, build</div>
     </div>
 
     <div class="step" style="left:460px; top:70px; width:190px; height:96px;">
+        <img class="ic" src="icons/line/package.svg" alt="" />
         <div class="title">Images</div>
         <div class="sub">both built, Trivy scanned</div>
     </div>
 
     <div class="step" style="left:670px; top:70px; width:190px; height:96px;">
+        <img class="ic" src="icons/line/tag.svg" alt="" />
         <div class="title">Bump tag</div>
         <div class="sub">pinned tag in the gitops repo</div>
     </div>
 
     <div class="step" style="left:670px; top:290px; width:190px; height:96px;">
+        <img class="ic" src="icons/line/refresh-cw.svg" alt="" />
         <div class="title">ArgoCD</div>
         <div class="sub">prune + selfHeal</div>
     </div>
 
     <div class="step" style="left:460px; top:290px; width:190px; height:96px;">
+        <img class="ic" src="icons/line/database-zap.svg" alt="" />
         <div class="title">PreSync Job</div>
         <div class="sub">yoyo migrations from the app image</div>
     </div>
 
     <div class="step" style="left:250px; top:290px; width:190px; height:96px;">
+        <img class="ic" src="icons/line/box.svg" alt="" />
         <div class="title">Pods roll</div>
         <div class="sub">in namespace</div>
     </div>
 
     <div class="step" style="left:40px; top:290px; width:190px; height:96px;">
+        <img class="ic" src="icons/line/database.svg" alt="" />
         <div class="title">Neon</div>
         <div class="sub">direct host, never the pooler</div>
     </div>

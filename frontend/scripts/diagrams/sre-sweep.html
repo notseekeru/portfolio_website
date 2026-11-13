@@ -31,7 +31,10 @@
     #wires { position: absolute; inset: 0; z-index: 1; }
     .step {
         position: absolute;
-        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 12px 14px 12px 50px;
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 8px;
@@ -50,6 +53,7 @@
         z-index: 3;
         white-space: nowrap;
     }
+    .step img.ic, .note img.ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; }
 </style>
 </head>
 <body>
@@ -77,56 +81,67 @@
     </svg>
 
     <div class="step" style="left:350px; top:30px; width:260px; height:64px;">
+        <img class="ic" src="icons/line/flag.svg" alt="" />
         <div class="title">Open the perf window</div>
         <div class="sub">in gitops</div>
     </div>
 
     <div class="step" style="left:350px; top:116px; width:260px; height:64px;">
+        <img class="ic" src="icons/line/trash-2.svg" alt="" />
         <div class="title">Cleanup</div>
         <div class="sub">delete the sweep identity's rows</div>
     </div>
 
     <div class="step" style="left:350px; top:202px; width:260px; height:64px;">
+        <img class="ic" src="icons/line/zap.svg" alt="" />
         <div class="title">Smoke</div>
         <div class="sub">10 VUs, 10 seconds</div>
     </div>
 
     <div class="step" style="left:350px; top:288px; width:260px; height:64px;">
+        <img class="ic" src="icons/line/trending-up.svg" alt="" />
         <div class="title">Ladder</div>
         <div class="sub">100 VUs, then doubling</div>
     </div>
 
     <div class="step decide" style="left:350px; top:374px; width:260px; height:64px;">
+        <img class="ic" src="icons/line/circle-help.svg" alt="" />
         <div class="title">Levels left?</div>
         <div class="sub">a level is one VU target</div>
     </div>
 
     <div class="step terminal" style="left:350px; top:460px; width:260px; height:64px;">
+        <img class="ic" src="icons/line/square.svg" alt="" />
         <div class="title">Stop</div>
         <div class="sub">raise the VU ceiling</div>
     </div>
 
     <div class="step terminal" style="left:350px; top:546px; width:260px; height:64px;">
+        <img class="ic" src="icons/line/x.svg" alt="" />
         <div class="title">Close the window</div>
         <div class="sub">cleanup only</div>
     </div>
 
     <div class="step" style="left:60px; top:330px; width:240px; height:64px;">
+        <img class="ic" src="icons/line/search.svg" alt="" />
         <div class="title">Binary search</div>
         <div class="sub">after an SLO miss</div>
     </div>
 
     <div class="step" style="left:60px; top:426px; width:240px; height:64px;">
+        <img class="ic" src="icons/line/check-check.svg" alt="" />
         <div class="title">Confirm</div>
         <div class="sub">3 windows of 5 minutes</div>
     </div>
 
     <div class="step" style="left:60px; top:522px; width:240px; height:64px;">
+        <img class="ic" src="icons/line/gauge.svg" alt="" />
         <div class="title">Boundary</div>
         <div class="sub">read the CSV and Grafana</div>
     </div>
 
     <div class="step terminal" style="left:660px; top:202px; width:160px; height:64px;">
+        <img class="ic" src="icons/line/ban.svg" alt="" />
         <div class="title">Abort</div>
         <div class="sub">the smoke failed</div>
     </div>
