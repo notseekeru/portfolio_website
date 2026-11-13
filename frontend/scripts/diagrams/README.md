@@ -30,7 +30,7 @@ The pages are screenshot sources, not app pages: Biome skips this folder so app-
 
 - Move a card and its wire in the same edit. The path coordinates are the card edges; moving one without the other detaches the arrow.
 - A wire ends on a border. The arrowhead is `marker-end`, so the path stops where the line does.
-- Solid strokes are request and data paths. Dashed amber is scheduled work or an artifact sync, such as the probe and the S3 dist sync. Dashed ink borders are network boundaries.
+- Solid strokes are request and data paths. Dashed amber is scheduled work or an artifact sync, such as the probe and the S3 dist sync. Dashed ink borders are network boundaries. Dotted muted links are constraints or detail callouts.
 - Long subtitles are the usual breakage. Judge the render at the width the post shows it, not full size.
 - Icons ride at the card's fixed size. Every card that names an AWS service gets the square service icon, never a resource outline.
 

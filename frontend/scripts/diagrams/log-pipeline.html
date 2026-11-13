@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 760px;
+        height: 720px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    #wires { position: absolute; inset: 0; z-index: 1; }
+    .zone {
+        position: absolute;
+        left: 340px;
+        top: 360px;
+        width: 380px;
+        height: 220px;
+        border: 1.5px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 12px;
+        z-index: 0;
+    }
+    .zone-label {
+        position: absolute;
+        left: 356px;
+        top: 348px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        z-index: 3;
+    }
+    .zone-label .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); }
+    .zone-label .sub { font-size: 11px; color: var(--muted); }
+    .zone-label .sub.mono { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10px; }
+
+    .node {
+        position: absolute;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 11px 12px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .node img { width: 26px; height: 26px; flex: none; }
+    .node .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .node .sub { margin-top: 3px; font-size: 12px; color: var(--muted); line-height: 1.3; }
+
+    .rule {
+        position: absolute;
+        left: 360px;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 11.5px;
+        color: var(--ink);
+        z-index: 2;
+    }
+    .rule::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        flex: none;
+        border-radius: 99px;
+        background: var(--amber);
+        transform: translateY(-1px);
+    }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <svg id="wires" viewBox="0 0 760 720" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
+            </marker>
+        </defs>
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+            <path d="M170,110 V140" marker-end="url(#arrow)" />
+            <path d="M170,220 V250" marker-end="url(#arrow)" />
+            <path d="M170,330 V360" marker-end="url(#arrow)" />
+            <path d="M170,440 V470" marker-end="url(#arrow)" />
+            <path d="M300,400 H340" marker-end="url(#arrow)" />
+            <path d="M510,580 V620" marker-end="url(#arrow)" />
+        </g>
+    </svg>
+
+    <div class="zone"></div>
+    <div class="zone-label"><span class="tag">Rules · maxterview</span><span class="sub mono">noDataState: OK</span></div>
+
+    <div class="node" style="left:40px; top:40px; width:260px; height:70px;">
+        <img src="icons/Client.png" alt="" />
+        <div>
+            <div class="title">Browser beacon</div>
+            <div class="sub">JS error handler</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:40px; top:140px; width:260px; height:80px;">
+        <img src="icons/brands/fastapi.svg" alt="" />
+        <div>
+            <div class="title">FastAPI</div>
+            <div class="sub">stdout, one JSON line</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:40px; top:250px; width:260px; height:80px;">
+        <img src="icons/brands/grafana.svg" alt="" />
+        <div>
+            <div class="title">Alloy</div>
+            <div class="sub">tails pod logs through the API</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:40px; top:360px; width:260px; height:80px;">
+        <img src="icons/brands/grafana.svg" alt="" />
+        <div>
+            <div class="title">Grafana Cloud Loki</div>
+            <div class="sub">14 day retention</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:40px; top:470px; width:260px; height:80px;">
+        <img src="icons/brands/grafana.svg" alt="" />
+        <div>
+            <div class="title">Dashboard</div>
+            <div class="sub">six panels, LogQL at query</div>
+        </div>
+    </div>
+
+    <div class="rule" style="top:400px;">backend 5xx</div>
+    <div class="rule" style="top:432px;">LLM failures</div>
+    <div class="rule" style="top:464px;">backend tracebacks</div>
+    <div class="rule" style="top:496px;">browser errors</div>
+
+    <div class="node" style="left:340px; top:620px; width:300px; height:70px;">
+        <img src="icons/brands/slack.svg" alt="" />
+        <div>
+            <div class="title">Slack contact point</div>
+            <div class="sub">one per rule</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

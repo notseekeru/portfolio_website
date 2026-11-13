@@ -39,3 +39,8 @@ render three-tier-legacy.html 720,620 aws-three-tier-legacy.png
 render cost-comparison.html 900,430 aws-cost-comparison.png
 render sre-sweep.html 840,650 sre-sweep-flow.png
 render cloud-automation.html 900,890 cloud-automation-stack.png
+render digging-the-wire.html 900,560 digging-the-wire.png
+render payment-rail.html 800,720 shipping-payment-rail.png
+render deploy-pipeline.html 900,460 shipping-deploy-pipeline.png
+render log-pipeline.html 760,720 shipping-log-pipeline.png
+render voice-path.html 900,760 shipping-voice-path.png

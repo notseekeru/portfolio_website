@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 900px;
+        height: 460px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    #wires { position: absolute; inset: 0; z-index: 1; }
+    .step {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 12px 14px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .step .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .step .sub { margin-top: 4px; font-size: 11.5px; color: var(--muted); line-height: 1.35; }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <svg id="wires" viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
+            </marker>
+        </defs>
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+            <path d="M230,118 H250" marker-end="url(#arrow)" />
+            <path d="M440,118 H460" marker-end="url(#arrow)" />
+            <path d="M650,118 H670" marker-end="url(#arrow)" />
+            <path d="M765,166 V290" marker-end="url(#arrow)" />
+            <path d="M670,338 H650" marker-end="url(#arrow)" />
+            <path d="M460,338 H440" marker-end="url(#arrow)" />
+            <path d="M250,338 H230" marker-end="url(#arrow)" />
+        </g>
+    </svg>
+
+    <div class="step" style="left:40px; top:70px; width:190px; height:96px;">
+        <div class="title">Green commit</div>
+        <div class="sub">on main</div>
+    </div>
+
+    <div class="step" style="left:250px; top:70px; width:190px; height:96px;">
+        <div class="title">CI</div>
+        <div class="sub">ruff, pytest, biome, tsc, build</div>
+    </div>
+
+    <div class="step" style="left:460px; top:70px; width:190px; height:96px;">
+        <div class="title">Images</div>
+        <div class="sub">both built, Trivy scanned</div>
+    </div>
+
+    <div class="step" style="left:670px; top:70px; width:190px; height:96px;">
+        <div class="title">Bump tag</div>
+        <div class="sub">pinned tag in the gitops repo</div>
+    </div>
+
+    <div class="step" style="left:670px; top:290px; width:190px; height:96px;">
+        <div class="title">ArgoCD</div>
+        <div class="sub">prune + selfHeal</div>
+    </div>
+
+    <div class="step" style="left:460px; top:290px; width:190px; height:96px;">
+        <div class="title">PreSync Job</div>
+        <div class="sub">yoyo migrations from the app image</div>
+    </div>
+
+    <div class="step" style="left:250px; top:290px; width:190px; height:96px;">
+        <div class="title">Pods roll</div>
+        <div class="sub">in namespace</div>
+    </div>
+
+    <div class="step" style="left:40px; top:290px; width:190px; height:96px;">
+        <div class="title">Neon</div>
+        <div class="sub">direct host, never the pooler</div>
+    </div>
+</div>
+</body>
+</html>
