@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 840px;
+        height: 650px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    #wires { position: absolute; inset: 0; z-index: 1; }
+    .step {
+        position: absolute;
+        padding: 12px 14px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .step.decide { border-left: 3px solid var(--amber); }
+    .step .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .step .sub { margin-top: 3px; font-size: 12px; color: var(--muted); line-height: 1.3; }
+
+    .label {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+        z-index: 3;
+        white-space: nowrap;
+    }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <svg id="wires" viewBox="0 0 840 650" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
+            </marker>
+        </defs>
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+            <path d="M480,94 V116" marker-end="url(#arrow)" />
+            <path d="M480,180 V202" marker-end="url(#arrow)" />
+            <path d="M480,266 V288" marker-end="url(#arrow)" />
+            <path d="M480,352 V374" marker-end="url(#arrow)" />
+            <path d="M480,438 V460" marker-end="url(#arrow)" />
+            <path d="M610,406 H640 V320 H610" marker-end="url(#arrow)" />
+            <path d="M610,234 H660" marker-end="url(#arrow)" />
+            <path d="M350,320 H322 V362 H300" marker-end="url(#arrow)" />
+            <path d="M180,394 V426" marker-end="url(#arrow)" />
+            <path d="M60,458 H40 V362 H60" marker-end="url(#arrow)" />
+            <path d="M180,490 V522" marker-end="url(#arrow)" />
+            <path d="M300,554 H330 V578 H350" marker-end="url(#arrow)" />
+        </g>
+    </svg>
+
+    <div class="step" style="left:350px; top:30px; width:260px; height:64px;">
+        <div class="title">Open the perf window</div>
+        <div class="sub">in gitops</div>
+    </div>
+
+    <div class="step" style="left:350px; top:116px; width:260px; height:64px;">
+        <div class="title">Cleanup</div>
+        <div class="sub">delete the sweep identity's rows</div>
+    </div>
+
+    <div class="step" style="left:350px; top:202px; width:260px; height:64px;">
+        <div class="title">Smoke</div>
+        <div class="sub">10 VUs, 10 seconds</div>
+    </div>
+
+    <div class="step" style="left:350px; top:288px; width:260px; height:64px;">
+        <div class="title">Ladder</div>
+        <div class="sub">100 VUs, then doubling</div>
+    </div>
+
+    <div class="step decide" style="left:350px; top:374px; width:260px; height:64px;">
+        <div class="title">Levels left?</div>
+        <div class="sub">a level is one VU target</div>
+    </div>
+
+    <div class="step terminal" style="left:350px; top:460px; width:260px; height:64px;">
+        <div class="title">Stop</div>
+        <div class="sub">raise the VU ceiling</div>
+    </div>
+
+    <div class="step terminal" style="left:350px; top:546px; width:260px; height:64px;">
+        <div class="title">Close the window</div>
+        <div class="sub">cleanup only</div>
+    </div>
+
+    <div class="step" style="left:60px; top:330px; width:240px; height:64px;">
+        <div class="title">Binary search</div>
+        <div class="sub">after an SLO miss</div>
+    </div>
+
+    <div class="step" style="left:60px; top:426px; width:240px; height:64px;">
+        <div class="title">Confirm</div>
+        <div class="sub">3 windows of 5 minutes</div>
+    </div>
+
+    <div class="step" style="left:60px; top:522px; width:240px; height:64px;">
+        <div class="title">Boundary</div>
+        <div class="sub">read the CSV and Grafana</div>
+    </div>
+
+    <div class="step terminal" style="left:660px; top:202px; width:160px; height:64px;">
+        <div class="title">Abort</div>
+        <div class="sub">the smoke failed</div>
+    </div>
+
+    <div class="label" style="left:620px; top:220px;">fail</div>
+    <div class="label" style="left:648px; top:392px;">yes</div>
+    <div class="label" style="left:492px; top:448px;">no</div>
+</div>
+</body>
+</html>

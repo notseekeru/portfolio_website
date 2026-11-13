@@ -1,6 +1,6 @@
 # Blog diagrams
 
-The figures in `moving-my-app-to-aws-serverless.md`. Each is a fixed-coordinate HTML page that renders to a PNG in `frontend/public/`.
+The figures used across the blog posts. Each is a fixed-coordinate HTML page that renders to a PNG in `frontend/public/`.
 
 ## Render
 
@@ -54,7 +54,7 @@ Title for the service, one subtitle for the concrete value. Add a `.label` only 
 
 ## Icons
 
-`icons/` holds the square service icons from the [AWS Architecture Icons](https://aws.amazon.com/architecture/icons/) package, 80px each. Use them under AWS's icon terms. The vendored set has no service square for NAT Gateway, so `NAT.png` is the official 48px resource SVG with its fill switched to white, scaled 1.18x and centered on an 80px `#8C4FFF` square. The Cloudflare mark is inline SVG from [simple-icons](https://github.com/simple-icons/simple-icons).
+`icons/` holds the square service icons from the [AWS Architecture Icons](https://aws.amazon.com/architecture/icons/) package, 80px each. Use them under AWS's icon terms. The vendored set has no service square for NAT Gateway, so `NAT.png` is the official 48px resource SVG with its fill switched to white, scaled 1.18x and centered on an 80px `#8C4FFF` square. Non-AWS tools use their brand mark from [simple-icons](https://github.com/simple-icons/simple-icons) at the same 26px slot, with the brand colour written into the SVG; Cloudflare is inline.
 
 The general glyphs (`Client.png`, `Email.png`) stay dark line art because they are not AWS services. Do not mix the resource outline icons back in for AWS services. To add a service, take its 80px `Arch_*_64.png` from the package's `Architecture-Service-Icons` folder and save it as `icons/<Service>.png`.
 
