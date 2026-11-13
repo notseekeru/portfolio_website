@@ -56,16 +56,7 @@ The swap stayed cheap because the entitlement was always mine. One `subscription
 
 The recurring rail is blocked, so I put 30 days of premium on the same `current_period_end` field that the recurring path would have written when it exists. The capability block stopped being a blocker and became a gap in the automation. When PayMongo lifts it, the write path already has somewhere to put the answer.
 
-```mermaid
-graph LR
-    U["Upgrade, period mode"] --> PI["PayMongo payment intent, payment_method_allowed: qrph"]
-    PI --> WH["Signed webhook, payment.paid"]
-    WH --> S["subscriptions row, plan premium, current_period_end plus 30 days"]
-    S --> T["resolve_tier"]
-    T --> Q["free tier keeps the daily cap, premium lifts it"]
-    G2["Cards need a registered business type"] -.-> PI
-    G3["Subscriptions and Card Vaulting are support-gated"] -.-> S
-```
+![Paper flow chart of the period-mode upgrade. Upgrade starts a PayMongo payment intent for QR Ph; the signed payment.paid webhook writes a premium subscription row with current_period_end plus 30 days; resolve_tier reads it, and the daily cap stays for free or lifts for premium. Two constraints: cards need a registered business type, and subscriptions and Card Vaulting are support-gated.](/shipping-payment-rail.png)
 
 Bring-your-own-key is the other half of the same reasoning. If someone brings their own provider credentials, they skip free cap (still limited to high caps) without changing their tier, so the keys are Fernet-encrypted at rest with only a last-four hint readable back.
 
@@ -75,16 +66,7 @@ Prod is one Neon project reached over its direct host and not through the pooler
 
 Promotion is continuous and has no ceremony. Green CI builds both images, Trivy scans them, and a job bumps the pinned tag in the gitops repository.
 
-```mermaid
-graph LR
-    Main["Green commit on main"] --> CI["CI, ruff and pytest, biome and tsc and build"]
-    CI --> Img["Both images built, Trivy scanned"]
-    Img --> Bump["Job bumps the pinned tag in the gitops repo"]
-    Bump --> Argo["ArgoCD, prune and selfHeal"]
-    Argo --> Pre["PreSync Job, yoyo migrations from the app image"]
-    Pre --> Pods["Pods roll in namespace"]
-    Pods --> Neon["Neon on its direct host, never the pooler"]
-```
+![Paper snake flow of the deploy. A green commit on main runs CI (ruff, pytest, biome, tsc, build), builds both images and scans them with Trivy, bumps the pinned tag in the gitops repo, then hands off to ArgoCD with prune and selfHeal. The PreSync Job runs the yoyo migrations from the app image, the pods roll in their namespace, and Neon is reached on its direct host, never the pooler.](/shipping-deploy-pipeline.png)
 
 The click moment of the whole build was not the first payment. It was watching the app answer on its own domain for the first time, knowing the migration job in front of it had run inside the same image the pods were about to start. Everything before that had been verified in pieces. That was the first time the pieces were live at once.
 
@@ -151,21 +133,7 @@ That script is the other thing this work produced. The whole stack is portable n
 
 Two bugs earned their keep during the install. Every panel went red with no data because the `app` template variable had no value, which is invisible until you read Grafana's own UI instead of your own code. And one rule's regex could never match the log line it was written against, found the same way. Neither would have been caught by a test. Both were caught by looking at the screen I was claiming to monitor.
 
-```mermaid
-graph LR
-    App["FastAPI stdout, one JSON line"] --> Alloy["Alloy Deployment, tails pod logs through the API"]
-    Browser["Browser error beacon"] --> App
-    Alloy --> Loki["Grafana Cloud Loki, 14 day retention"]
-    Loki --> Dash["Dashboard, six panels, every number a LogQL aggregate at query time"]
-    subgraph Rules["Four rules in the maxterview folder, all noDataState OK"]
-        R1["backend 5xx"]
-        R2["LLM failures"]
-        R3["backend tracebacks"]
-        R4["browser errors"]
-    end
-    Loki --> Rules
-    Rules --> Slack["Slack contact point"]
-```
+![Paper log pipeline. The browser error beacon hits FastAPI, which writes one JSON line to stdout; Alloy tails the pod logs through the API and ships them to Grafana Cloud Loki with 14 day retention. Loki feeds the six-panel dashboard and the four rules in the maxterview folder, all with noDataState OK, and the rules route to a Slack contact point.](/shipping-log-pipeline.png)
 
 No metric SDK, no trace SDK, and no telemetry credential anywhere near the browser.
 
@@ -190,20 +158,7 @@ Both directions run on Cloudflare Workers AI inside a free allocation of **10,00
 
 The voice is the scarce resource, not the transcription. A day is roughly 2 to 7 runs where the answer budget alone would allow 14. `@cf/myshell-ai/melotts` is the model this account cannot run at all, answering `AiError: Internal server error` (code 3043) on every request while the same token drives the other two, which is how the default became Aura. That turned out better anyway, since Aura is the human voice and MeloTTS is the generic one that got the browser engines deleted.
 
-```mermaid
-graph LR
-    Mic["Mic, one take, 180 second cap, live meter"] --> STT["POST /api/voice/stt"]
-    STT --> Whisper["whisper-large-v3-turbo, 87 neurons for a 112 second clip"]
-    Whisper --> Box["Transcript lands in the answer box"]
-    Box --> Chat["The same SSE chat route as typed text"]
-    Chat --> Chunk["Sentence chunker, 140 characters then 320"]
-    Chunk --> Aura["POST /api/voice/tts, Aura-1, one request per line"]
-    Aura --> Play["Playback queue, next line fetched while this one is heard"]
-    Play --> Cap["Caption revealed up to the spoken line"]
-    Budget["10,000 neurons a day, shared by the account"] -.-> Whisper
-    Budget -.-> Aura
-    Gate["GET /api/voice gates both controls"] -.-> Mic
-```
+![Paper voice path. The mic records one take with a 180 second cap and live meter; POST /api/voice/stt sends it to whisper-large-v3-turbo; the transcript lands in the answer box and goes through the same SSE chat route as typed text. A sentence chunker splits at 140 then 320 characters, POST /api/voice/tts asks Aura-1 for one request per line, and the playback queue fetches the next line while the current one plays; the caption reveals up to the spoken line. Two constraints: the voice gate at GET /api/voice controls both, and a shared 10,000 neuron daily budget caps Whisper and Aura.](/shipping-voice-path.png)
 
 Past the allocation, voice goes unavailable with a reason on screen. A degraded feature, never an invoice.
 
