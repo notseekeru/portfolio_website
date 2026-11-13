@@ -56,21 +56,7 @@ The model routes sit outside the latency gates for the same reason the alert rul
 
 A sweep is the whole experiment, and it walks levels: 10 VUs, then 20, then 100. A level is a stage at one VU target: a 30 second ramp, a 60 second hold, then a 3 minute measurement window. Only the window counts. Gating a ramp measures the ramp.
 
-```mermaid
-graph TD
-    O["open the perf window in gitops"] --> CL["cleanup, delete the sweep identity's rows"]
-    CL --> SM["smoke, 10 VUs for 10s"]
-    SM -->|fail| AB["abort the sweep"]
-    SM -->|pass| LAD["ladder, 100 VUs then doubling"]
-    LAD -->|pass| UP{"levels left"}
-    UP -->|yes| LAD
-    UP -->|no| ST["stop, raise the VU ceiling"]
-    LAD -->|fail an SLO| SRCH["binary search the gap"]
-    SRCH --> CON["confirm, 3 windows of 5 minutes"]
-    CON -->|all three pass| BND["boundary, read off the CSV and Grafana"]
-    CON -->|any run fails| SRCH
-    BND --> CW["close the perf window, cleanup only"]
-```
+![Paper flow chart of the sweep. Open the perf window in gitops, clean up the sweep identity's rows, then a 10 VU smoke. A failed smoke aborts. The ladder runs 100 VUs and doubles; a failed SLO goes to a binary search, then three 5 minute confirmation windows, then the boundary read off the CSV and Grafana, then the window closes. A failed confirmation returns to the search. When no levels are left, the ladder stops and raises the VU ceiling.](/sre-sweep-flow.png)
 
 The smoke is the rig's own check and it is not optional. Ten VUs for ten seconds, before any ladder, and a failure there aborts the sweep because the app or the generator is broken and no number after it means anything.
 
