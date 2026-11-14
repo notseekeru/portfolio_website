@@ -59,9 +59,9 @@ No NAT gateway, no ALB, no CloudFront, no ACM, so the fixed cost is one EC2 inst
 
 But ofcourse there is a tradeoff. A reboot is an outage for ingress and outbound traffic, nothing fails over because nothing can, and the probe had to live outside the VPC, because its whole job is noticing that the edge is the broken part and it cannot do that from inside the network the edge carries.
 
-But here is the thing about a lambda, it only runs when something calls it, so it cannot keep a tunnel open, it cannot listen on a port, and it cannot be the next hop in a route table, which means the way into this stack needs a process that stays alive the whole time. That is the hybrid part, one box that never sleeps at the edge and then the event-driven functions behind it doing the actual work. Keeping the app off that box is the other half of it, since a review burst cannot take CPU away from nginx, and a worker that dies mid-job loses nothing because the queue still holds the message.
+But here is the thing about a lambda, it only runs when something calls it, so it cannot keep a tunnel open, it cannot listen on a port, and it cannot be the next hop in a route table, which means the way into this stack needs a process that stays alive the whole time. That is the hybrid part, one box that never sleeps at the edge and then the event-driven functions behind it doing the actual work.
 
-And the box is not decoration either, the private route table's default route points at that instance's network interface and source and destination checking is off so it is allowed to forward traffic, which is exactly what a nat appliance does anyway, except this one also answers nginx and holds the tunnel.
+Keeping the app off that box is the other half of it, since a burst cannot take CPU away from nginx, and a worker that dies mid-job loses nothing because the queue still holds the message. This is important to separate compute because the EC2 might crash because it shared the same machine from the app. I mean it's not just that but I just wanted some decoupling since I feels cleaner that way and follows my pattern of like having a clean and understandable architecture.
 
 ## Why There Is No Failover
 

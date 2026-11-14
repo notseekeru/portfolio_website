@@ -1,4 +1,4 @@
-There is a specific kind of peace in knowing every piece of your own infrastructure.
+I threw out my working AWS stack.
 
 I had that in August with a proper 3-tier stack, an ALB in front of an ASG with EC2, RDS, S3 + CloudFront, and it worked on Terraform.
 
@@ -32,9 +32,7 @@ And there is a tradeoff, ofcourse. The edge lives in one availability zone, the 
 
 So an AZ event or one bad reboot takes ingress and egress down together.
 
-Nothing fails over, because nothing can.
-
-Rebuild is my failover, and I would rather pay once during an incident than every month for standby I never touch, so I take recovery time over uptime.
+But I would rather pay once during an incident than every month for nothing ever getting used.
 
 And beside, if I wanted I could just flip some few buttons, turn on multi AZ and failover, and write "Architected multi-AZ failover" on my resume like that is a thing I manage.
 
