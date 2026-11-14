@@ -30,7 +30,7 @@ Each page is one `#canvas`. Fixed coordinates instead of a layout engine: the ar
 - a dashed `.vpc` or `.zone` with a `.zone-label` pill or lane labels
 - z-order: zone, wires, cards, labels
 
-Canvas sizes live in `render.sh`. The size passed there, the `#canvas` width/height and the SVG `viewBox` are one value written in three places; change all three together or the screenshot crops. The nodes, wires and labels carry the geometry, so a change to one is a change to its coordinates.
+Canvas sizes live in `render.sh`. The size passed there, the `#canvas` width/height and the SVG `viewBox` are one value written in three places; change all three together or the screenshot crops. The nodes, wires and labels carry the geometry, so a change to one is a change to its coordinates. Do not wrap the page in a scaled stage to fit more content; grow the canvas and move the geometry. A scale hides the mismatch between canvas, viewBox and render size.
 
 Open a page in a browser before rendering. The canvas is already at final size, so what you see is the layout minus the 2x export.
 
@@ -79,6 +79,12 @@ Inter and JetBrains Mono, the same families the site loads, plus DejaVu fallback
 
 ## Scope
 
-For the serverless page, deploys (GitHub OIDC, ECR) and config (SSM) are not drawn; a deploy figure for that stack would own them.
+For the serverless page, the GitHub OIDC deploy role and the CD push to ECR are not drawn; a deploy figure for that stack would own them. SSM config and ECR images have their own cards.
 
 Labels and values follow the stack each post describes. Do not add a service that stack does not run.
+
+## Before committing
+
+- Look at the whole PNG at post width: new cards carry their icons, and no note or footer shares a card's rows.
+- Size check: the canvas, the SVG viewBox and the render size agree, with no scaled wrapper.
+- Diff check: only the pages and PNGs you meant. A PNG change with no source change is antialiasing.
