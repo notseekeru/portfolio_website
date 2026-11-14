@@ -21,7 +21,7 @@
     #canvas {
         position: relative;
         width: 900px;
-        height: 780px;
+        height: 900px;
         overflow: hidden;
         background-color: var(--paper);
         background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
@@ -30,6 +30,20 @@
         color: var(--ink);
     }
     #wires { position: absolute; inset: 0; z-index: 1; }
+    .foot-note {
+        position: absolute;
+        left: 24px;
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        z-index: 3;
+    }
+    .foot-note b { font-weight: 500; color: var(--amber); }
+    .foot-note img { width: 18px; height: 18px; }
+    .foot-note .off { display: flex; align-items: center; gap: 5px; }
     .vpc {
         position: absolute;
         left: 24px;
@@ -87,7 +101,7 @@
         left: 48px;
         top: 240px;
         width: 548px;
-        height: 136px;
+        height: 146px;
         display: block;
         padding: 13px 14px;
         background: #edf2e9;
@@ -153,7 +167,7 @@
 </head>
 <body>
 <div id="canvas">
-    <svg id="wires" viewBox="0 0 900 780" xmlns="http://www.w3.org/2000/svg">
+    <svg id="wires" viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
@@ -178,6 +192,8 @@
             <path d="M664,655 H652 V455 H664" marker-end="url(#arrow)" />
         </g>
         <path d="M523,104 V240" fill="none" stroke="#9a5b12" stroke-width="1.6" stroke-dasharray="4 3" stroke-linecap="round" opacity="0.8" marker-end="url(#arrow-amber)" />
+        <path d="M434,770 V740" fill="none" stroke="#9a5b12" stroke-width="1.6" stroke-dasharray="4 3" stroke-linecap="round" opacity="0.8" marker-end="url(#arrow-amber)" />
+        <path d="M730,770 V752 H600 V740" fill="none" stroke="#9a5b12" stroke-width="1.6" stroke-dasharray="4 3" stroke-linecap="round" opacity="0.8" marker-end="url(#arrow-amber)" />
     </svg>
 
     <div class="vpc"></div>
@@ -327,6 +343,39 @@
 
     <div class="label" style="left:316px; top:156px;">tunnel</div>
     <div class="label" style="left:531px; top:156px; color:#9a5b12;">dist sync</div>
+
+    <div class="node" style="left:24px; top:770px; width:260px; height:76px; align-items:center;">
+        <img src="icons/brands/terraform.svg" alt="" />
+        <div>
+            <div class="title">Terraform</div>
+            <div class="sub">the whole stack, so a rebuild is a re-apply</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:304px; top:770px; width:260px; height:76px; align-items:center;">
+        <img src="icons/SSM.png" alt="" />
+        <div>
+            <div class="title">SSM Parameter Store</div>
+            <div class="sub">8 SecureString params, read at cold start</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:584px; top:770px; width:292px; height:76px; align-items:center;">
+        <img src="icons/ECR.png" alt="" />
+        <div>
+            <div class="title">ECR</div>
+            <div class="sub">Lambda images, pulled at cold start</div>
+        </div>
+    </div>
+
+    <div class="foot-note" style="top:860px;">
+        <span><b>not in this stack:</b></span>
+        <span class="off"><img src="icons/ELB.png" alt="" />ALB</span>
+        <span class="off"><img src="icons/NAT.png" alt="" />NAT gateway</span>
+        <span class="off"><img src="icons/CloudFront.png" alt="" />CloudFront</span>
+        <span class="off"><img src="icons/CertificateManager.png" alt="" />ACM</span>
+        <span class="off"><img src="icons/line/copy.svg" alt="" />warm standby</span>
+    </div>
 </div>
 </body>
 </html>
