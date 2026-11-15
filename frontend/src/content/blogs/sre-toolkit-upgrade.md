@@ -10,6 +10,7 @@ github: https://github.com/notseekeru/maxterview_website
 Maxterview is an interview simulator: a candidate creates an interview, the interviewer's opener streams into the page, they answer turn by turn, and the run closes with a graded review. That session is the unit of load, and one virtual user runs exactly one.
 
 It runs on one Raspberry Pi 5 with one replica, no autoscaler, and a Neon database in another region. I did not know what load that holds, and I had no honest way of finding out, so I wrote the experiment down first and ran it afterwards to fix it.
+![Paper stack diagram in five zones. Driver: k6 on the laptop with its SLO gates at p95 under 1s, p99 under 5s and errors under 1%, and a per-level readout in CSV and Grafana. Reach: Tailscale is the only hop, then the backend NodePort, which bypasses ingress and the edge. Pi 5 running k3s: one maxterview API pod with one replica, a 256Mi limit, pool 40 and the model stubbed; Prometheus scrapes it for the dashboards; ArgoCD applies the pool value from gitops; two notes hold the scope: one replica with no autoscaler and no failover, and one identity so cleanup has a single owner. Database: Neon Postgres on the prod branch in another region, two or three queries per request, and a warm SELECT 1 at 37ms inside the pod. Edge: Cloudflare, the tunnel and ingress NGINX on the production path, not measured.](/sre-sweep-stack.png)
 
 ---
 
@@ -121,6 +122,8 @@ Raising the pool to 40 turned 55 VUs from a failure into a pass and cut the wait
 | 40   | 100 | fail    | 1.64s  | 66.7 | 209ms    | 163ms      | 56%    |
 | 80   | 100 | fail    | 1.87s  | 75.0 | 6ms      | 248ms      | 74%    |
 
+![Paper comparison of the pool, one row per measurement with a capacity bar scaled to queries a second. Pool 20 at 55 VUs gives 172 queries a second and fails. Pool 40 at 55 VUs gives 245 and passes. Pool 40 at 100 VUs fails with a 209ms wait. Pool 80 at 100 VUs gives 323 and fails, with the wait gone and the mean query up to 248ms. Each doubling buys less, 43 percent then 32 percent.](/sre-pool-tradeoff.png)
+
 Read the two 100 VU rows next to each other. At 80 connections nothing waits for a connection, and the request p95 gets worse anyway, because every query now runs against a busier Neon. The mean query goes from 163ms to 248ms and the pod's memory from 56 to 74 percent of its limit.
 
 Pool capacity is connections over mean query time, so 20 gives 172 queries a second, 40 gives 245, and 80 gives 323. Each doubling buys less than the one before, 43 percent then 32 percent, and the swing and the memory pay for it. A warm `SELECT 1` from inside the pod is 37ms at the median, so co-location could save that floor and could never save the inflation.
@@ -134,6 +137,8 @@ Forty ships. The pod's memory is what caps the pool, and Neon's compute is what 
 | 2026-10-22 | pool 10, before the changes | 10          | 17        | 20         |
 | 2026-10-23 | optimized changes (pool 20) | 32          | 50        | 55         |
 | 2026-10-23 | pool 40                     | 55          | 70        | 100        |
+
+![Paper ladder on a 0 to 110 virtual user axis. Pool 10 before the changes passed once at 10 VUs and first failed at 20, at 17 requests a second. The optimized changes at pool 20 passed once at 32 and first failed at 55, at 50 requests a second. Pool 40 passed once at 55 and first failed at 100, at 70 requests a second. The note reads 55 is the SLO boundary, not the product ceiling.](/sre-boundary-ladder.png)
 
 55 is the SLO boundary and not the product ceiling. At 100 VUs the error rate stays under one percent and p99 is inside its gate, while p95 and the session check fail. The app keeps serving past the number, it just stops being acceptable by my own definition of acceptable.
 
