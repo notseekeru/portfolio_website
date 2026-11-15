@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 900px;
+        height: 380px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    .head, .lane {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        z-index: 3;
+        white-space: nowrap;
+    }
+    .pname {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 13px;
+        color: var(--ink);
+        z-index: 3;
+    }
+    .pill {
+        position: absolute;
+        height: 20px;
+        padding: 0 9px;
+        border: 1px solid;
+        border-radius: 99px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 11px;
+        line-height: 18px;
+        z-index: 3;
+        white-space: nowrap;
+    }
+    .pill.pass { color: var(--accent); border-color: rgba(47, 107, 79, 0.45); background: #edf2e9; }
+    .pill.fail { color: var(--amber); border-color: rgba(154, 91, 18, 0.4); background: #f7eddd; }
+    .bar {
+        position: absolute;
+        height: 24px;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 11.5px;
+        z-index: 2;
+    }
+    .bar.ink { background: var(--ink); color: var(--paper); }
+    .bar.green { background: var(--accent); color: var(--paper); }
+    .meta {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 12px;
+        color: var(--muted);
+        z-index: 3;
+        white-space: nowrap;
+    }
+    .rule {
+        position: absolute;
+        left: 40px;
+        width: 820px;
+        height: 1px;
+        background: rgba(27, 24, 18, 0.18);
+        z-index: 1;
+    }
+    .note { position: absolute; z-index: 3; }
+    .note .lead { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+    .note .tail { margin-top: 6px; font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <div class="lane" style="left:40px; top:26px;">pool capacity · connections ÷ mean query time</div>
+    <div class="head" style="left:40px; top:58px;">pool</div>
+    <div class="head" style="left:120px; top:58px;">measured</div>
+    <div class="head" style="left:240px; top:58px;">queries a second</div>
+
+    <div class="pname" style="left:40px; top:84px;">20</div>
+    <div class="pill fail" style="left:120px; top:82px;">55 VUs · fail</div>
+    <div class="bar ink" style="left:240px; top:80px; width:197px;">172</div>
+    <div class="meta" style="left:240px; top:112px;">p95 1.096s · 50.0 rps · wait 170ms · query 112ms · mem 50%</div>
+
+    <div class="pname" style="left:40px; top:140px;">40</div>
+    <div class="pill pass" style="left:120px; top:138px;">55 VUs · pass</div>
+    <div class="bar green" style="left:240px; top:136px; width:280px;">245</div>
+    <div class="meta" style="left:240px; top:168px;">p95 832ms · 70.3 rps · wait 5ms · query 150ms · mem 52%</div>
+
+    <div class="pname" style="left:40px; top:196px;">40</div>
+    <div class="pill fail" style="left:120px; top:194px;">100 VUs · fail</div>
+    <div class="bar green" style="left:240px; top:192px; width:280px;">245</div>
+    <div class="meta" style="left:240px; top:224px;">p95 1.64s · 66.7 rps · wait 209ms · query 163ms · mem 56%</div>
+
+    <div class="pname" style="left:40px; top:252px;">80</div>
+    <div class="pill fail" style="left:120px; top:250px;">100 VUs · fail</div>
+    <div class="bar ink" style="left:240px; top:248px; width:369px;">323</div>
+    <div class="meta" style="left:240px; top:280px;">p95 1.87s · 75.0 rps · wait 6ms · query 248ms · mem 74%</div>
+
+    <div class="rule" style="top:308px;"></div>
+    <div class="note" style="left:40px; top:326px;">
+        <div class="lead">each doubling buys less: +43%, then +32%</div>
+        <div class="tail">Forty ships. The pod's memory is what caps the pool, and Neon's compute is what inflates as it grows.</div>
+    </div>
+</div>
+</body>
+</html>

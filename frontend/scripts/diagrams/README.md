@@ -18,6 +18,7 @@ The post uses the output as `![alt](/name.png)` in place of its Mermaid block; t
 - Stack: a zone or column per layer, cards with AWS squares or brand marks. Use it for a topology.
 - Flow: a vertical chain or a snake, `.step` cards with line icons, loops on the margin, `.note` beside the card it constrains. Use it for a procedure.
 - Comparison: a few cards plus a scaled bar, numbers on the cards. Use it when the claim is a ratio.
+- Ladder: a shared axis with one track per config, solid to the last pass, hatched to the first fail. Use it when the claim is where a system stops.
 
 The canvas is the label budget. The post shows it at prose width, so a wider canvas buys layout room and costs type size; match the width to the density and check at post width. Start from the closest existing page; its CSS is the template.
 
