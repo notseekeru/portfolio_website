@@ -7,7 +7,7 @@ github: https://github.com/notseekeru/maxterview_website
 
 # Summary
 
-Maxterview is an interview simulator: a candidate creates an interview, the interviewer's opener streams into the page, they answer turn by turn, and the run closes with a graded review. That session is the unit of load, and one virtual user runs exactly one.
+Maxterview, my personal project I benchmarked to have those juicy numbers.
 
 It runs on one Raspberry Pi 5 with one replica, no autoscaler, and a Neon database in another region. I did not know what load that holds, and I had no honest way of finding out, so I wrote the experiment down first and ran it afterwards to fix it.
 
@@ -22,8 +22,6 @@ It runs on one Raspberry Pi 5 with one replica, no autoscaler, and a Neon databa
 The gap between the two posts is the thing to admit first. Back then I generated traffic with curl or locust loops and called it a load test. It did what I needed it to do, which was prove that a dashboard moves when traffic moves, and it left me with no idea what my own machine holds. Worse, I could not defend those numbers months later, because nothing in an improvised script records what it measured and what it meant.
 
 So the specification, order, and knowledge came before any run this time. How do I actually benchmark and measure an application, at what load does prod stop behaving acceptably, and which resource runs out first. Three questions, and every table below exists to answer one of them.
-
-Benchmarking here means measuring the app against a stated bar, not guessing from a dashboard.
 
 ![Paper comparison of June and October. June was SRE Steps: curl and locust loops, a dashboard that moves, no record and no ceiling. October is this sweep: the spec and its refusals, gates stated first, the boundary read off the CSV at 55 VUs and 70 rps. The footer names the three questions.](/sre-then-now.png)
 
