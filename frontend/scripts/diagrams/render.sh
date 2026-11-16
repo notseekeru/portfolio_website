@@ -38,7 +38,7 @@ render serverless-flow.html 900,900 aws-serverless-flow.png
 render three-tier-legacy.html 720,620 aws-three-tier-legacy.png
 render cost-comparison.html 900,430 aws-cost-comparison.png
 render sre-sweep.html 840,650 sre-sweep-flow.png
-render sre-stack.html 840,856 sre-sweep-stack.png
+render sre-stack.html 840,880 sre-sweep-stack.png
 render sre-pool.html 900,380 sre-pool-tradeoff.png
 render sre-boundary.html 900,384 sre-boundary-ladder.png
 render cloud-automation.html 900,890 cloud-automation-stack.png
