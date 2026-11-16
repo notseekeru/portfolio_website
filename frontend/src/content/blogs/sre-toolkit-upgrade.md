@@ -10,6 +10,7 @@ github: https://github.com/notseekeru/maxterview_website
 Maxterview is an interview simulator: a candidate creates an interview, the interviewer's opener streams into the page, they answer turn by turn, and the run closes with a graded review. That session is the unit of load, and one virtual user runs exactly one.
 
 It runs on one Raspberry Pi 5 with one replica, no autoscaler, and a Neon database in another region. I did not know what load that holds, and I had no honest way of finding out, so I wrote the experiment down first and ran it afterwards to fix it.
+
 ![Paper stack diagram in five zones. Driver: k6 on the laptop with its SLO gates at p95 under 1s, p99 under 5s and errors under 1%, and a per-level readout in CSV and Grafana. Reach: Tailscale is the only hop, then the backend NodePort, which bypasses ingress and the edge. Pi 5 running k3s: one maxterview API pod with one replica, a 256Mi limit, pool 40 and the model stubbed; Prometheus scrapes it for the dashboards; ArgoCD applies the pool value from gitops; two notes hold the scope: one replica with no autoscaler and no failover, and one identity so cleanup has a single owner. Database: Neon Postgres on the prod branch in another region, two or three queries per request, and a warm SELECT 1 at 37ms inside the pod. Edge: Cloudflare, the tunnel and ingress NGINX on the production path, not measured.](/sre-sweep-stack.png)
 
 ---
@@ -24,6 +25,8 @@ So the specification, order, and knowledge came before any run this time. How do
 
 Benchmarking here means measuring the app against a stated bar, not guessing from a dashboard.
 
+![Paper comparison of June and October. June was SRE Steps: curl and locust loops, a dashboard that moves, no record and no ceiling. October is this sweep: the spec and its refusals, gates stated first, the boundary read off the CSV at 55 VUs and 70 rps. The footer names the three questions.](/sre-then-now.png)
+
 ## Planning of Specifications
 
 The spec took a week, and it was a lot of thinking. I ran the plan past ChatGPT, Gemini and DeepSeek in parallel(all webui), off the same inspiration that started this thread, Arjay McCandless's $12 VPS load testing series, and then had each one audit what the others produced.
@@ -33,8 +36,6 @@ That is how the things that do not belong in a capacity test got removed before 
 The week was not spent deciding whether to load test. It was spent on questions with no cheap answer: measure through localhost, through Tailscale, or let Cloudflare into the path and then explain how much of the number is edge latency and how much is bot fight mode. Whether NvidiaNIM's quota or Workers AI's neurons would stop the run before my pod did. How much Neon compute the sweep would spend, since it runs against prod's own branch. Which endpoint actually stands for the product. Which numbers were worth capturing at all. The spec that came out of it reads more like a list of refusals than a plan, and that is the compliment I would pay it.
 
 The useful part was not the agreement. Where two of them contradicted each other I had to open the app and read the code, and that is the moment the spec stopped being a model's answer. By the time I ran anything, three other models had already tried to grill my plan and architecture.
-
-## SLO Gates Instead Of An Opinion
 
 I set the SLO myself, because the number is only meaningful against a stated bar.
 
@@ -52,6 +53,8 @@ Correctness is the half I would not drop. Latency says nothing about whether an 
 Throughput is reported and never gated, because a level fixes the VUs and the RPS falls out of the app's own latency. A gate there would fail a level for answering slowly, which p95 already does.
 
 The model routes sit outside the latency gates for the same reason the alert rules exclude them. With the model stubbed, the ceiling there is a vendor's quota, not my Raspberry Pi.
+
+![Paper map of the spec paths: three candidates, localhost, Tailscale marked as the one used, and the Cloudflare edge that adds edge latency and bot fight mode. Three refusals: a seed script that writes the rows, the real model that turns the ceiling into a vendor quota, and a wrong endpoint that contaminates the next window. The footer says the models audited each other, disagreements sent me to the code, and the spec reads like a list of refusals.](/sre-spec-paths.png)
 
 ## The Sweep
 
@@ -76,11 +79,9 @@ Before touching prod I ran the whole workload on my laptop against the docker co
 | prod   | 20  | 3m     | 205ms | 1.25s  | 17.6s | 21.6 | fail    |
 | prod   | 100 | 3m     | 1.17s | 3.44s  | 8.54s | 38.3 | fail    |
 
-Three of my instincts were wrong in the same direction. I blamed my own rig. I assumed there had to be something wrong in the code. I trusted the laptop number over the box I actually deploy on.
+Three of my instincts were wrong in the same direction. I blamed my own setup, maybe there something wrong with k6, or could be somethign wrong with my configuration wiring.
 
-What settled it was the machine being bored. At 100 VUs it sat at 0.27 of four cores and 134Mi of a 256Mi limit, with an error rate of zero, which leaves a queue as the only explanation for a 3.44s p95. That number is also the reason the three golden signals I had been staring at for months finally said something useful: the box was not the problem and the signal proved it.
-
-## Where The Bottleneck Started To Appear
+## Some optimization decisions
 
 I went looking for a slow query and there was none. The slowest statement stayed under 2.12s at p99, which cannot explain a 17.6s max at 20 VUs.
 
@@ -98,18 +99,15 @@ So the fix was never the queries. Six changes, all of them on round trips, read 
 | Connection pool | 10                        | now a setting                  |
 
 The list read is the one I want to be honest about. It grew inside every window, 159 rows at 10 VUs, 241 at 20, 415 at 100, and it was never the slowest route in the report. Pagination shipped because the code was wrong, not because a measurement earned it. The N-sweep that would have settled it never ran.
-
-## Some optimization decisions
-
 The order between those two was deliberate. A `LIMIT` and an `OFFSET` is a change to a query I was already making. I thought about Redis, but Redis is a second compute to keep alive and a cache to invalidate, and it never appears in the same step as a missing `LIMIT`.
 
 There is a second reason it stayed out. If I had added a cache before the first run, I would never have known what the app costs without it, and every number after that would be a number about my cache instead of my product.
 
 Not having it also gave the pool something to reveal, which is the next section.
 
-## The Pool
+## The Pool Changes
 
-After the six changes the bottleneck moved to the one place the app could not fix: the pool of connections.
+After that, the bottleneck moved to the one place the app could not fix: the pool configurations
 
 At 20 connections and 100 VUs, 505ms of a 719ms p50 was spent waiting for a connection, while the mean query time stayed flat between 97 and 116ms across every window at 10 and 20 connections. The database never slowed. The queue formed because a request's two or three queries arrive in a burst, and ten or twenty checkouts cannot absorb a burst.
 
@@ -144,23 +142,11 @@ Forty ships. The pod's memory is what caps the pool, and Neon's compute is what 
 
 A VU is a whole interview compressed into about 21 seconds, which is why the rps number is the one to keep. 70 requests a second is real enough for one Pi with no autoscaler, holding full interviews with a database in another region.
 
-## The Noise I Cannot Attribute
-
-Some windows lose a few chat streams. 56 in 7,794 iterations, 0.72 percent, and not evenly: 29 in one 55 VU window and zero in another at the same level.
-
-The failed requests left no line in the app's access log when I checked, and the app logged no errors, so the drop is most likely on the sweep path itself, the laptop, Tailscale and the NodePort. Production does not use that path.
-
-It matters out of proportion to its size because the correctness check is binary. One dropped stream fails a window, which is exactly how 55 VUs at pool 80 reads as a failure at an 820ms p95 that passes the latency gate. So the next change is not a looser confirmation, which would cost me more than it saves. It is gating correctness at a rate and keeping the number honest.
-
 ## What This Number Does Not Cover
 
 Every measurement here went through the NodePort on the backend Service, which bypasses ingress, the tunnel and Cloudflare. That answers what my pod and its database can do, and it says nothing about what a real user pays at the edge. The edge sweep is the next run and it will not be comparable to these numbers, which is the point of running it.
 
-It also measures one shortcut. Every virtual user is the same identity so that cleanup has one owner, the model is stubbed, and hardcore mode is off. A real deployment is many people at once with authentication in the path, so the next architecture gives each VU its own identity and measures it.
-
 One pod, one node, no failover, one fixed traffic shape, and no unit economics anywhere in it. What I have is where it stops, not what an interview costs me to serve.
-
-The full sweep is also paused, because it has spent about 90 percent of Neon's compute allowance. One three minute window ran after that pause, and nothing else has.
 
 # Conclusion
 

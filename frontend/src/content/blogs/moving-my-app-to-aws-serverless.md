@@ -75,6 +75,8 @@ Multi-region is the same argument one level up. A second region is a second copy
 
 And beside, if I wanted I could just turn on some few buttons to turn on multi-az and failovers and vuala I can now write to my resume that seemingly "Architected Multi-az failover full stack application system" like dude that is something you don't even manage because you're on aws.
 
+![Paper map of the single-AZ stack: Cloudflare tunnels to one t4g.micro edge in us-east-1a running cloudflared, nginx and NAT, and ingress and egress land on that same box. RDS Postgres with multi_az = false sits in the same AZ, and a spare private subnet in us-east-1b shares the one route table whose default route points at the edge. On the side, the failover bill: multi-AZ RDS, a second edge and a load balancer to steer, against Terraform re-applied from snapshots, recovery time over uptime.](/aws-single-az.png)
+
 # Conclusion
 
 What I got out of this is a stack I can read line by line. I know what each piece does, what it costs, and what happens first when it breaks. There was alot of details and thought process I didn't put out since I didn't wanna make this blog long but if you want to talk about it then you can contact me through my social media links, Thanks for reading!
