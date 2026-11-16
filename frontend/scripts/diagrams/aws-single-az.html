@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 840px;
+        height: 600px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    #wires { position: absolute; inset: 0; z-index: 1; }
+    .zone {
+        position: absolute;
+        border: 1.5px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 12px;
+        z-index: 0;
+    }
+    .zone-label {
+        position: absolute;
+        left: 46px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        z-index: 3;
+    }
+    .zone-label img { width: 14px; height: 14px; flex: none; }
+    .zone-label .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); }
+    .zone-label .sub { font-size: 11px; color: var(--muted); }
+    .node {
+        position: absolute;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 11px 12px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .node img { width: 26px; height: 26px; flex: none; }
+    .node .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .node .sub { margin-top: 3px; font-size: 12px; color: var(--muted); line-height: 1.3; }
+    .panel {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 6px;
+        padding: 12px 14px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+    }
+    .panel .title { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+    .row { display: flex; justify-content: space-between; gap: 8px; }
+    .row .k, .row .v {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        line-height: 1.55;
+    }
+    .row .k { color: var(--muted); }
+    .row .v { color: var(--ink); text-align: right; }
+    .label {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+        z-index: 3;
+        white-space: nowrap;
+    }
+    .note {
+        position: absolute;
+        font-size: 12px;
+        line-height: 1.45;
+        color: var(--muted);
+        z-index: 3;
+    }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <svg id="wires" viewBox="0 0 840 600" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
+            </marker>
+        </defs>
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+            <path d="M164,84 V152" marker-end="url(#arrow)" />
+        </g>
+        <g fill="none" stroke="#9a5b12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.8">
+        </g>
+    </svg>
+
+    <div class="zone" style="left:24px; top:96px; width:520px; height:420px;"></div>
+    <div class="zone" style="left:568px; top:96px; width:248px; height:300px;"></div>
+    <div class="zone-label" style="left:590px; top:84px;"><span class="tag">failover</span><span class="sub">what it costs</span></div>
+    <div class="zone" style="left:568px; top:420px; width:248px; height:96px;"></div>
+    <div class="zone-label" style="left:590px; top:408px;"><span class="tag">instead</span><span class="sub">rebuild</span></div>
+
+    <div class="node" style="left:64px; top:24px; width:200px; height:60px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="flex:none;"><path fill="#F38020" d="M16.5088 16.8447c.1475-.5068.0908-.9707-.1553-1.3154-.2246-.3164-.6045-.499-1.0615-.5205l-8.6592-.1123a.1559.1559 0 0 1-.1333-.0713c-.0283-.042-.0351-.0986-.021-.1553.0278-.084.1123-.1484.2036-.1562l8.7359-.1123c1.0351-.0489 2.1601-.8868 2.5537-1.9136l.499-1.3013c.0215-.0561.0293-.1128.0147-.16-.5591-2.5342-2.8184-4.3798-5.4971-4.3798-2.4805 0-4.5996 1.5864-5.3525 3.7647-.4888-.3633-1.1074-.5591-1.7676-.4893-1.1855.1191-2.1382 1.0791-2.25 2.2656-.0303.3174-.0078.624.0644.9121C3.0518 9.0396 1.5 10.7778 1.5 12.8745c0 .1826.0146.3652.0439.5449a.2266.2266 0 0 0 .2246.1904h15.0547c.1069 0 .1987-.0718.2246-.1758l.0596-.2295c.0752-.2578.0449-.5049-.0752-.6836-.2148-.3164-.5801-.499-1.0371-.5205l-5.3516-.1123a.166.166 0 0 1-.1333-.2246c.0278-.084.1123-.1484.2036-.1562l5.4287-.1123c.6226-.0293 1.2832-.5605 1.5171-1.2012l.2944-.7695c.0147-.042.0147-.084.0074-.1191-.0215-.0772-.0928-.1338-.1738-.1338Z"/></svg>
+        <div>
+            <div class="title">Cloudflare</div>
+            <div class="sub">tunnel ingress</div>
+        </div>
+    </div>
+
+    <div class="zone" style="left:44px; top:128px; width:280px; height:360px; border-color: rgba(47, 107, 79, 0.4);"></div>
+    <div class="label" style="left:60px; top:140px;">us-east-1a</div>
+    <div class="node" style="left:64px; top:168px; width:240px; height:84px;">
+        <img src="icons/EC2.png" alt="" />
+        <div>
+            <div class="title">t4g.micro edge</div>
+            <div class="sub">cloudflared, nginx, NAT</div>
+        </div>
+    </div>
+    <div class="label" style="left:64px; top:258px;">ingress and egress land on one box</div>
+    <div class="node" style="left:64px; top:280px; width:240px; height:76px;">
+        <img src="icons/RDS.png" alt="" />
+        <div>
+            <div class="title">RDS Postgres</div>
+            <div class="sub">multi_az = false</div>
+        </div>
+    </div>
+    <div class="node" style="left:64px; top:384px; width:240px; height:76px;">
+        <img src="icons/VPC.png" alt="" />
+        <div>
+            <div class="title">one route table</div>
+            <div class="sub">0.0.0.0/0 → edge box</div>
+        </div>
+    </div>
+
+    <div class="zone" style="left:344px; top:128px; width:180px; height:360px;"></div>
+    <div class="label" style="left:360px; top:140px;">us-east-1b</div>
+    <div class="node" style="left:364px; top:168px; width:140px; height:76px;">
+        <div>
+            <div class="title">private subnet</div>
+            <div class="sub">spare, no route</div>
+        </div>
+    </div>
+
+    <div class="panel" style="left:588px; top:120px; width:208px; height:250px;">
+        <div class="title">the bill</div>
+        <div class="row"><span class="k">multi-AZ RDS</span><span class="v">doubles it</span></div>
+        <div class="row"><span class="k">a second edge</span><span class="v">doubles it</span></div>
+        <div class="row"><span class="k">a load balancer</span><span class="v">to steer</span></div>
+        <div class="note" style="position: static; margin-top: 4px;">That is a monthly bill for capacity that sits idle, and the ALB I already removed from the design.</div>
+    </div>
+    <div class="panel" style="left:588px; top:444px; width:208px; height:52px;">
+        <div class="row"><span class="k">Terraform</span><span class="v">re-apply</span></div>
+        <div class="row"><span class="k">recovery</span><span class="v">over uptime</span></div>
+    </div>
+
+    <div class="note" style="left:24px; top:536px; width:800px;">
+        An AZ event or one bad reboot takes ingress and egress down together, and the second subnet does not help, because both share the route table that points at that box.
+    </div>
+</div>
+</body>
+</html>

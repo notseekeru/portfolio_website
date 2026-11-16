@@ -45,5 +45,11 @@ render cloud-automation.html 900,890 cloud-automation-stack.png
 render digging-the-wire.html 900,560 digging-the-wire.png
 render payment-rail.html 800,720 shipping-payment-rail.png
 render deploy-pipeline.html 900,460 shipping-deploy-pipeline.png
-render log-pipeline.html 760,720 shipping-log-pipeline.png
+render log-pipeline.html 760,820 shipping-log-pipeline.png
 render voice-path.html 900,760 shipping-voice-path.png
+render aws-single-az.html 840,600 aws-single-az.png
+render sre-then-now.html 840,400 sre-then-now.png
+render sre-spec-paths.html 840,520 sre-spec-paths.png
+render shipping-floor.html 840,440 shipping-floor.png
+render shipping-runner-order.html 840,520 shipping-runner-order.png
+render shipping-rail-path.html 840,520 shipping-rail-path.png

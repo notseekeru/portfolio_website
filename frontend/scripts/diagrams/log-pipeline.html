@@ -20,7 +20,7 @@
     #canvas {
         position: relative;
         width: 760px;
-        height: 720px;
+        height: 820px;
         overflow: hidden;
         background-color: var(--paper);
         background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
@@ -94,11 +94,29 @@
         background: var(--amber);
         transform: translateY(-1px);
     }
+    .note { position: absolute; font-size: 12px; line-height: 1.5; color: var(--muted); z-index: 3; }
+    .panel {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 12px 14px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .panel .ptitle { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+    .row { display: flex; justify-content: space-between; gap: 8px; }
+    .row .k, .row .v { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; line-height: 1.55; }
+    .row .k { color: var(--muted); }
+    .row .v { color: var(--ink); text-align: right; }
 </style>
 </head>
 <body>
 <div id="canvas">
-    <svg id="wires" viewBox="0 0 760 720" xmlns="http://www.w3.org/2000/svg">
+    <svg id="wires" viewBox="0 0 760 820" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
@@ -162,6 +180,23 @@
     <div class="rule" style="top:464px;">backend tracebacks</div>
     <div class="rule" style="top:496px;">browser errors</div>
 
+    <div class="panel" style="left:340px; top:40px; width:380px; height:150px;">
+        <div class="ptitle">bootstrap script</div>
+        <div class="row"><span class="k">one file</span><span class="v">folder, rule group, dashboard</span></div>
+        <div class="row"><span class="k">idempotent</span><span class="v">rule UIDs preserved</span></div>
+        <div class="row"><span class="k">slug guard</span><span class="v">no writes outside it</span></div>
+        <div class="row"><span class="k">live query</span><span class="v">no data, no success</span></div>
+    </div>
+
+    <div class="panel" style="left:340px; top:200px; width:380px; height:120px;">
+        <div class="ptitle">the three traps</div>
+        <div class="row"><span class="k">Role</span><span class="v">own_namespace, else 403</span></div>
+        <div class="row"><span class="k">config hash</span><span class="v">a ConfigMap edit restarts nothing</span></div>
+        <div class="row"><span class="k">Succeeded pod</span><span class="v">stream reopens twice a second</span></div>
+    </div>
+
+    <div class="note" style="left:340px; top:520px; width:380px;">A quiet stack and a dead rule look identical, which is the failure mode I care about most.</div>
+
     <div class="node" style="left:340px; top:620px; width:300px; height:70px;">
         <img src="icons/brands/slack.svg" alt="" />
         <div>
@@ -169,6 +204,8 @@
             <div class="sub">one per rule</div>
         </div>
     </div>
+
+    <div class="note" style="left:40px; top:740px; width:680px;">Two bugs earned their keep: the app template variable had no value, so every panel went red with no data, and one rule's regex could never match the log line it was written against. Neither would have been caught by a test.</div>
 </div>
 </body>
 </html>
