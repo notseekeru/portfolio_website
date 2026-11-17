@@ -93,7 +93,7 @@ And there I'd made the mistake. When I capped the body, my first instinct was to
 body, _ := io.ReadAll(io.LimitReader(conn, maxBody+1))
 ```
 
-`io.LimitReader(conn, ...)` reads straight off the socket, *not* through my `bufio.Reader`. The bytes already slurped into the buffer were orphaned — my code could never reach that cache again. The truncation wasn't data lost on the network; it was me throwing away bytes I'd already received, because I'd put the cap on the wrong side of the buffer.
+`io.LimitReader(conn, ...)` reads straight off the socket, _not_ through my `bufio.Reader`. The bytes already slurped into the buffer were orphaned — my code could never reach that cache again. The truncation wasn't data lost on the network; it was me throwing away bytes I'd already received, because I'd put the cap on the wrong side of the buffer.
 
 The fix was one variable. Keep the limit on the same reader that owns those buffered bytes:
 
@@ -102,7 +102,7 @@ The fix was one variable. Keep the limit on the same reader that owns those buff
 body, _ := io.ReadAll(io.LimitReader(reader, maxBody+1))
 ```
 
-`net/http` hides this seam so completely I'd never have known it existed — which is exactly why I'd never have learned it if I'd kept using it. The abstraction wasn't protecting me from this bug; it was protecting me from the *understanding* that the bug exists. This gotcha only bites when you build the whole connection by hand, and that's a big part of why I did.
+`net/http` hides this seam so completely I'd never have known it existed — which is exactly why I'd never have learned it if I'd kept using it. The abstraction wasn't protecting me from this bug; it was protecting me from the _understanding_ that the bug exists. This gotcha only bites when you build the whole connection by hand, and that's a big part of why I did.
 
 ## A Load Balancer I Added Afterwards
 
@@ -150,12 +150,6 @@ I didn't think it was broken, so I stopped arguing and did the only thing that s
 ```
 
 It rejected traversal and injection attempts cleanly, and when I fed the results back, the AI admitted it was wrong. My code wasn't broken — its confidence was. That's the whole rule in practice: let AI critique and generate, but keep the ultimate authority, and verify its claims with your own tests. Maybe I've still missed something — a real possibility — but the behavior is verified by my tests, not by an AI's confidence. That distinction mattered more than shipping a perfectly secure server.
-
-## What Digging Gave Me
-
-The payoff isn't a load balancer — it's understanding. I built a from-scratch L4 proxy and a hand-rolled HTTP/1.1 engine. It's a learning repo, not something I'd run in prod, and that was never the point. The point was to understand the stack, and on that count it already paid for itself.
-
-I now know what `net/http` hides, because I rebuilt the slice of it that mattered by hand. Every time I reach for the real `net/http` next, or configure another reverse proxy, it won't be a gesture toward a blackbox — it'll be a tool I've seen inside of.
 
 # Conclusion
 
