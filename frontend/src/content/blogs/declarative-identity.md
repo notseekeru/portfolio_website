@@ -54,8 +54,6 @@ fileSystems."/boot" = {
 
 Portable across machines, readable at a glance, survives kernel upgrades that shuffle `/dev/sda` naming.
 
-![Paper stack of the manual install. The disk holds three partitions: ESP with vfat and label ESP mounted at /boot, ROOT with ext4 and label ROOT mounted at /, and swap with no label and no mount. The install creates the partitions, mounts root, runs nixos-install, and fails because boot is not mounted; mounting /boot and rerunning installs. The mounts use labels, not /dev/sda names.](/nixos-partitions.png)
-
 ## The 10-Hour SDDM War
 
 The install worked. The system booted. Black screen.
@@ -75,8 +73,6 @@ The lesson: not all session managers are equal on Wayland. SDDM and LightDM were
 Or simpler: auto-login to a TTY, one zsh script that launches Hyprland. No session manager. One file, one `exec`.
 
 But hey, it works. And I learned more about Linux display management in those 10 hours than I had in the previous five years. Sometimes the war is the education.
-
-![Paper comparison of four ways into Hyprland. From a TTY the compositor launches from a prompt. SDDM and LightDM each support Wayland and give a black screen. greetd with tuigreet is native to Wayland and works first try. Auto-login to a TTY with one exec script also works.](/nixos-sessions.png)
 
 ## Flakes and the Death of Channel Rot
 
