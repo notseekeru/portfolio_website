@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 840px;
+        height: 264px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    .label {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+        z-index: 3;
+        white-space: nowrap;
+    }
+    .node {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 12px 14px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .node .head { display: flex; align-items: center; gap: 10px; }
+    .node img { width: 26px; height: 26px; flex: none; }
+    .node .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .node .sub { font-size: 12px; color: var(--muted); line-height: 1.3; }
+    .node .result {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        line-height: 1.4;
+    }
+    .node.bad { border-left: 3px solid var(--amber); }
+    .node.good { border-left: 3px solid var(--accent); }
+    .result.bad { color: var(--amber); }
+    .result.good { color: var(--accent); }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <div class="label" style="left:24px; top:26px;">the same Hyprland, four ways in</div>
+
+    <div class="node" style="left:30px; top:50px; width:805px; height:52px; flex-direction: row; align-items: center; gap: 10px;">
+        <img src="icons/line/play.svg" alt="" />
+        <div class="title">from a TTY</div>
+        <div class="sub" style="margin-left: 6px;">Hyprland launches from a prompt</div>
+    </div>
+
+    <div class="node bad" style="left:30px; top:130px; width:190px; height:160px;">
+        <div class="head"><img src="icons/line/ban.svg" alt="" /><div class="title">SDDM</div></div>
+        <div class="sub">supports Wayland</div>
+        <div class="result bad">black screen</div>
+    </div>
+    <div class="node bad" style="left:235px; top:130px; width:190px; height:160px;">
+        <div class="head"><img src="icons/line/ban.svg" alt="" /><div class="title">LightDM</div></div>
+        <div class="sub">supports Wayland</div>
+        <div class="result bad">black screen</div>
+    </div>
+    <div class="node good" style="left:440px; top:130px; width:190px; height:160px;">
+        <div class="head"><img src="icons/line/check-check.svg" alt="" /><div class="title">greetd + tuigreet</div></div>
+        <div class="sub">native to Wayland</div>
+        <div class="result good">works, first try</div>
+    </div>
+    <div class="node good" style="left:645px; top:130px; width:190px; height:160px;">
+        <div class="head"><img src="icons/line/play.svg" alt="" /><div class="title">TTY + exec</div></div>
+        <div class="sub">no session manager</div>
+        <div class="result good">one exec</div>
+    </div>
+</div>
+</body>
+</html>

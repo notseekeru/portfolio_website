@@ -54,3 +54,5 @@ render shipping-floor.html 840,428 shipping-floor.png
 render shipping-runner-order.html 840,470 shipping-runner-order.png
 render shipping-rail-path.html 840,480 shipping-rail-path.png
 render shipping-deleted.html 840,256 shipping-deleted.png
+render nixos-partitions.html 840,400 nixos-partitions.png
+render nixos-sessions.html 840,320 nixos-sessions.png
