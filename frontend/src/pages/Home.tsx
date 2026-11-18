@@ -14,7 +14,7 @@ function DeferredDiagram() {
     const { ref, inView } = useInView({ rootMargin: "600px 0px" });
 
     return (
-        <div id="infrastructure-diagram" ref={ref} className={`py-24 ${inView ? "" : "min-h-[900px]"}`}>
+        <div id="infrastructure-diagram" ref={ref} className={`py-24 ${inView ? "" : "min-h-[1500px]"}`}>
             <Suspense fallback={null}>{inView && <InfrastructureDiagram />}</Suspense>
         </div>
     );

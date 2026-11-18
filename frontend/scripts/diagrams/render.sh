@@ -34,6 +34,7 @@ render() {
     printf '%s\n' "wrote public/$3"
 }
 
+render infra.html 1600,1300 infra-stack.png
 render serverless-flow.html 900,900 aws-serverless-flow.png
 render three-tier-legacy.html 720,620 aws-three-tier-legacy.png
 render cost-comparison.html 900,430 aws-cost-comparison.png

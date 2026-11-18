@@ -48,7 +48,7 @@ const personalData: PersonalData = {
     instagram: "https://www.instagram.com/notseekeru/",
     x: "https://x.com/notseekeru",
     threads: "https://www.threads.com/@notseekeru",
-    bio: "2nd Year Computer Engineering undergraduate who learns by building. I have my projects below to showcase my skills that validates my work I have done and blogs to feature my brain internal reasoning and emotional state on a related project. I Scope my focus on auditing architectural alignment, security, scalability, and isolation with AI delegating syntax and boilerplate to agents. Then I calculate and weigh friction, scope, value, financial risk of my tool and architecture. I judge decisions/approaches based on my present reasoning, feedback and understanding. Currently seeking opportunities where I can contribute and keep growing.",
+    bio: "2nd Year Computer Engineering undergraduate who learns by building. I Scope my focus on auditing architectural alignment, security, scalability, and isolation with AI delegating syntax and boilerplate to agents. Then I calculate and weigh friction, scope, value, financial risk of my tool and architecture. I judge decisions/approaches based on my present reasoning, feedback and understanding. Currently seeking opportunities where I can contribute and keep growing.",
     profilePicture: "/profile4.png",
     education: [
         {
