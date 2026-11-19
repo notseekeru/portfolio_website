@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+            }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 900px;
+        height: 560px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    #wires { position: absolute; inset: 0; z-index: 1; }
+    .zone {
+        position: absolute;
+        border: 1.5px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 12px;
+        z-index: 0;
+    }
+    .pill {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        white-space: nowrap;
+        z-index: 3;
+    }
+    .pill.zone-label { height: 24px; padding: 0 10px; gap: 7px; }
+    .pill.zone-label .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); }
+    .pill.zone-label .sub { font-size: 11px; color: var(--muted); }
+    .pill.seam {
+        height: 32px;
+        width: 196px;
+        padding: 0 12px;
+        justify-content: center;
+        border-color: var(--accent);
+        background: var(--panel);
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        line-height: 1.2;
+        text-align: center;
+        white-space: normal;
+        color: var(--ink);
+    }
+    .card {
+        position: absolute;
+        padding: 13px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .card .hd { display: flex; align-items: center; gap: 10px; height: 30px; }
+    .card .hd img { width: 26px; height: 26px; flex: none; }
+    .card .hd .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .rows { margin-top: 12px; }
+    .r {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 36px;
+        border-bottom: 1px solid rgba(27, 24, 18, 0.1);
+    }
+    .r:last-child { border-bottom: none; }
+    .r .k {
+        flex: none;
+        width: 96px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+        white-space: nowrap;
+    }
+    .r .v { font-size: 10.5px; color: var(--muted); line-height: 1.3; }
+    .seam-mark { position: absolute; font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--muted); z-index: 3; }
+    .legend {
+        position: absolute;
+        left: 36px;
+        top: 512px;
+        display: flex;
+        align-items: center;
+        font-size: 12px;
+        color: var(--muted);
+        z-index: 3;
+    }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <svg id="wires" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
+        <g fill="none" stroke="#6f6757" stroke-width="1" stroke-dasharray="3 3" opacity="0.55">
+            <path d="M328,165 H352" /><path d="M548,165 H572" />
+            <path d="M328,237 H352" /><path d="M548,237 H572" />
+            <path d="M328,309 H352" /><path d="M548,309 H572" />
+            <path d="M328,381 H352" /><path d="M548,381 H572" />
+            <path d="M328,453 H352" /><path d="M548,453 H572" />
+        </g>
+    </svg>
+
+    <div class="zone" style="left:24px; top:44px; width:316px; height:452px;"></div>
+    <div class="zone" style="left:560px; top:44px; width:316px; height:452px;"></div>
+
+    <div class="pill zone-label" style="left:46px; top:32px;"><span class="tag">python</span><span class="sub">backend</span></div>
+    <div class="pill zone-label" style="left:572px; top:32px;"><span class="tag">typescript</span><span class="sub">backend</span></div>
+
+    <img src="icons/line/database.svg" alt="" style="position:absolute; left:437px; top:54px; width:26px; height:26px; z-index:3;" />
+    <div class="seam-mark" style="left:425px; top:86px;">the seam</div>
+
+    <div class="card" style="left:36px; top:56px; width:292px;">
+        <div class="hd">
+            <img src="icons/brands/fastapi.svg" alt="" />
+            <div class="title">python backend</div>
+        </div>
+        <div class="rows">
+            <div class="r"><span class="k">runtime</span><span class="v">python 3.14 slim</span></div>
+            <div class="r"><span class="k">framework</span><span class="v">FastAPI, uvicorn on port 8000</span></div>
+            <div class="r"><span class="k">process</span><span class="v">3 uvicorn workers</span></div>
+            <div class="r"><span class="k">driver</span><span class="v">asyncpg, pool 20 per worker, 60 total</span></div>
+            <div class="r"><span class="k">migrations</span><span class="v">yoyo-migrations, SQL files</span></div>
+            <div class="r"><span class="k">logging</span><span class="v">structlog, JSON in production</span></div>
+            <div class="r"><span class="k">telemetry</span><span class="v">OpenTelemetry SDK, OTLP HTTP</span></div>
+            <div class="r"><span class="k">rate limit</span><span class="v">limits, in memory, 120 per minute</span></div>
+            <div class="r"><span class="k">validation</span><span class="v">pydantic 2</span></div>
+            <div class="r"><span class="k">build and tests</span><span class="v">uv venv, no build step, pytest</span></div>
+        </div>
+    </div>
+
+    <div class="card" style="left:572px; top:56px; width:292px;">
+        <div class="hd">
+            <img src="icons/line/package.svg" alt="" />
+            <div class="title">typescript backend</div>
+        </div>
+        <div class="rows">
+            <div class="r"><span class="k">runtime</span><span class="v">node 24 slim</span></div>
+            <div class="r"><span class="k">framework</span><span class="v">Hono 4.13, serve on the config port</span></div>
+            <div class="r"><span class="k">process</span><span class="v">one node process, no cluster</span></div>
+            <div class="r"><span class="k">driver</span><span class="v">postgres.js, pool max 20, prepare off on the pooler</span></div>
+            <div class="r"><span class="k">migrations</span><span class="v">hand-written runner over yoyo's tables and hashes</span></div>
+            <div class="r"><span class="k">logging</span><span class="v">pino, JSON</span></div>
+            <div class="r"><span class="k">telemetry</span><span class="v">opentelemetry sdk-node, same OTLP URLs, 60s interval</span></div>
+            <div class="r"><span class="k">rate limit</span><span class="v">fixed window in a Map, 120 per minute</span></div>
+            <div class="r"><span class="k">validation</span><span class="v">zod 4.6</span></div>
+            <div class="r"><span class="k">build and tests</span><span class="v">tsc build, multi-stage image, vitest</span></div>
+        </div>
+    </div>
+
+    <div class="pill seam" style="left:352px; top:149px;">postgres + schema</div>
+    <div class="pill seam" style="left:352px; top:221px;">the pool ceiling of 20<br />per process</div>
+    <div class="pill seam" style="left:352px; top:293px;">yoyo tables + hashes</div>
+    <div class="pill seam" style="left:352px; top:365px;">OTLP traces + metrics, 60s</div>
+    <div class="pill seam" style="left:352px; top:437px;">120 per minute</div>
+
+    <div class="legend">Every row on the right is a replacement, and the seam is what crossed unchanged.</div>
+</div>
+</body>
+</html>
