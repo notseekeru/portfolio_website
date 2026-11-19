@@ -20,7 +20,7 @@
     #canvas {
         position: relative;
         width: 900px;
-        height: 384px;
+        height: 528px;
         overflow: hidden;
         background-color: var(--paper);
         background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
@@ -28,115 +28,135 @@
         font-family: Inter, "DejaVu Sans", sans-serif;
         color: var(--ink);
     }
-    .ltitle {
-        position: absolute;
-        font-size: 13.5px;
-        font-weight: 600;
-        letter-spacing: -0.01em;
-        z-index: 3;
-        white-space: nowrap;
-    }
-    .ldate, .val, .rps, .tick, .axis-unit {
+    .lead { position: absolute; font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; }
+    .rlabel { position: absolute; font-size: 11.5px; font-weight: 500; white-space: nowrap; }
+    .rlabel .un { color: var(--amber); }
+    .rlabel .pr { color: var(--accent); }
+    .rps, .val, .axl, .unit, .pill {
         position: absolute;
         font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
-        font-size: 11px;
-        color: var(--muted);
-        z-index: 3;
+        font-size: 10.5px;
         white-space: nowrap;
     }
-    .val { font-size: 11.5px; color: var(--ink); transform: translateX(-50%); }
-    .rps { font-size: 12px; color: var(--muted); }
-    .track { position: absolute; height: 26px; z-index: 2; }
-    .track.pass { background: var(--accent); border-radius: 3px 0 0 3px; }
-    .track.band {
-        background-image: repeating-linear-gradient(135deg, rgba(154, 91, 18, 0.38) 0 2px, transparent 2px 7px);
-        border: 1px solid rgba(154, 91, 18, 0.45);
-        border-radius: 0 3px 3px 0;
+    .rps, .axl, .unit { color: var(--muted); }
+    .val { font-size: 11px; color: var(--ink); }
+    .tread { position: absolute; height: 3px; background: var(--accent); border-radius: 2px; }
+    .tread.open {
+        background: none;
+        background-image: repeating-linear-gradient(90deg, var(--accent) 0 5px, transparent 5px 9px);
     }
     .dot {
         position: absolute;
-        width: 11px;
-        height: 11px;
-        background: var(--panel);
-        border: 2px solid var(--accent);
+        width: 9px;
+        height: 9px;
         border-radius: 50%;
-        z-index: 4;
-    }
-    .mark {
-        position: absolute;
-        width: 0;
-        border-left: 1.5px dashed var(--amber);
-        z-index: 4;
-    }
-    .axis { position: absolute; height: 1px; background: rgba(27, 24, 18, 0.2); z-index: 2; }
-    .tickmark { position: absolute; width: 1px; height: 5px; background: rgba(27, 24, 18, 0.3); z-index: 2; }
-    .legend { position: absolute; display: flex; align-items: center; gap: 7px; z-index: 3; }
-    .legend .swatch-pass { width: 11px; height: 11px; background: var(--panel); border: 2px solid var(--accent); border-radius: 50%; }
-    .legend .swatch-fail { width: 0; height: 12px; border-left: 1.5px dashed var(--amber); }
-    .legend .txt { font-size: 11.5px; color: var(--muted); }
-    .note {
-        position: absolute;
-        font-size: 12px;
-        color: var(--muted);
+        background: var(--accent);
+        border: 2px solid var(--accent);
         z-index: 3;
     }
+    .dot.open { background: var(--paper); }
+    .fail { position: absolute; width: 0; height: 15px; border-left: 1.5px dashed var(--amber); z-index: 3; }
+    .axis { position: absolute; height: 1px; background: rgba(27, 24, 18, 0.2); }
+    .tickmark { position: absolute; width: 1px; height: 5px; background: rgba(27, 24, 18, 0.3); }
+    .axl { transform: translateX(-50%); }
+    .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        color: var(--ink);
+    }
+    .sw-s { width: 14px; height: 3px; background: var(--accent); border-radius: 2px; }
+    .sw-o { width: 14px; height: 3px; background-image: repeating-linear-gradient(90deg, var(--accent) 0 4px, transparent 4px 7px); }
+    .foot { position: absolute; font-size: 12px; color: var(--muted); }
 </style>
 </head>
 <body>
 <div id="canvas">
-    <div class="ltitle" style="left:40px; top:26px;">pool 10, before the changes</div>
-    <div class="ldate" style="left:300px; top:30px;">2026-10-22</div>
-    <div class="val" style="left:109px; top:50px;">10</div>
-    <div class="val" style="left:178px; top:50px;">20</div>
-    <div class="track pass" style="left:40px; top:70px; width:69px;"></div>
-    <div class="track band" style="left:109px; top:70px; width:69px;"></div>
-    <div class="dot" style="left:103px; top:77px;"></div>
-    <div class="mark" style="left:178px; top:66px; height:34px;"></div>
-    <div class="rps" style="left:812px; top:76px;">17 rps</div>
+    <div class="lead" style="left:40px; top:18px;">each run's last passing step and the first step that failed</div>
+    <div class="unit" style="right:40px; top:362px;">virtual users, log spaced</div>
+    <div class="rlabel" style="left:40px; top:57px;">TypeScript backend<span class="pr"> · both confirmations passed</span></div>
+    <div class="rps" style="right:40px; top:59px;">about 630 rps</div>
+    <div class="tread" style="left:803.5px; top:78px; width:12.9px;"></div>
+    <div class="dot" style="left:799.0px; top:74px;"></div>
+    <div class="fail" style="left:815.6px; top:72px;"></div>
+    <div class="val" style="left:796.5px; top:84px; transform:translateX(-100%);">650</div>
+    <div class="val" style="left:823.4px; top:84px;">700</div>
 
-    <div class="ltitle" style="left:40px; top:104px;">optimized changes, pool 20</div>
-    <div class="ldate" style="left:300px; top:108px;">2026-10-23</div>
-    <div class="val" style="left:261px; top:128px;">32</div>
-    <div class="val" style="left:420px; top:128px;">55</div>
-    <div class="track pass" style="left:40px; top:148px; width:221px;"></div>
-    <div class="track band" style="left:261px; top:148px; width:159px;"></div>
-    <div class="dot" style="left:255px; top:155px;"></div>
-    <div class="mark" style="left:420px; top:144px; height:34px;"></div>
-    <div class="rps" style="left:812px; top:154px;">50 rps</div>
+    <div class="rlabel" style="left:40px; top:103px;">pool 60, three workers, 512Mi<span class="un"> · one of two confirmations failed</span></div>
+    <div class="rps" style="right:40px; top:105px;">about 220 rps</div>
+    <div class="tread open" style="left:637.6px; top:124px; width:31.7px;"></div>
+    <div class="dot open" style="left:633.1px; top:120px;"></div>
+    <div class="fail" style="left:668.5px; top:118px;"></div>
+    <div class="val" style="left:630.6px; top:130px; transform:translateX(-100%);">250</div>
+    <div class="val" style="left:676.3px; top:130px;">300</div>
 
-    <div class="ltitle" style="left:40px; top:182px;">pool 40</div>
-    <div class="ldate" style="left:300px; top:186px;">2026-10-23</div>
-    <div class="val" style="left:420px; top:206px;">55</div>
-    <div class="val" style="left:731px; top:206px;">100</div>
-    <div class="track pass" style="left:40px; top:226px; width:380px;"></div>
-    <div class="track band" style="left:420px; top:226px; width:311px;"></div>
-    <div class="dot" style="left:414px; top:233px;"></div>
-    <div class="mark" style="left:731px; top:222px; height:34px;"></div>
-    <div class="rps" style="left:812px; top:232px;">70 rps</div>
+    <div class="rlabel" style="left:40px; top:149px;">pool 40, per-VU identity<span class="un"> · one confirmation failed</span></div>
+    <div class="rps" style="right:40px; top:151px;">147 to 156 rps</div>
+    <div class="tread open" style="left:575.7px; top:170px; width:11.5px;"></div>
+    <div class="dot open" style="left:571.2px; top:166px;"></div>
+    <div class="fail" style="left:586.4px; top:164px;"></div>
+    <div class="val" style="left:568.7px; top:176px; transform:translateX(-100%);">175</div>
+    <div class="val" style="left:594.2px; top:176px;">187</div>
 
-    <div class="axis" style="left:40px; top:268px; width:760px;"></div>
-    <div class="tickmark" style="left:40px; top:268px;"></div>
-    <div class="tickmark" style="left:178px; top:268px;"></div>
-    <div class="tickmark" style="left:316px; top:268px;"></div>
-    <div class="tickmark" style="left:455px; top:268px;"></div>
-    <div class="tickmark" style="left:593px; top:268px;"></div>
-    <div class="tickmark" style="left:731px; top:268px;"></div>
-    <div class="tick" style="left:40px; top:278px; transform: translateX(-50%);">0</div>
-    <div class="tick" style="left:178px; top:278px; transform: translateX(-50%);">20</div>
-    <div class="tick" style="left:316px; top:278px; transform: translateX(-50%);">40</div>
-    <div class="tick" style="left:455px; top:278px; transform: translateX(-50%);">60</div>
-    <div class="tick" style="left:593px; top:278px; transform: translateX(-50%);">80</div>
-    <div class="tick" style="left:731px; top:278px; transform: translateX(-50%);">100</div>
-    <div class="axis-unit" style="left:812px; top:278px;">VUs</div>
+    <div class="rlabel" style="left:40px; top:195px;">pool 80, no gain on latency</div>
+    <div class="rps" style="right:40px; top:197px;">71 rps</div>
+    <div class="tread" style="left:374.7px; top:216px; width:103.8px;"></div>
+    <div class="dot" style="left:370.2px; top:212px;"></div>
+    <div class="fail" style="left:477.7px; top:210px;"></div>
+    <div class="val" style="left:367.7px; top:222px; transform:translateX(-100%);">55</div>
+    <div class="val" style="left:485.5px; top:222px;">100</div>
 
-    <div class="legend" style="left:40px; top:308px;">
-        <span class="swatch-pass"></span><span class="txt">passed once</span>
-    </div>
-    <div class="legend" style="left:180px; top:308px;">
-        <span class="swatch-fail"></span><span class="txt">first fail</span>
-    </div>
+    <div class="rlabel" style="left:40px; top:241px;">pool 40</div>
+    <div class="rps" style="right:40px; top:243px;">70 rps</div>
+    <div class="tread" style="left:374.7px; top:262px; width:103.8px;"></div>
+    <div class="dot" style="left:370.2px; top:258px;"></div>
+    <div class="fail" style="left:477.7px; top:256px;"></div>
+    <div class="val" style="left:367.7px; top:268px; transform:translateX(-100%);">55</div>
+    <div class="val" style="left:485.5px; top:268px;">100</div>
 
-    <div class="note" style="left:40px; top:338px;">55 is the SLO boundary, not the product ceiling: at 100 VUs errors stay under 1% and p99 holds its gate.</div>
+    <div class="rlabel" style="left:40px; top:287px;">pool 20, six round trip fixes</div>
+    <div class="rps" style="right:40px; top:289px;">50 rps</div>
+    <div class="tread" style="left:280.7px; top:308px; width:94.0px;"></div>
+    <div class="dot" style="left:276.2px; top:304px;"></div>
+    <div class="fail" style="left:373.9px; top:302px;"></div>
+    <div class="val" style="left:273.7px; top:314px; transform:translateX(-100%);">32</div>
+    <div class="val" style="left:381.7px; top:314px;">55</div>
+
+    <div class="rlabel" style="left:40px; top:333px;">pool 10, before the changes</div>
+    <div class="rps" style="right:40px; top:335px;">17 rps</div>
+    <div class="tread" style="left:78.7px; top:354px; width:120.4px;"></div>
+    <div class="dot" style="left:74.2px; top:350px;"></div>
+    <div class="fail" style="left:198.3px; top:348px;"></div>
+    <div class="val" style="left:71.7px; top:360px; transform:translateX(-100%);">10</div>
+    <div class="val" style="left:206.1px; top:360px;">20</div>
+
+    <div class="tickmark" style="left:78.7px; top:384px;"></div>
+    <div class="axl" style="left:78.7px; top:394px;">10</div>
+    <div class="tickmark" style="left:199.1px; top:384px;"></div>
+    <div class="axl" style="left:199.1px; top:394px;">20</div>
+    <div class="tickmark" style="left:358.2px; top:384px;"></div>
+    <div class="axl" style="left:358.2px; top:394px;">50</div>
+    <div class="tickmark" style="left:478.5px; top:384px;"></div>
+    <div class="axl" style="left:478.5px; top:394px;">100</div>
+    <div class="tickmark" style="left:598.9px; top:384px;"></div>
+    <div class="axl" style="left:598.9px; top:394px;">200</div>
+    <div class="tickmark" style="left:757.9px; top:384px;"></div>
+    <div class="axl" style="left:757.9px; top:394px;">500</div>
+    <div class="tickmark" style="left:816.4px; top:384px;"></div>
+    <div class="axl" style="left:816.4px; top:394px;">700</div>
+
+    <div class="axis" style="left:40px; top:384px; width:820px;"></div>
+
+    <div class="pill" style="left:40px; top:424px;"><span class="sw-s"></span><span>proven: no confirmation failed</span></div>
+    <div class="pill" style="left:340px; top:424px;"><span class="sw-o"></span><span>unproven: a confirmation failed</span></div>
+
+    <div class="foot" style="left:40px; top:466px;">The dot is the last level that passed. The amber mark is the next step, the first that failed.</div>
+    <div class="foot" style="left:40px; top:486px;">The axis is log spaced so ten and twenty keep their distance from seven hundred.</div>
 </div>
 </body>
 </html>
