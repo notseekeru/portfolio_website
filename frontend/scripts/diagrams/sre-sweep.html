@@ -20,7 +20,7 @@
     #canvas {
         position: relative;
         width: 840px;
-        height: 650px;
+        height: 724px;
         overflow: hidden;
         background-color: var(--paper);
         background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
@@ -29,23 +29,69 @@
         color: var(--ink);
     }
     #wires { position: absolute; inset: 0; z-index: 1; }
-    .step {
+
+    .zone {
+        position: absolute;
+        border: 1.5px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 12px;
+        z-index: 0;
+    }
+    .zone-label {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        z-index: 3;
+        white-space: nowrap;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+    }
+
+    .card {
         position: absolute;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding: 12px 14px 12px 50px;
+        padding: 10px 14px;
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 8px;
         z-index: 2;
-        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
     }
-    .step.decide { border-left: 3px solid var(--amber); }
-    .step .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
-    .step .sub { margin-top: 3px; font-size: 12px; color: var(--muted); line-height: 1.3; }
+    .hdr { display: flex; align-items: flex-start; gap: 10px; }
+    .hdr img { width: 26px; height: 26px; flex: none; margin-top: -4px; }
+    .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .sub { margin-top: 3px; font-size: 11.5px; font-weight: 500; color: var(--muted); line-height: 1.3; }
+    .mono {
+        margin-top: 4px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+        line-height: 1.25;
+    }
+    .sub.warn { color: var(--amber); }
+    .gates {
+        display: inline-flex;
+        align-items: center;
+        align-self: flex-start;
+        height: 24px;
+        margin-top: 7px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+        white-space: nowrap;
+    }
 
-    .label {
+    .wlabel {
         position: absolute;
         font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
         font-size: 10.5px;
@@ -53,102 +99,96 @@
         z-index: 3;
         white-space: nowrap;
     }
-    .step img.ic, .note img.ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; }
+    .note {
+        position: absolute;
+        width: 240px;
+        font-size: 11.5px;
+        line-height: 1.45;
+        color: var(--muted);
+        z-index: 3;
+    }
 </style>
 </head>
 <body>
 <div id="canvas">
-    <svg id="wires" viewBox="0 0 840 650" xmlns="http://www.w3.org/2000/svg">
+    <svg id="wires" viewBox="0 0 840 724" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
             </marker>
         </defs>
-        <g fill="none" stroke="#2f6b4f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
-            <path d="M480,94 V116" marker-end="url(#arrow)" />
-            <path d="M480,180 V202" marker-end="url(#arrow)" />
-            <path d="M480,266 V288" marker-end="url(#arrow)" />
-            <path d="M480,352 V374" marker-end="url(#arrow)" />
-            <path d="M480,438 V460" marker-end="url(#arrow)" />
-            <path d="M610,406 H640 V320 H610" marker-end="url(#arrow)" />
-            <path d="M610,234 H660" marker-end="url(#arrow)" />
-            <path d="M350,320 H322 V362 H300" marker-end="url(#arrow)" />
-            <path d="M180,394 V426" marker-end="url(#arrow)" />
-            <path d="M60,458 H40 V362 H60" marker-end="url(#arrow)" />
-            <path d="M180,490 V522" marker-end="url(#arrow)" />
-            <path d="M300,554 H330 V578 H350" marker-end="url(#arrow)" />
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+            <path d="M280,96 H312" marker-end="url(#arrow)" />
+            <path d="M528,96 H560" marker-end="url(#arrow)" />
+            <path d="M668,144 V216" marker-end="url(#arrow)" />
+            <path d="M380,236 H296 V308 H380" marker-end="url(#arrow)" />
+            <path d="M420,328 V350 H214 V372" marker-end="url(#arrow)" />
+            <path d="M364,410 H480" marker-end="url(#arrow)" />
+            <path d="M480,444 H420 V508 H214 V476" marker-end="url(#arrow)" />
+            <path d="M620,476 V584" marker-end="url(#arrow)" />
+            <path d="M420,630 H364" marker-end="url(#arrow)" />
         </g>
     </svg>
 
-    <div class="step" style="left:350px; top:30px; width:260px; height:64px;">
-        <img class="ic" src="icons/line/flag.svg" alt="" />
-        <div class="title">Open the perf window</div>
-        <div class="sub">in gitops</div>
-    </div>
+    <div class="zone" style="left:24px; top:24px; width:792px; height:144px;"></div>
+    <div class="zone-label" style="left:46px; top:12px;">the run</div>
 
-    <div class="step" style="left:350px; top:116px; width:260px; height:64px;">
-        <img class="ic" src="icons/line/trash-2.svg" alt="" />
-        <div class="title">Cleanup</div>
+    <div class="card" style="left:64px; top:48px; width:216px; height:96px;">
+        <div class="hdr"><img src="icons/line/flag.svg" alt="" /><div class="title">Open the window</div></div>
+        <div class="sub">the perf overlay in gitops</div>
+        <div class="mono">NodePort 30090</div>
+    </div>
+    <div class="card" style="left:312px; top:48px; width:216px; height:96px;">
+        <div class="hdr"><img src="icons/line/trash-2.svg" alt="" /><div class="title">Cleanup</div></div>
         <div class="sub">delete the sweep identity's rows</div>
+        <div class="mono">deleted_before</div>
+    </div>
+    <div class="card" style="left:560px; top:48px; width:216px; height:96px;">
+        <div class="hdr"><img src="icons/line/play.svg" alt="" /><div class="title">Smoke</div></div>
+        <div class="sub">10 VUs for 10s</div>
+        <div class="mono">phase = smoke</div>
+        <div class="sub warn">a failed smoke aborts the sweep</div>
     </div>
 
-    <div class="step" style="left:350px; top:202px; width:260px; height:64px;">
-        <img class="ic" src="icons/line/zap.svg" alt="" />
-        <div class="title">Smoke</div>
-        <div class="sub">10 VUs, 10 seconds</div>
+    <div class="zone" style="left:24px; top:192px; width:792px; height:344px;"></div>
+    <div class="zone-label" style="left:46px; top:180px;">the climb</div>
+
+    <div class="note" style="left:64px; top:214px;">between levels the sweep waits 60s: 15 silence, up to 30 cleanup, 15 silence</div>
+    <div class="wlabel" style="left:110px; top:286px;">gates pass: double the VUs</div>
+
+    <div class="card" style="left:380px; top:216px; width:400px; height:112px;">
+        <div class="hdr"><img src="icons/line/gauge.svg" alt="" /><div class="title">Ladder</div></div>
+        <div class="sub">ramp 30s and hold 60s, ungated</div>
+        <div class="mono">3 min measurement window, phase = ladder</div>
+        <div class="gates">p95 &lt;1s &#183; p99 &lt;5s &#183; errors &lt;1% &#183; correctness passes</div>
     </div>
 
-    <div class="step" style="left:350px; top:288px; width:260px; height:64px;">
-        <img class="ic" src="icons/line/trending-up.svg" alt="" />
-        <div class="title">Ladder</div>
-        <div class="sub">100 VUs, then doubling</div>
+    <div class="card" style="left:64px; top:372px; width:300px; height:104px;">
+        <div class="hdr"><img src="icons/line/search.svg" alt="" /><div class="title">Binary search</div></div>
+        <div class="sub">between the last pass and the failure</div>
+        <div class="mono">25 VU floor, phase = search</div>
+    </div>
+    <div class="card" style="left:480px; top:372px; width:300px; height:104px;">
+        <div class="hdr"><img src="icons/line/check-check.svg" alt="" /><div class="title">Confirm</div></div>
+        <div class="sub">the highest pass, three times at 5 min</div>
+        <div class="mono">all three pass, phase = confirm</div>
     </div>
 
-    <div class="step decide" style="left:350px; top:374px; width:260px; height:64px;">
-        <img class="ic" src="icons/line/circle-help.svg" alt="" />
-        <div class="title">Levels left?</div>
-        <div class="sub">a level is one VU target</div>
-    </div>
+    <div class="wlabel" style="left:230px; top:330px;">gate fail</div>
+    <div class="wlabel" style="left:250px; top:484px;">at most three rounds</div>
+    <div class="wlabel" style="left:632px; top:512px;">all pass</div>
 
-    <div class="step terminal" style="left:350px; top:460px; width:260px; height:64px;">
-        <img class="ic" src="icons/line/square.svg" alt="" />
-        <div class="title">Stop</div>
-        <div class="sub">raise the VU ceiling</div>
-    </div>
+    <div class="zone" style="left:24px; top:560px; width:792px; height:140px;"></div>
+    <div class="zone-label" style="left:46px; top:548px;">the outcome</div>
 
-    <div class="step terminal" style="left:350px; top:546px; width:260px; height:64px;">
-        <img class="ic" src="icons/line/x.svg" alt="" />
-        <div class="title">Close the window</div>
+    <div class="card" style="left:420px; top:584px; width:300px; height:92px;">
+        <div class="hdr"><img src="icons/line/file-text.svg" alt="" /><div class="title">The boundary</div></div>
+        <div class="sub">read it off the CSV and Grafana</div>
+    </div>
+    <div class="card" style="left:64px; top:584px; width:300px; height:92px;">
+        <div class="hdr"><img src="icons/line/lock.svg" alt="" /><div class="title">Close the perf window</div></div>
         <div class="sub">cleanup only</div>
     </div>
-
-    <div class="step" style="left:60px; top:330px; width:240px; height:64px;">
-        <img class="ic" src="icons/line/search.svg" alt="" />
-        <div class="title">Binary search</div>
-        <div class="sub">after an SLO miss</div>
-    </div>
-
-    <div class="step" style="left:60px; top:426px; width:240px; height:64px;">
-        <img class="ic" src="icons/line/check-check.svg" alt="" />
-        <div class="title">Confirm</div>
-        <div class="sub">3 windows of 5 minutes</div>
-    </div>
-
-    <div class="step" style="left:60px; top:522px; width:240px; height:64px;">
-        <img class="ic" src="icons/line/gauge.svg" alt="" />
-        <div class="title">Boundary</div>
-        <div class="sub">read the CSV and Grafana</div>
-    </div>
-
-    <div class="step terminal" style="left:660px; top:202px; width:160px; height:64px;">
-        <img class="ic" src="icons/line/ban.svg" alt="" />
-        <div class="title">Abort</div>
-        <div class="sub">the smoke failed</div>
-    </div>
-
-    <div class="label" style="left:620px; top:220px;">fail</div>
-    <div class="label" style="left:648px; top:392px;">yes</div>
-    <div class="label" style="left:492px; top:448px;">no</div>
 </div>
 </body>
 </html>
