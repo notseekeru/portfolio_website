@@ -96,7 +96,7 @@ const personalData: PersonalData = {
             description:
                 "Load tested the deployment the SRE work had only been watching, because a dashboard nobody has proven under load is a guess. Built a sweep with gates instead of opinions, moved the boundary twice by fixing round trips and the pool, and shipped the numbers I could defend next to the ones I could not.",
             techStack: ["k6", "Grafana", "Prometheus", "OpenTelemetry", "Kubernetes", "k3s", "Neon", "Tailscale", "Python"],
-            blogs: ["sre-toolkit-upgrade"],
+            blogs: ["sre-upgrade"],
         },
         {
             title: "Infrastructure as Code — Ansible Automation & Idempotency",
