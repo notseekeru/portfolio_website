@@ -1,0 +1,280 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 840px;
+        height: 820px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    #wires { position: absolute; inset: 0; z-index: 4; }
+
+    .zone {
+        position: absolute;
+        border: 1.5px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 12px;
+    }
+    .pill {
+        position: absolute;
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        white-space: nowrap;
+        z-index: 6;
+    }
+    .pill .tag {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+    }
+    .pill .psub { margin-left: 7px; font-size: 11.5px; font-weight: 500; color: var(--muted); }
+
+    .card {
+        position: absolute;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px 14px;
+        z-index: 2;
+    }
+    .hdr { display: flex; align-items: center; gap: 10px; min-height: 26px; }
+    .hdr img { width: 26px; height: 26px; flex: none; }
+    .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .sub { margin-top: 4px; font-size: 11.5px; font-weight: 500; color: var(--muted); line-height: 1.35; }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 8px;
+        background: rgba(47, 107, 79, 0.08);
+        border: 1px solid rgba(47, 107, 79, 0.3);
+        border-radius: 99px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+        white-space: nowrap;
+    }
+    .chip.abs { position: absolute; right: 14px; top: 12px; }
+    .chiprow { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .ttl {
+        position: absolute;
+        left: 40px;
+        top: 12px;
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+    }
+    .stats {
+        position: absolute;
+        right: 40px;
+        top: 16px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 11.5px;
+        font-weight: 500;
+        color: var(--ink);
+    }
+    .vuline { position: absolute; left: 40px; top: 37px; font-size: 11.5px; font-weight: 500; color: var(--muted); }
+
+    .note2 { position: absolute; font-size: 11px; font-weight: 500; color: var(--muted); line-height: 1.42; }
+    .note2 b {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        font-weight: 400;
+        color: var(--ink);
+    }
+
+    .grp { position: absolute; width: 252px; }
+    .ct { font-size: 12.5px; font-weight: 600; letter-spacing: -0.01em; }
+    .track {
+        display: flex;
+        height: 22px;
+        margin-top: 5px;
+        border: 1px solid rgba(27, 24, 18, 0.12);
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .seg {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--paper);
+    }
+    .seg.read { background: var(--accent); }
+    .seg.write { background: var(--ink); }
+    .seg.either { background: var(--amber); }
+    .axis {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 4px;
+        padding-top: 2px;
+        border-top: 1px solid var(--line);
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+    }
+    .legend { margin-top: 4px; }
+    .li {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 13px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+        white-space: nowrap;
+    }
+    .li i { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+    .s-read { background: var(--accent); }
+    .s-write { background: var(--ink); }
+    .s-either { background: var(--amber); }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <svg id="wires" viewBox="0 0 840 820" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
+            </marker>
+        </defs>
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+            <path d="M410,213 H449" marker-end="url(#arrow)" />
+            <path d="M633,272 V281" marker-end="url(#arrow)" />
+            <path d="M450,365 H411" marker-end="url(#arrow)" />
+            <path d="M227,448 V457" marker-end="url(#arrow)" />
+            <path d="M410,510 H449" marker-end="url(#arrow)" />
+            <path d="M633,562 V569 H272 V604" marker-end="url(#arrow)" />
+        </g>
+    </svg>
+
+    <div class="ttl">what one virtual user does</div>
+    <div class="stats">28 requests &#183; 1 interview &#183; about 20 s</div>
+    <div class="vuline">at 100 virtual users: 60-something requests a second, about 125 queries a second</div>
+
+    <div class="note2" style="left:40px; top:56px; width:356px;"><b>identity</b> &#183; every virtual user is the same identity and they share one account: it is one candidate moving through the app, and the cleanup has one owner to delete. a real deployment gives accounts to users, many people at once.</div>
+    <div class="note2" style="left:428px; top:56px; width:368px;"><b>stubs</b> &#183; the endpoints that carry generation are outside the run: NvidiaNIM for the model and Cloudflare Workers AI for voice both spend credit, so a vendor quota would fail the experiment. the model is stubbed and the voice path is off.</div>
+
+    <div class="zone" style="left:24px; top:136px; width:792px; height:438px;"></div>
+    <div class="pill" style="left:46px; top:124px;"><span class="tag">the run, in order</span><span class="psub">one virtual user, one interview</span></div>
+
+    <div class="card" style="left:44px; top:154px; width:366px; height:118px;">
+        <div class="hdr"><img src="icons/line/file-text.svg" alt="" /><div class="title">create</div></div>
+        <span class="chip abs">POST /api/interviews</span>
+        <div class="sub">a role, a topic, a level and the dials. nothing is authenticated in the perf window, so no token and no Clerk round trip. inserts one row and returns the interview, its id and the arc: nineteen questions for a standard run.</div>
+    </div>
+
+    <div class="card" style="left:450px; top:154px; width:366px; height:118px;">
+        <div class="hdr"><img src="icons/line/play.svg" alt="" /><div class="title">start</div></div>
+        <span class="chip abs">POST /interviews/{id}/start</span>
+        <div class="sub">one update to in_progress. every chat route refuses a run that is not in progress.</div>
+    </div>
+
+    <div class="card" style="left:450px; top:282px; width:366px; height:166px;">
+        <div class="hdr"><img src="icons/line/message-square.svg" alt="" /><div class="title">opener</div></div>
+        <span class="chip abs">POST /interviews/{id}/chat/opening</span>
+        <div class="sub">comes back as a stream. the server reads the interview, the resume attached to it and the whole transcript in one statement, then asks for a reply and stores it. in the perf window that reply is the stub, echoing the answer back word by word, no network and nothing billed. the client checks the last frame is done and keeps the text.</div>
+    </div>
+
+    <div class="card" style="left:44px; top:282px; width:366px; height:166px;">
+        <div class="hdr"><img src="icons/line/refresh-cw.svg" alt="" /><div class="title">turns</div></div>
+        <span class="chip abs">POST /interviews/{id}/chat/send</span>
+        <div class="sub">two to eight of them drawn at random, one to three seconds of think time between each, so the shape looks like a person typing. on the server three statements: interview and transcript re-read in one, the credit and the message in one, the reply once the stub echoes it. four in production, where the tier lookup is not skipped. the transcript grows every turn, so turn six costs more than turn one.</div>
+    </div>
+
+    <div class="card" style="left:44px; top:458px; width:366px; height:104px;">
+        <div class="hdr"><img src="icons/line/flag.svg" alt="" /><div class="title">finish</div></div>
+        <span class="chip abs">POST /interviews/{id}/finish</span>
+        <div class="sub">flips the status and runs the whole feedback pipeline inside the request: eleven statements, not a background job. the virtual user waits.</div>
+    </div>
+
+    <div class="card" style="left:450px; top:458px; width:366px; height:104px;">
+        <div class="hdr"><img src="icons/line/search.svg" alt="" /><div class="title">read back</div></div>
+        <span class="chip abs">GET /interviews/{id}/feedback</span>
+        <div class="sub">the feedback first, then the chat.</div>
+        <div class="chiprow"><span class="chip">GET /interviews/{id}/chat</span></div>
+    </div>
+
+    <div class="zone" style="left:24px; top:586px; width:492px; height:220px;"></div>
+    <div class="pill" style="left:46px; top:574px;"><span class="tag">the rest of the surface</span></div>
+
+    <div class="card" style="left:44px; top:606px; width:452px; height:188px;">
+        <div class="chiprow" style="margin-top:0;">
+            <span class="chip">GET /interviews</span>
+            <span class="chip">GET /stats/analytics</span>
+            <span class="chip">GET /stats/dashboard</span>
+            <span class="chip">GET /billing/usage</span>
+            <span class="chip">GET /templates</span>
+            <span class="chip">GET /resumes</span>
+            <span class="chip">GET /settings/llm</span>
+            <span class="chip">GET /voice</span>
+            <span class="chip">GET /interviews/{id}/offer</span>
+            <span class="chip">POST /interviews/{id}/archive</span>
+            <span class="chip">DELETE /interviews/{id}/archive</span>
+            <span class="chip">POST /resumes</span>
+            <span class="chip">POST /templates</span>
+            <span class="chip">POST /client-errors</span>
+        </div>
+        <div class="sub" style="margin-top:9px;">POST /resumes and POST /templates are each deleted in the same run.</div>
+    </div>
+
+    <div class="zone" style="left:528px; top:586px; width:288px; height:220px;"></div>
+    <div class="pill" style="left:550px; top:574px;"><span class="tag">counts, whole run</span></div>
+
+    <div class="grp" style="left:552px; top:599px;">        <div class="ct">HTTP over the run</div>
+        <div class="track">
+            <div class="seg read" style="width:45.68%;">46%</div>
+            <div class="seg write" style="width:54.32%;">54%</div>
+        </div>
+        <div class="axis"><span>0</span><span>13,635 requests</span></div>
+        <div class="legend">
+            <div class="li"><i class="s-read"></i>read (GET) 6,230</div>
+            <div class="li"><i class="s-write"></i>write (POST, DELETE) 7,405</div>
+        </div>
+    </div>
+
+    <div class="grp" style="left:552px; top:698px;">
+        <div class="ct">SQL over the run</div>
+        <div class="track">
+            <div class="seg read" style="width:54.51%;">55%</div>
+            <div class="seg write" style="width:40.55%;">41%</div>
+            <div class="seg either" style="width:4.94%;"></div>
+        </div>
+        <div class="axis"><span>0</span><span>31,572 queries</span></div>
+        <div class="legend">
+            <div class="li"><i class="s-read"></i>read (SELECT) 17,210</div>
+            <div class="li"><i class="s-write"></i>write (INSERT, UPDATE, DELETE) 12,804</div>
+            <div class="li"><i class="s-either"></i>either (WITH) 1,558 &#183; 5%</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
