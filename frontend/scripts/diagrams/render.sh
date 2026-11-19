@@ -51,6 +51,8 @@ render voice-path.html 900,760 shipping-voice-path.png
 render aws-single-az.html 840,600 aws-single-az.png
 render sre-then-now.html 840,400 sre-then-now.png
 render sre-spec-paths.html 840,520 sre-spec-paths.png
+render sre-config.html 840,660 sre-config.png
+render sre-tools.html 840,640 sre-tools.png
 render shipping-floor.html 840,428 shipping-floor.png
 render shipping-runner-order.html 840,470 shipping-runner-order.png
 render shipping-rail-path.html 840,480 shipping-rail-path.png

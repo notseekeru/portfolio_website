@@ -1,0 +1,251 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 840px;
+        height: 640px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    #wires { position: absolute; inset: 0; z-index: 1; }
+    .zone {
+        position: absolute;
+        border: 1.5px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 12px;
+        z-index: 0;
+    }
+    .zone-label {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        z-index: 3;
+        white-space: nowrap;
+    }
+    .zone-label .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); }
+    .zone-label .sub { font-size: 11px; color: var(--muted); }
+    .node {
+        position: absolute;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 12px 14px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .node img { width: 26px; height: 26px; flex: none; }
+    .node .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .node .sub { margin-top: 3px; font-size: 12px; color: var(--muted); line-height: 1.3; }
+    .node.pick { border-left: 3px solid var(--accent); }
+    .node.faint { border-left: 3px solid var(--line); }
+
+    .pill {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        height: 32px;
+        padding: 0 12px;
+        background: var(--panel);
+        border: 1px solid var(--accent);
+        border-radius: 99px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+        z-index: 3;
+        white-space: nowrap;
+    }
+    .stack {
+        position: absolute;
+        padding: 12px 14px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .stack .hd { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); }
+    .stack .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .stack .row { display: flex; align-items: baseline; gap: 8px; }
+    .stack .k { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); white-space: nowrap; }
+    .stack .m { font-size: 10.5px; color: var(--muted); line-height: 1.3; }
+    .chip {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+        background: rgba(47, 107, 79, 0.07);
+        border: 1px solid rgba(47, 107, 79, 0.28);
+        border-radius: 99px;
+        padding: 2px 7px;
+        white-space: nowrap;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .mono {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+        z-index: 3;
+        white-space: nowrap;
+    }
+    .wlabel {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+        z-index: 3;
+        white-space: nowrap;
+    }
+    .note {
+        position: absolute;
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--muted);
+        z-index: 3;
+    }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <svg id="wires" viewBox="0 0 840 640" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
+            </marker>
+        </defs>
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+            <path d="M128,124 V138" marker-end="url(#arrow)" />
+            <path d="M216,174 H248 V116 H404" marker-end="url(#arrow)" />
+            <path d="M572,116 H618" marker-end="url(#arrow)" />
+            <path d="M392,258 H404" marker-end="url(#arrow)" />
+            <path d="M489,324 V378" marker-end="url(#arrow)" />
+            <path d="M572,434 H618" marker-end="url(#arrow)" />
+        </g>
+    </svg>
+
+    <div class="zone" style="left:24px; top:24px; width:208px; height:532px;"></div>
+    <div class="zone-label" style="left:46px; top:12px;"><span class="tag">client</span><span class="sub">the harness</span></div>
+
+    <div class="node" style="left:40px; top:56px; width:176px; height:68px;">
+        <img src="icons/brands/k6.svg" alt="" />
+        <div>
+            <div class="title">k6</div>
+            <div class="sub">the workload</div>
+        </div>
+    </div>
+    <div class="node" style="left:40px; top:140px; width:176px; height:68px;">
+        <img src="icons/brands/tailscale.svg" alt="" />
+        <div>
+            <div class="title">Tailscale</div>
+            <div class="sub">the private path</div>
+        </div>
+    </div>
+    <div class="mono" style="left:40px; top:222px;">on the desktop or the laptop</div>
+
+    <div class="stack" style="left:40px; top:242px; width:176px; height:110px;">
+        <div class="hd">~/k6-load-testing</div>
+        <div class="row" style="margin-top:10px;"><span class="k">main.js</span><span class="m">the workload</span></div>
+        <div class="row" style="margin-top:8px;"><span class="k">sweep.py</span><span class="m">the ladder</span></div>
+        <div class="m" style="margin-top:4px;">and the cleanup</div>
+    </div>
+
+    <div class="stack" style="left:40px; top:374px; width:176px; height:176px;">
+        <div class="title">the frontend</div>
+        <div class="chips">
+            <span class="chip">React 19</span>
+            <span class="chip">Vite</span>
+            <span class="chip">TypeScript</span>
+            <span class="chip">Tailwind</span>
+            <span class="chip">Clerk React</span>
+            <span class="chip">axios</span>
+            <span class="chip">recharts</span>
+        </div>
+    </div>
+
+    <div class="zone" style="left:264px; top:24px; width:324px; height:532px;"></div>
+    <div class="zone-label" style="left:286px; top:12px;"><span class="tag">k3s</span><span class="sub">ingress-nginx, Argo CD, Kustomize</span></div>
+
+    <div class="pill" style="left:278px; top:160px; width:114px;">ingress-nginx</div>
+    <div class="mono" style="left:280px; top:94px;">NodePort 30090</div>
+
+    <div class="stack" style="left:278px; top:204px; width:114px; height:108px;">
+        <div class="title">Argo CD</div>
+        <div class="m" style="margin-top:5px;">applies the Kustomize overlay from git</div>
+    </div>
+
+    <div class="stack" style="left:406px; top:56px; width:166px; height:268px; padding:12px; border-left:3px solid var(--accent);">
+        <div class="title">the pod</div>
+        <div class="row" style="margin-top:12px;"><span class="k">Python 3.14-slim</span></div>
+        <div class="row" style="margin-top:2px;"><span class="m">the base image</span></div>
+        <div class="row" style="margin-top:9px;"><span class="k">FastAPI</span></div>
+        <div class="row" style="margin-top:9px;"><span class="k">1 uvicorn worker</span></div>
+        <div class="row" style="margin-top:2px;"><span class="m">no --workers flag</span></div>
+        <div class="row" style="margin-top:9px;"><span class="k">asyncpg</span><span class="m">to postgres</span></div>
+        <div class="row" style="margin-top:9px;"><span class="k">yoyo</span><span class="m">migrations</span></div>
+        <div class="row" style="margin-top:9px;"><span class="k">limits</span></div>
+        <div class="row" style="margin-top:2px;"><span class="m">in-process memory</span></div>
+        <div class="row" style="margin-top:2px;"><span class="m">storage, no redis</span></div>
+    </div>
+
+    <div class="stack" style="left:278px; top:380px; width:294px; height:124px;">
+        <div class="hd">the telemetry rail</div>
+        <div class="row" style="margin-top:10px;"><span class="k">structlog</span><span class="m">one JSON access line per request</span></div>
+        <div class="row" style="margin-top:9px;"><span class="k">OpenTelemetry SDK</span><span class="m">OTLP over HTTP</span></div>
+        <div class="row" style="margin-top:2px;"><span class="m">to the in-cluster collector</span></div>
+        <div class="row" style="margin-top:9px;"><span class="k">Alloy</span><span class="m">the in-cluster shipper</span></div>
+    </div>
+
+    <div class="zone" style="left:604px; top:24px; width:212px; height:268px;"></div>
+    <div class="zone-label" style="left:620px; top:12px;"><span class="tag">the data</span></div>
+    <div class="node" style="left:620px; top:104px; width:180px; height:96px;">
+        <img src="icons/brands/neon.svg" alt="" />
+        <div>
+            <div class="title">Neon</div>
+            <div class="sub">prod default branch, direct host</div>
+        </div>
+    </div>
+
+    <div class="zone" style="left:604px; top:312px; width:212px; height:244px;"></div>
+    <div class="zone-label" style="left:620px; top:300px;"><span class="tag">grafana cloud</span></div>
+    <div class="node" style="left:620px; top:386px; width:180px; height:96px;">
+        <img src="icons/brands/grafana.svg" alt="" />
+        <div>
+            <div class="title">Grafana Cloud</div>
+            <div class="sub">outside the cluster</div>
+        </div>
+    </div>
+
+    <div class="note" style="left:44px; top:580px; width:772px;">
+        The rails do not touch the request: telemetry ships out through Alloy, the config comes in from git through Argo CD.
+    </div>
+</div>
+</body>
+</html>
