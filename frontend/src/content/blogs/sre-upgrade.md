@@ -61,7 +61,7 @@ Cloudflare was the first option and I dropped it. Bot fight mode on the free pla
 
 One test sweep. Each measurement writes one CSV row per sweep, so the numbers are recorded rather than remembered.
 
-![Paper flow chart of the sweep. Open the perf window in gitops, clean up the sweep identity's rows, then a 10 VU smoke. A failed smoke aborts. The ladder runs 100 VUs and doubles; a failed SLO goes to a binary search, then confirmation windows, then the boundary read off the CSV and Grafana, then the window closes. A failed confirmation returns to the search. When no levels are left, the ladder stops and raises the VU ceiling.](/sre-sweep-flow.png)
+![Paper flow chart of the sweep in three zones. The run opens the perf window on the overlay in gitops, reachable on NodePort 30090, cleans up the sweep identity's rows recorded as `deleted_before`, then runs a 10 VU smoke for 10 seconds where a failed smoke aborts the sweep. The climb ramps 30 seconds and holds 60 seconds ungated, takes a 3 minute measurement window at phase ladder behind the gates p95 under 1s, p99 under 5s, errors under 1%, correctness passing, where passing doubles the VUs and a failure goes to a binary search between the last pass and the failure with a 25 VU floor at phase search, and the highest pass is confirmed three times at 5 minutes at phase confirm, with a failed confirmation returning to the search for at most three rounds. Between levels the sweep waits 60 seconds, fifteen of silence, up to thirty of cleanup, fifteen more. The outcome reads the boundary off the CSV and Grafana, then the window closes and cleanup runs.](/sre-sweep-flow.png)
 
 The harness is `~/k6-load-testing`: `main.js` is the workload and `sweep.py` is the ladder, the cleanup and the gates.
 
@@ -89,21 +89,7 @@ A branch is a different machine: its own cold start, its own compute size, copy-
 
 ## What Each VU Does
 
-| Request                                                                   |
-| ------------------------------------------------------------------------- |
-| `POST /interviews`                                                        |
-| `POST /interviews/{id}/start`                                             |
-| `POST /interviews/{id}/chat/opening`                                      |
-| `POST /interviews/{id}/chat/send`                                         |
-| `POST /interviews/{id}/finish`                                            |
-| `GET /interviews/{id}/feedback`                                           |
-| `GET /interviews/{id}/chat`                                               |
-| `GET /interviews`, `/stats/analytics`, `/stats/dashboard`                 |
-| `GET /billing/usage`, `/templates`, `/resumes`, `/settings/llm`, `/voice` |
-| `GET /interviews/{id}/offer`                                              |
-| `POST` and `DELETE /interviews/{id}/archive`                              |
-| `POST /resumes`, `POST /templates`, each deleted in the same run          |
-| `POST /client-errors`                                                     |
+![Paper diagram of what one virtual user does: the totals are 28 requests, one interview, about 20 seconds, and at a hundred virtual users that is sixty-something requests a second and about a hundred and twenty-five queries a second. The identity note says every virtual user is the same identity and they share one account, because it is one candidate moving through the app and the cleanup has one owner to delete. The stubs note says the endpoints that carry generation are outside the run, NvidiaNIM for the model and Cloudflare Workers AI for voice both spend credit, so the model is stubbed and the voice path is off. The run in order is six steps, create `POST /api/interviews`, start `POST /interviews/{id}/start`, opener `POST /interviews/{id}/chat/opening`, turns `POST /interviews/{id}/chat/send` two to eight of them with one to three seconds of think time, finish `POST /interviews/{id}/finish` at eleven statements, then read back `GET /interviews/{id}/feedback` and `GET /interviews/{id}/chat`. The rest of the surface is `GET /interviews`, `GET /stats/analytics`, `GET /stats/dashboard`, `GET /billing/usage`, `GET /templates`, `GET /resumes`, `GET /settings/llm`, `GET /voice`, `GET /interviews/{id}/offer`, `POST` and `DELETE /interviews/{id}/archive`, `POST /resumes` and `POST /templates` each deleted in the same run, and `POST /client-errors`. The two charts are HTTP read 6,230 at 46 percent against write 7,405 at 54 percent, and SQL read 17,210 at 55 percent against write 12,804 at 41 percent and either WITH 1,558 at 5 percent.](/sre-vu.png)
 
 A virtual user is one person doing one whole interview, plus everything else a signed-in person can reach. It starts with a create: `POST /api/interviews` with a role, a topic, a level and the dials. Nothing is authenticated in the perf window, so there is no token to verify and no Clerk round trip.
 
@@ -116,17 +102,6 @@ Then finish. That one request does the most work in the run: it flips the status
 After that the run is read back, feedback then transcript, and then the surface, the part people forget: the interview list, the stats, usage, templates, resumes, settings, the offer, an archive toggle and back, a resume created and deleted, a template created and deleted, and one browser error beacon. None of it is the interview, and all of it is in the loop.
 
 Twenty-eight requests, one interview, about twenty seconds. At a hundred virtual users that is sixty-something requests a second and about a hundred and twenty-five queries a second.
-
-| HTTP                 | Count | Share |
-| -------------------- | ----- | ----- |
-| read (GET)           | 6,230 | 46%   |
-| write (POST, DELETE) | 7,405 | 54%   |
-
-| SQL                            | Count  | Share |
-| ------------------------------ | ------ | ----- |
-| read (SELECT)                  | 17,210 | 55%   |
-| write (INSERT, UPDATE, DELETE) | 12,804 | 41%   |
-| either (WITH)                  | 1,558  | 5%    |
 
 Every virtual user is the same identity and they all share one account. One identity is the first cut because it is one candidate moving through the app, and the cleanup has one owner to delete. A real deployment gives accounts to users, many people at once, so a later stage gives each VU its own identity.
 
@@ -186,14 +161,14 @@ I went looking for a slow query and there was none. The slowest statement stayed
 
 Six changes, all of them on round trips, read size or the pool rather than on the queries themselves.
 
-| Change             | Before                                             | After                                            |
-| ------------------ | -------------------------------------------------- | ------------------------------------------------ |
-| `/stats/analytics` | five checkouts                                     | one statement                                    |
-| `/templates`       | a seed write, then the read                        | the read, seeded only when the endpoint is empty |
-| `/billing/usage`   | two checkouts in the window, three to four in prod | one                                              |
-| `GET /interviews`  | every run the owner had                            | 50 per page, archived filtered in the query      |
-| Home counters      | derived in the browser from that full endpoint     | one statement over the full history              |
-| pool               | 10                                                 | 20                                               |
+| Change                  | What changed                                                                  | Counts | Layer             |
+| ----------------------- | ----------------------------------------------------------------------------- | ------ | ----------------- |
+| `GET /stats/analytics`  | five checkouts become one statement                                            | 5 -> 1 | Aggregate Queries |
+| `GET /templates`        | the read, seeded only when the endpoint is empty                               | n/r    | Aggregate Queries |
+| `GET /billing/usage`    | two checkouts in the window, three to four in prod, become one                 | 2 -> 1 | Aggregate Queries |
+| `GET /interviews`       | every run the owner had becomes 50 per page, archived filtered in the query    | n/r    | Aggregate Queries |
+| Home counters           | derived in the browser from that list becomes one statement over the full history | n/r | Request Batching  |
+| pool                    | 10 connections becomes 20                                                      | 10 -> 20 | config          |
 
 | Phase   | VUs | Window | p50   | p95   | p99   | max   | rps  | errors | verdict | queries/req | wait p50 | wait p95 | query mean | query p95 | CPU (of 4) | memory (of 256Mi) |
 | ------- | --- | ------ | ----- | ----- | ----- | ----- | ---- | ------ | ------- | ----------- | -------- | -------- | ---------- | --------- | ---------- | ----------------- |
@@ -300,6 +275,8 @@ Parallel requests are a separate technique and I would not file them under batch
 | Failed confirmation | Search below, up to 3 times       | Abort; boundary unproven                      |
 | Search resolution   | 25 VU floor                       | 5 VU floor                                    |
 | Floor window        | none                              | 2 min of `/health` at 70 rps before the smoke |
+
+![Paper diagram of the current harness in three zones. The run-up is a floor of 2 minutes of /health at 70 rps, then a 10 VU smoke for 10 seconds where a failed smoke aborts. The climb starts at 100 VUs and doubles behind a 2 minute measurement window and four gates, p95 under 1s, p99 under 5s, errors under 1%, correctness passing, where a pass doubles the VUs and a failure drops to a binary search down to a 5 VU floor, and the highest pass is confirmed in two 5 minute windows that both must pass. A failed confirmation aborts with the boundary unproven, a pass reads the boundary off the CSV and Grafana, then the window closes and cleanup runs. The amber strip names the settings that moved: the floor added at 2 minutes of /health at 70 rps, the ladder window from 3 minutes to 2, the confirmation from three windows to two, a failed confirmation aborting instead of returning to the search, and the search floor from 25 VUs to 5.](/sre-harness.png)
 
 I changed the measurement window to two minutes and the confirmation to two five minute runs because the sweep was taking too much of my time, and I am fine losing some of that data. The shorter windows spend less Neon compute too, which is the other reason: the full sweep was paused near the free tier limit. That is a real trade. Fewer samples make p95 and p99 noisier and two runs are weaker proof than three of three. At my scale I took the trade.
 
