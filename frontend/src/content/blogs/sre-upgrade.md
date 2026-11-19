@@ -55,7 +55,7 @@ Tailscale is the hop because of CGNAT. I cannot forward traffic to my box on an 
 
 Cloudflare was the first option and I dropped it. Bot fight mode on the free plan reads a sudden spike as someone DDoSing me, and the only lever is an IP Access rule, which disables bot fight mode zone-wide, not just for the runner. Cloudflare would measure production-like latency, and that is a separate experiment, since this one is about SRE principles rather than what a real user feels.
 
-![Paper map of the spec paths: three candidates, localhost, Tailscale marked as the one used, and the Cloudflare edge that adds edge latency and bot fight mode. Three refusals: a seed script that writes the rows, the real model that turns the ceiling into a vendor quota, and a wrong endpoint that contaminates the next window. The footer says the models audited each other, disagreements sent me to the code, and the spec reads like a list of refusals.](/sre-spec-paths.png)
+![Paper map of the spec paths: k6 on the laptop through Tailscale into NodePort 30090, then the maxterview pod on the Pi 5 with k3s, then Neon on its direct host, not the pooler, TLS, in another region, with localhost beside it as the app alone, no network, no deploy. Cloudflare edge sits above on a refused over-the-top route that lands on the same pod, because it adds edge latency and bot fight mode to the number, and the only lever, an IP Access rule, disables bot fight mode zone-wide. Three refusals below: a seed script that writes the rows the test then measures, the real model that turns the ceiling into a vendor quota, and a wrong endpoint that contaminates the rows the next window measures.](/sre-spec-paths.png)
 
 ## The Harness
 
@@ -69,42 +69,7 @@ The smoke is the rig's own check and it is not optional. Ten VUs for ten seconds
 
 ## Configuration
 
-### Load generator
-
-| Component | Laptop                                      |
-| --------- | ------------------------------------------- |
-| CPU       | Intel i7-10610U (4 cores / 8 threads, 15 W) |
-| RAM       | 16 GB                                       |
-
-### The box
-
-| Component  | Specification                      |
-| ---------- | ---------------------------------- |
-| Device     | Raspberry Pi 5                     |
-| RAM        | 8 GB                               |
-| CPU        | Four Cortex-A76 cores              |
-| Deployment | k3s, single replica, no autoscaler |
-
-### The perf window
-
-| Change                                    | Value        |
-| ----------------------------------------- | ------------ |
-| `LLM_BASE_URL`                            | unset (stub) |
-| `RATE_LIMIT`                              | `off`        |
-| `CLERK_ENABLED`                           | `false`      |
-| `APP_ENV`                                 | `test`       |
-| `nginx.ingress.kubernetes.io/limit-rps`   | `1000000`    |
-| `nginx.ingress.kubernetes.io/limit-burst` | `1000000`    |
-
-### Deploy
-
-| Setting          | Value                                       |
-| ---------------- | ------------------------------------------- |
-| replicas         | 1, no autoscaler, no HPA, no KEDA           |
-| ingress-limit    | 30 and 20 burst, raised to 1M (both)        |
-| pod memory limit | 256Mi                                       |
-| telemetry        | OTLP to the in-cluster Alloy receiver       |
-| database         | Neon direct host, not `-pooler`, TLS required |
+![Paper rig diagram: the laptop as load generator, k6 on it, with the i7-10610U at 4 cores / 8 threads, 15 W and 16 GB RAM, then the Pi 5 box with 8 GB RAM, four Cortex-A76 cores and k3s, holding the maxterview pod at replicas 1 with no autoscaler, no HPA, no KEDA, a 256Mi memory limit and OTLP to the in-cluster Alloy receiver, and Neon on its direct host, not the pooler, TLS required. The perf window is a switch strip: LLM_BASE_URL unset (stub), RATE_LIMIT off, CLERK_ENABLED false, APP_ENV test, limit-rps and limit-burst raised to 1000000 from the normal 30 rps and 20 burst.](/sre-config.png)
 
 I use k3s because I deploy my sites on my cluster and I prefer the push model: a commit, a rollback, a cleaner pipeline than a webhook on Docker. You could use whatever, a compose file or the host itself, which has less overhead since you are not paying the tax of a scheduler on a four core board.
 
@@ -114,28 +79,7 @@ This is not what you should do, especially if you have users on your prod machin
 
 ## The Tools
 
-### The app
-
-| Layer           | What                                                               |
-| --------------- | ------------------------------------------------------------------ |
-| Runtime         | Python 3.14-slim, FastAPI                                          |
-| uvicorn workers | 1, the Dockerfile passes no `--workers`                            |
-| Data            | asyncpg against Postgres, yoyo for migrations                      |
-| Logging         | structlog, one JSON access line per request                        |
-| Telemetry       | OpenTelemetry SDK, OTLP over HTTP to the in-cluster collector      |
-| Rate limiting   | limits, in-process memory storage, no redis for now                |
-| Frontend        | React 19, Vite, TypeScript, Tailwind, Clerk React, axios, recharts |
-
-### The experiment
-
-| Purpose               | Tool                                                         |
-| --------------------- | ------------------------------------------------------------ |
-| Load generation       | k6, on the desktop or the laptop                             |
-| Private path          | Tailscale                                                    |
-| Orchestration         | k3s, ingress-nginx, Argo CD, Kustomize                       |
-| Metrics, logs, traces | Grafana Cloud, with Alloy as the in-cluster shipper           |
-| Harness               | `~/k6-load-testing`: `main.js` the workload, `sweep.py` the ladder and the cleanup |
-| Database              | Neon, prod's default branch, direct host                     |
+![Paper request path: k6 on the desktop or the laptop over Tailscale onto NodePort 30090 of the backend Service, which bypasses ingress and lands on the pod, with ingress-nginx sitting in the k3s zone on the production path, Argo CD applying the Kustomize overlay from git, and out to Neon on prod's default branch, direct host. A telemetry rail runs from the pod through the in-cluster Alloy shipper to Grafana Cloud outside the cluster. The pod is Python 3.14-slim with FastAPI and 1 uvicorn worker, the Dockerfile passing no workers flag, asyncpg to Postgres with yoyo migrations, limits with in-process memory and no redis, structlog writing one JSON access line per request, OpenTelemetry over OTLP HTTP to the in-cluster collector. The side cards are the frontend at React 19 with Vite, TypeScript, Tailwind, Clerk React, axios and recharts, and the harness in ~/k6-load-testing with main.js the workload and sweep.py the ladder and the cleanup.](/sre-tools.png)
 
 I considered running this against a Postgres pod on a PVC in the cluster. That is not equivalent to production: the round trip from my backend to Neon disappears, though at my scale that is not significant. The other worry was the Neon free tier. I did the numbers and it is generous enough for this test without hitting a storage or compute cap.
 
