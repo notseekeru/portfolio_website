@@ -20,7 +20,7 @@
     #canvas {
         position: relative;
         width: 840px;
-        height: 660px;
+        height: 700px;
         overflow: hidden;
         background-color: var(--paper);
         background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
@@ -28,207 +28,275 @@
         font-family: Inter, "DejaVu Sans", sans-serif;
         color: var(--ink);
     }
-    #wires { position: absolute; inset: 0; z-index: 1; }
+    #wires { position: absolute; inset: 0; z-index: 4; }
+
     .zone {
         position: absolute;
         border: 1.5px dashed rgba(27, 24, 18, 0.24);
         border-radius: 12px;
-        z-index: 0;
     }
-    .zone-label {
+    .pill, .sw {
         position: absolute;
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 7px;
-        height: 24px;
         padding: 0 10px;
         background: var(--paper);
         border: 1px solid var(--line);
         border-radius: 99px;
-        z-index: 3;
         white-space: nowrap;
+        z-index: 5;
     }
-    .zone-label .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); }
-    .zone-label .sub { font-size: 11px; color: var(--muted); }
-    .node {
-        position: absolute;
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        padding: 12px 14px;
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        z-index: 2;
-        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
-    }
-    .node img { width: 26px; height: 26px; flex: none; }
-    .node .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
-    .node .sub { margin-top: 3px; font-size: 12px; color: var(--muted); line-height: 1.3; }
-    .node.pick { border-left: 3px solid var(--accent); }
-
-    .pin {
-        position: absolute;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        height: 42px;
-        padding: 0 12px;
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-left: 2px solid var(--amber);
-        border-radius: 6px;
-        z-index: 2;
-    }
-    .pin .k { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); white-space: nowrap; }
-    .pin .v { font-size: 11px; color: var(--muted); white-space: nowrap; }
-
-    .mono {
-        position: absolute;
+    .pill { height: 24px; gap: 7px; }
+    .pill .tag {
         font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
-        font-size: 11px;
-        line-height: 1.6;
-        color: var(--muted);
-        z-index: 3;
-        white-space: nowrap;
+        font-size: 10.5px;
+        color: var(--ink);
     }
-    .wlabel {
-        position: absolute;
+    .pill .psub { font-size: 11.5px; font-weight: 500; color: var(--muted); }
+    .pill.muted {
         font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
         font-size: 10.5px;
         color: var(--muted);
-        z-index: 3;
+        z-index: 6;
+    }
+
+    .card {
+        position: absolute;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px;
+    }
+    .card-inner {
+        position: absolute;
+        background: #f7f2e5;
+        border: 1px solid rgba(27, 24, 18, 0.18);
+        border-radius: 7px;
+        padding: 14px;
+    }
+    .card-pod {
+        position: absolute;
+        background: var(--panel);
+        border: 1px solid rgba(27, 24, 18, 0.1);
+        border-radius: 7px;
+        padding: 16px;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.05);
+    }
+    .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .sub { margin-top: 4px; font-size: 11.5px; font-weight: 500; color: var(--muted); line-height: 1.35; }
+    .hdr { display: flex; align-items: flex-start; gap: 10px; }
+    .hdr img { width: 26px; height: 26px; flex: none; margin-top: -4px; }
+
+    .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        height: 30px;
+        border-bottom: 1px solid rgba(27, 24, 18, 0.1);
+    }
+    .row.last { border-bottom: none; }
+    .row .k {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
         white-space: nowrap;
+    }
+    .row .v { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 8px;
+        background: rgba(47, 107, 79, 0.08);
+        border: 1px solid rgba(47, 107, 79, 0.3);
+        border-radius: 99px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+        white-space: nowrap;
+    }
+    .chip.gate { color: var(--muted); background: var(--paper); border-color: var(--line); }
+
+    .sw {
+        width: 208px;
+        height: 28px;
+        justify-content: space-between;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+    }
+    .sw .n { color: var(--ink); }
+    .sw .x { color: var(--muted); }
+
+    .cap {
+        position: absolute;
+        font-size: 11.5px;
+        font-weight: 500;
+        color: var(--muted);
+        z-index: 5;
     }
     .note {
         position: absolute;
         font-size: 12px;
         line-height: 1.5;
         color: var(--muted);
-        z-index: 3;
+        z-index: 5;
     }
-
-    .sw { width: 28px; height: 14px; border-radius: 99px; background: #ece5d6; border: 1px solid var(--line); position: relative; flex: none; }
-    .sw i { position: absolute; top: 1px; left: 1px; width: 10px; height: 10px; border-radius: 50%; background: #b6ac97; display: block; }
-    .sw.on { background: rgba(47, 107, 79, 0.16); border-color: var(--accent); }
-    .sw.on i { left: 15px; background: var(--accent); }
-    .row { position: absolute; display: flex; align-items: center; height: 36px; border-bottom: 1px dotted rgba(27, 24, 18, 0.14); }
-    .row .k { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 11px; color: var(--ink); white-space: nowrap; }
-    .row .v { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 11px; color: var(--muted); margin-left: auto; padding-right: 12px; white-space: nowrap; }
-    .row .v.on { color: var(--accent); }
+    .xr {
+        position: absolute;
+        width: 304px;
+        height: 56px;
+        opacity: 0.55;
+        z-index: 3;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+    }
+    .xr .k {
+        position: absolute;
+        left: 34px;
+        top: 8px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+    }
+    .xr .ni { position: absolute; left: 10px; top: 7px; width: 16px; height: 16px; }
+    .xr .v {
+        position: absolute;
+        right: 38px;
+        top: 8px;
+        font-size: 11.5px;
+        color: var(--muted);
+    }
+    .xr .n {
+        position: absolute;
+        left: 10px;
+        top: 30px;
+        font-size: 11.5px;
+        color: var(--muted);
+    }
 </style>
 </head>
 <body>
 <div id="canvas">
-    <svg id="wires" viewBox="0 0 840 660" xmlns="http://www.w3.org/2000/svg">
+    <svg id="wires" viewBox="0 0 840 700" xmlns="http://www.w3.org/2000/svg">
         <defs>
-            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
             </marker>
         </defs>
-        <g fill="none" stroke="#2f6b4f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
-            <path d="M192,125 H236 V143 H274" marker-end="url(#arrow)" />
-            <path d="M568,143 H636" marker-end="url(#arrow)" />
-        </g>
-        <g fill="none" stroke="#d5cbb6" stroke-width="1.3" stroke-dasharray="4 4">
-            <path d="M414,458 V616" />
-        </g>
-        <g fill="none" stroke="#9a5b12" stroke-width="1.3" stroke-dasharray="5 4" opacity="0.6">
-            <path d="M276,192 H268 V371" />
-            <path d="M268,221 H280" />
-            <path d="M268,271 H280" />
-            <path d="M268,321 H280" />
-            <path d="M268,371 H280" />
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M268,154 H304 V300 H371" marker-end="url(#arrow)" />
+            <path d="M573,300 H640 V130 H672" marker-end="url(#arrow)" />
         </g>
     </svg>
 
-    <div class="zone" style="left:24px; top:24px; width:184px; height:226px;"></div>
-    <div class="zone-label" style="left:46px; top:12px;"><span class="tag">load generator</span></div>
-    <div class="node" style="left:40px; top:85px; width:152px; height:80px;">
-        <img src="icons/line/laptop.svg" alt="" />
-        <div>
-            <div class="title">the laptop</div>
-            <div class="sub">k6 runs here</div>
+    <div class="zone" style="left:24px; top:24px; width:268px; height:260px;"></div>
+    <div class="zone" style="left:316px; top:24px; width:308px; height:436px;"></div>
+    <div class="zone" style="left:648px; top:24px; width:168px; height:216px;"></div>
+    <div class="zone" style="left:24px; top:486px; width:792px; height:184px;"></div>
+
+    <div class="pill" style="left:46px; top:12px;"><span class="tag">load generator</span></div>
+    <div class="pill" style="left:338px; top:12px;"><span class="tag">the box under test</span></div>
+    <div class="pill" style="left:670px; top:12px;"><span class="tag">the database</span></div>
+    <div class="pill" style="left:46px; top:474px;"><span class="tag">the perf window</span><span class="psub">the overlay from gitops, this run only</span></div>
+
+    <div class="card" style="left:48px; top:48px; width:220px; height:212px;">
+        <div class="hdr">
+            <img src="icons/line/laptop.svg" alt="" />
+            <div><div class="title">the laptop</div></div>
+        </div>
+        <span class="chip" style="position:absolute; right:16px; top:14px;"><img src="icons/brands/k6.svg" alt="" style="width:16px; height:16px; margin-right:6px;" />k6</span>
+        <span class="chip gate" style="margin-top:6px;">p95 &lt;1s p99 &lt;5s errors &lt;1%</span>
+        <div class="row" style="margin-top:6px;"><span class="k">cpu</span><span class="v">Intel i7-10610U</span></div>
+        <div class="row"><span class="k">cores</span><span class="v">4 cores / 8 threads</span></div>
+        <div class="row"><span class="k">power</span><span class="v">15 W</span></div>
+        <div class="row last"><span class="k">ram</span><span class="v">16 GB</span></div>
+    </div>
+
+    <div class="card" style="left:340px; top:48px; width:260px; height:388px;">
+        <div class="hdr">
+            <img src="icons/brands/raspberrypi.svg" alt="" />
+            <div>
+                <div class="title">Raspberry Pi 5</div>
+                <div class="sub">8 GB, four Cortex-A76 cores</div>
+            </div>
+        </div>
+        <div class="card-inner" style="left:15px; top:58px; width:230px; height:312px;">
+            <div class="hdr">
+                <img src="icons/brands/kubernetes.svg" alt="" />
+                <div>
+                    <div class="title">k3s</div>
+                    <div class="sub">single replica, no autoscaler</div>
+                </div>
+            </div>
+            <div class="card-pod" style="left:14px; top:56px; width:202px; height:240px;">
+                <div class="hdr">
+                    <img src="icons/brands/kubernetes-pod.svg" alt="" />
+                    <div><div class="title">maxterview pod</div></div>
+                </div>
+                <div class="row" style="margin-top:4px;"><span class="k">replicas</span><span class="v">1</span></div>
+                <div class="row"><span class="k">HPA</span><span class="v">none</span></div>
+                <div class="row"><span class="k">KEDA</span><span class="v">none</span></div>
+                <div class="row"><span class="k">memory limit</span><span class="v">256Mi</span></div>
+                <div class="row"><span class="k">OTLP</span><span class="v">in-cluster Alloy receiver</span></div>
+                <div class="row last"><span class="k">worker</span><span class="v">1 uvicorn worker</span></div>
+            </div>
         </div>
     </div>
-    <div class="mono" style="left:40px; top:181px;">Intel i7-10610U</div>
-    <div class="mono" style="left:40px; top:199px;">4 cores / 8 threads</div>
-    <div class="mono" style="left:40px; top:217px;">15 W, 16 GB RAM</div>
 
-    <div class="wlabel" style="left:214px; top:99px;">tailnet</div>
-
-    <div class="zone" style="left:264px; top:24px; width:320px; height:396px;"></div>
-    <div class="zone-label" style="left:280px; top:12px;"><span class="tag">the box under test</span><span class="sub">Pi 5</span></div>
-    <div class="mono" style="left:280px; top:46px; color:var(--ink);">Raspberry Pi 5, 8 GB RAM</div>
-    <div class="mono" style="left:280px; top:66px;">four Cortex-A76 cores, k3s</div>
-
-    <div class="node pick" style="left:280px; top:94px; width:288px; height:98px;">
-        <img src="icons/brands/kubernetes-pod.svg" alt="" />
-        <div>
-            <div class="title">maxterview pod</div>
-            <div class="sub">the app, on k3s</div>
+    <div class="card" style="left:672px; top:48px; width:120px; height:168px;">
+        <div class="hdr">
+            <img src="icons/brands/neon.svg" alt="" />
+            <div>
+                <div class="title">Neon</div>
+                <div class="sub">Postgres</div>
+            </div>
         </div>
+        <div class="row" style="margin-top:6px;"><span class="k">host</span><span class="v">direct</span></div>
+        <div class="row"><span class="k">pooler</span><span class="v">no</span></div>
+        <div class="row last"><span class="k">tls</span><span class="v">required</span></div>
     </div>
 
-    <div class="pin" style="left:280px; top:200px; width:288px;">
-        <span class="k">replicas 1</span>
-        <span class="v">no autoscaler, no HPA, no KEDA</span>
-    </div>
-    <div class="pin" style="left:280px; top:250px; width:288px;">
-        <span class="k">memory 256Mi</span>
-        <span class="v">the pod limit</span>
-    </div>
-    <div class="pin" style="left:280px; top:300px; width:288px;">
-        <span class="k">OTLP</span>
-        <span class="v">to the in-cluster Alloy receiver</span>
-    </div>
-    <div class="pin" style="left:280px; top:350px; width:288px;">
-        <span class="k">Neon direct host</span>
-        <span class="v">not -pooler, TLS required</span>
-    </div>
+    <div class="pill muted" style="left:202px; top:304px;">NodePort 30090</div>
+    <div class="pill muted" style="left:604px; top:304px;">TLS, direct host</div>
 
-    <div class="zone" style="left:620px; top:24px; width:196px; height:226px;"></div>
-    <div class="zone-label" style="left:636px; top:12px;"><span class="tag">the database</span></div>
-    <div class="node" style="left:636px; top:103px; width:164px; height:80px;">
-        <img src="icons/brands/neon.svg" alt="" />
-        <div>
-            <div class="title">Neon</div>
-            <div class="sub">Postgres, in another region</div>
-        </div>
-    </div>
+    <div class="cap" style="left:40px; top:506px;">on the measured path</div>
+    <div class="sw" style="left:40px; top:528px;"><span class="n">LLM_BASE_URL</span><span class="x">unset (stub)</span></div>
+    <div class="sw" style="left:254px; top:528px;"><span class="n">RATE_LIMIT</span><span class="x">off</span></div>
+    <div class="sw" style="left:40px; top:564px;"><span class="n">CLERK_ENABLED</span><span class="x">false</span></div>
+    <div class="sw" style="left:254px; top:564px;"><span class="n">APP_ENV</span><span class="x">test</span></div>
 
-    <div class="zone" style="left:24px; top:440px; width:792px; height:186px;"></div>
-    <div class="zone-label" style="left:46px; top:428px;"><span class="tag">the perf window</span><span class="sub">a Kustomize overlay, on for the run</span></div>
+    <div class="cap" style="left:496px; top:506px;">set in the overlay, off this path</div>
+    <div class="xr" style="left:496px; top:528px;">
+        <img class="ni" src="icons/brands/nginx.svg" alt="" />
+        <span class="k">limit-rps</span>
+        <span class="v">1000000</span>
+        <span class="n">normal life 30 rps</span>
+    </div>
+    <div class="xr" style="left:496px; top:590px;">
+        <img class="ni" src="icons/brands/nginx.svg" alt="" />
+        <span class="k">limit-burst</span>
+        <span class="v">1000000</span>
+        <span class="n">normal life 20 burst</span>
+    </div>
+    <svg style="position:absolute; left:0; top:0; width:840px; height:700px; z-index:4; pointer-events:none;" viewBox="0 0 840 700">
+        <g stroke="#1b1812" stroke-width="1.5" stroke-linecap="round" opacity="0.55">
+            <path d="M530,543 H597" />
+            <g transform="rotate(-7 779 543)">
+                <path d="M769,536 L789,550" />
+                <path d="M789,536 L769,550" />
+            </g>
+            <path d="M530,605 H609" />
+            <g transform="rotate(-7 779 605)">
+                <path d="M769,598 L789,612" />
+                <path d="M789,598 L769,612" />
+            </g>
+        </g>
+    </svg>
 
-    <div class="row" style="left:44px; top:466px; width:360px;">
-        <span class="k">LLM_BASE_URL</span><span class="v">unset (stub)</span><span class="sw"><i></i></span>
-    </div>
-    <div class="row" style="left:44px; top:504px; width:360px;">
-        <span class="k">RATE_LIMIT</span><span class="v">off</span><span class="sw"><i></i></span>
-    </div>
-    <div class="row" style="left:44px; top:542px; width:360px;">
-        <span class="k">CLERK_ENABLED</span><span class="v">false</span><span class="sw"><i></i></span>
-    </div>
-    <div class="row" style="left:44px; top:580px; width:360px;">
-        <span class="k">APP_ENV</span><span class="v">test</span><span class="sw"><i></i></span>
-    </div>
-
-    <div class="row" style="left:430px; top:466px; width:360px; border-bottom:none;">
-        <span class="k" style="color:var(--muted); font-size:10.5px;">nginx.ingress.kubernetes.io</span>
-    </div>
-    <div class="row" style="left:430px; top:504px; width:360px;">
-        <span class="k">limit-rps</span><span class="v on">1000000</span><span class="sw on"><i></i></span>
-    </div>
-    <div class="row" style="left:430px; top:542px; width:360px;">
-        <span class="k">limit-burst</span><span class="v on">1000000</span><span class="sw on"><i></i></span>
-    </div>
-    <div class="row" style="left:430px; top:580px; width:360px;">
-        <span class="k" style="color:var(--muted);">normal life: 30 rps, 20 burst</span>
-    </div>
-
-    <div class="note" style="left:44px; top:634px; width:772px;">
-        The perf window is a Kustomize overlay: six switches, set for the run.
-    </div>
+    <div class="note" style="left:496px; top:650px;">nginx never sees this traffic.</div>
 </div>
 </body>
 </html>
