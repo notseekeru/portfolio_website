@@ -27,7 +27,7 @@
         font-family: Inter, "DejaVu Sans", sans-serif;
         color: var(--ink);
     }
-    #wires { position: absolute; inset: 0; z-index: 1; }
+    #wires { position: absolute; inset: 0; z-index: 3; }
     .zone {
         position: absolute;
         border: 1.5px dashed rgba(27, 24, 18, 0.24);
@@ -74,10 +74,12 @@
     .card .hd img { width: 26px; height: 26px; flex: none; }
     .card .hd .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
     .rows { margin-top: 12px; }
+    .card.py .rows { margin-left: -12px; margin-right: -4px; }
+    .card.ts .rows { margin-left: -4px; margin-right: -12px; }
     .r {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         height: 36px;
         border-bottom: 1px solid rgba(27, 24, 18, 0.1);
     }
@@ -91,6 +93,8 @@
         white-space: nowrap;
     }
     .r .v { font-size: 10.5px; color: var(--muted); line-height: 1.3; }
+    .r .i { flex: none; width: 16px; height: 16px; filter: brightness(0); opacity: 0.62; }
+    .r.on { box-shadow: inset 2px 0 0 rgba(47, 107, 79, 0.55); }
     .seam-mark { position: absolute; font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--muted); z-index: 3; }
     .legend {
         position: absolute;
@@ -107,12 +111,23 @@
 <body>
 <div id="canvas">
     <svg id="wires" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
-        <g fill="none" stroke="#6f6757" stroke-width="1" stroke-dasharray="3 3" opacity="0.55">
-            <path d="M328,165 H352" /><path d="M548,165 H572" />
-            <path d="M328,237 H352" /><path d="M548,237 H572" />
-            <path d="M328,309 H352" /><path d="M548,309 H572" />
-            <path d="M328,381 H352" /><path d="M548,381 H572" />
-            <path d="M328,453 H352" /><path d="M548,453 H572" />
+        <g fill="none" stroke="#2f6b4f" stroke-linecap="round">
+            <g stroke-width="1.5" opacity="0.55">
+                <path d="M325,165 V453" /><path d="M575,165 V453" />
+            </g>
+            <g stroke-width="1.5" stroke-dasharray="2 3" opacity="0.55">
+                <path d="M352,165 H325" /><path d="M548,165 H575" />
+                <path d="M352,237 H325" /><path d="M548,237 H575" />
+                <path d="M352,309 H325" /><path d="M548,309 H575" />
+                <path d="M352,381 H325" /><path d="M548,381 H575" />
+                <path d="M352,453 H325" /><path d="M548,453 H575" />
+            </g>
+        </g>
+        <g fill="#2f6b4f" opacity="0.9">
+            <circle cx="322" cy="237" r="2.5" /><circle cx="322" cy="273" r="2.5" />
+            <circle cx="322" cy="345" r="2.5" /><circle cx="322" cy="381" r="2.5" />
+            <circle cx="578" cy="237" r="2.5" /><circle cx="578" cy="273" r="2.5" />
+            <circle cx="578" cy="345" r="2.5" /><circle cx="578" cy="381" r="2.5" />
         </g>
     </svg>
 
@@ -125,41 +140,41 @@
     <img src="icons/line/database.svg" alt="" style="position:absolute; left:437px; top:54px; width:26px; height:26px; z-index:3;" />
     <div class="seam-mark" style="left:425px; top:86px;">the seam</div>
 
-    <div class="card" style="left:36px; top:56px; width:292px;">
+    <div class="card py" style="left:36px; top:56px; width:292px;">
         <div class="hd">
             <img src="icons/brands/fastapi.svg" alt="" />
             <div class="title">python backend</div>
         </div>
         <div class="rows">
-            <div class="r"><span class="k">runtime</span><span class="v">python 3.14 slim</span></div>
-            <div class="r"><span class="k">framework</span><span class="v">FastAPI, uvicorn on port 8000</span></div>
-            <div class="r"><span class="k">process</span><span class="v">3 uvicorn workers</span></div>
-            <div class="r"><span class="k">driver</span><span class="v">asyncpg, pool 20 per worker, 60 total</span></div>
-            <div class="r"><span class="k">migrations</span><span class="v">yoyo-migrations, SQL files</span></div>
-            <div class="r"><span class="k">logging</span><span class="v">structlog, JSON in production</span></div>
-            <div class="r"><span class="k">telemetry</span><span class="v">OpenTelemetry SDK, OTLP HTTP</span></div>
-            <div class="r"><span class="k">rate limit</span><span class="v">limits, in memory, 120 per minute</span></div>
-            <div class="r"><span class="k">validation</span><span class="v">pydantic 2</span></div>
-            <div class="r"><span class="k">build and tests</span><span class="v">uv venv, no build step, pytest</span></div>
+            <div class="r"><img class="i" src="icons/line/box.svg" alt="" /><span class="k">runtime</span><span class="v">python 3.14 slim</span></div>
+            <div class="r"><img class="i" src="icons/line/workflow.svg" alt="" /><span class="k">framework</span><span class="v">FastAPI, uvicorn on port 8000</span></div>
+            <div class="r"><img class="i" src="icons/line/users.svg" alt="" /><span class="k">process</span><span class="v">3 uvicorn workers</span></div>
+            <div class="r on"><img class="i" src="icons/line/database.svg" alt="" /><span class="k">driver</span><span class="v">asyncpg, pool 20 per worker, 60 total</span></div>
+            <div class="r on"><img class="i" src="icons/line/file-text.svg" alt="" /><span class="k">migrations</span><span class="v">yoyo-migrations, SQL files</span></div>
+            <div class="r"><img class="i" src="icons/line/message-square.svg" alt="" /><span class="k">logging</span><span class="v">structlog, JSON in production</span></div>
+            <div class="r on"><img class="i" src="icons/line/gauge.svg" alt="" /><span class="k">telemetry</span><span class="v">OpenTelemetry SDK, OTLP HTTP</span></div>
+            <div class="r on"><img class="i" src="icons/line/zap.svg" alt="" /><span class="k">rate limit</span><span class="v">limits, in memory, 120 per minute</span></div>
+            <div class="r"><img class="i" src="icons/line/check-check.svg" alt="" /><span class="k">validation</span><span class="v">pydantic 2</span></div>
+            <div class="r"><img class="i" src="icons/line/package.svg" alt="" /><span class="k">build and tests</span><span class="v">uv venv, no build step, pytest</span></div>
         </div>
     </div>
 
-    <div class="card" style="left:572px; top:56px; width:292px;">
+    <div class="card ts" style="left:572px; top:56px; width:292px;">
         <div class="hd">
             <img src="icons/line/package.svg" alt="" />
             <div class="title">typescript backend</div>
         </div>
         <div class="rows">
-            <div class="r"><span class="k">runtime</span><span class="v">node 24 slim</span></div>
-            <div class="r"><span class="k">framework</span><span class="v">Hono 4.13, serve on the config port</span></div>
-            <div class="r"><span class="k">process</span><span class="v">one node process, no cluster</span></div>
-            <div class="r"><span class="k">driver</span><span class="v">postgres.js, pool max 20, prepare off on the pooler</span></div>
-            <div class="r"><span class="k">migrations</span><span class="v">hand-written runner over yoyo's tables and hashes</span></div>
-            <div class="r"><span class="k">logging</span><span class="v">pino, JSON</span></div>
-            <div class="r"><span class="k">telemetry</span><span class="v">opentelemetry sdk-node, same OTLP URLs, 60s interval</span></div>
-            <div class="r"><span class="k">rate limit</span><span class="v">fixed window in a Map, 120 per minute</span></div>
-            <div class="r"><span class="k">validation</span><span class="v">zod 4.6</span></div>
-            <div class="r"><span class="k">build and tests</span><span class="v">tsc build, multi-stage image, vitest</span></div>
+            <div class="r"><img class="i" src="icons/line/box.svg" alt="" /><span class="k">runtime</span><span class="v">node 24 slim</span></div>
+            <div class="r"><img class="i" src="icons/line/workflow.svg" alt="" /><span class="k">framework</span><span class="v">Hono 4.13, serve on the config port</span></div>
+            <div class="r"><img class="i" src="icons/line/users.svg" alt="" /><span class="k">process</span><span class="v">one node process, no cluster</span></div>
+            <div class="r on"><img class="i" src="icons/line/database.svg" alt="" /><span class="k">driver</span><span class="v">postgres.js, pool max 20, prepare off on the pooler</span></div>
+            <div class="r on"><img class="i" src="icons/line/file-text.svg" alt="" /><span class="k">migrations</span><span class="v">hand-written runner over yoyo's tables and hashes</span></div>
+            <div class="r"><img class="i" src="icons/line/message-square.svg" alt="" /><span class="k">logging</span><span class="v">pino, JSON</span></div>
+            <div class="r on"><img class="i" src="icons/line/gauge.svg" alt="" /><span class="k">telemetry</span><span class="v">opentelemetry sdk-node, same OTLP URLs, 60s interval</span></div>
+            <div class="r on"><img class="i" src="icons/line/zap.svg" alt="" /><span class="k">rate limit</span><span class="v">fixed window in a Map, 120 per minute</span></div>
+            <div class="r"><img class="i" src="icons/line/check-check.svg" alt="" /><span class="k">validation</span><span class="v">zod 4.6</span></div>
+            <div class="r"><img class="i" src="icons/line/package.svg" alt="" /><span class="k">build and tests</span><span class="v">tsc build, multi-stage image, vitest</span></div>
         </div>
     </div>
 
