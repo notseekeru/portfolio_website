@@ -43,6 +43,7 @@ render sre-harness.html 840,630 sre-harness.png
 render sre-stack.html 840,880 sre-sweep-stack.png
 render sre-pool.html 900,504 sre-pool-tradeoff.png
 render sre-boundary.html 900,528 sre-boundary-ladder.png
+render sre-batches.html 900,578 sre-batches.png
 render cloud-automation.html 900,890 cloud-automation-stack.png
 render digging-the-wire.html 900,560 digging-the-wire.png
 render payment-rail.html 800,720 shipping-payment-rail.png
