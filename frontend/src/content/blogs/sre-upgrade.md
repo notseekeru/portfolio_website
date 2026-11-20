@@ -310,6 +310,8 @@ I focused on the heavy queries and parallelized where I could, and the latency b
 
 Every VU sharing one account left one owner holding a lot of rows, and the rows grew every window, which made the queries slower every window. The cleanup window exists, but the window where VUs generate writes is still one person, which is not how a real app and a real user interact.
 
+![Paper comparison of one shared account against one account per virtual user. On the left six user marks feed a single account box, and its row pile grows 159 rows at 10 virtual users, 241 at 20 and 415 at 100, so every read scans that one owner's rows. On the right each user mark feeds its own small account holding 15.7 rows at 55 virtual users and 11.7 at 100, so each read scans one virtual user's rows. Both piles sit on the same baseline, so the left one towers and the right ones come out as slivers. The strip below carries the outcome, 100 virtual users passed at per-VU identity where the shared account had failed, the ladder reached 175 and first failed at 187, and 175 is unproven because one confirmation window failed.](/sre-identity.png)
+
 | Per-VU identity   | 55 VUs | 100 VUs |
 | ----------------- | ------ | ------- |
 | verdict           | pass   | pass    |

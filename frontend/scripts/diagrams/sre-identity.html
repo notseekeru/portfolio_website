@@ -1,0 +1,209 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 900px;
+        height: 460px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    #wires { position: absolute; inset: 0; z-index: 3; }
+    .zone { position: absolute; border: 1.5px dashed rgba(27, 24, 18, 0.24); border-radius: 12px; z-index: 0; }
+    .pill {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        white-space: nowrap;
+        z-index: 3;
+    }
+    .pill .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); }
+    .hicon { position: absolute; width: 26px; height: 26px; z-index: 3; }
+    .title { position: absolute; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; line-height: 20px; }
+    .hnote {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        line-height: 13px;
+        color: var(--muted);
+        white-space: nowrap;
+    }
+    .mark { position: absolute; width: 18px; height: 18px; z-index: 3; }
+    .acc {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+    }
+    .acc img { width: 14px; height: 14px; }
+    .acc .lbl { font-size: 10.5px; line-height: 13px; color: var(--muted); }
+    .pile { position: absolute; width: 40px; min-height: 4px; z-index: 1; }
+    .pile.amb { background: var(--amber); }
+    .pile.acc { background: var(--accent); }
+    .base { position: absolute; height: 1px; background: var(--line); z-index: 1; }
+    .note { position: absolute; font-size: 12px; line-height: 14px; color: var(--muted); white-space: nowrap; }
+    .note.span { left: 0; width: 900px; text-align: center; }
+    .rule { position: absolute; width: 1px; background: var(--line); }
+    .stat { position: absolute; display: flex; align-items: baseline; gap: 8px; z-index: 3; }
+    .stv {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 26px;
+        font-weight: 500;
+        line-height: 30px;
+        letter-spacing: -0.02em;
+    }
+    .stv.pass { color: var(--accent); }
+    .stv.short { color: var(--amber); }
+    .stk { font-size: 12px; color: var(--muted); }
+    .sts { position: absolute; font-size: 10.5px; line-height: 13px; color: var(--muted); z-index: 3; }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <svg id="wires" viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="head" viewBox="0 0 10 10" refX="7.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto">
+                <path d="M1,1 L8,5 L1,9" fill="none" stroke="#2f6b4f" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+            </marker>
+        </defs>
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.4" stroke-linecap="round" opacity="0.55">
+            <path d="M84,137 L210,151" marker-end="url(#head)" />
+            <path d="M140,137 L216,151" marker-end="url(#head)" />
+            <path d="M196,137 L222,151" marker-end="url(#head)" />
+            <path d="M252,137 L228,151" marker-end="url(#head)" />
+            <path d="M308,137 L234,151" marker-end="url(#head)" />
+            <path d="M364,137 L240,151" marker-end="url(#head)" />
+            <path d="M536,137 L536,151" marker-end="url(#head)" />
+            <path d="M592,137 L592,151" marker-end="url(#head)" />
+            <path d="M648,137 L648,151" marker-end="url(#head)" />
+            <path d="M704,137 L704,151" marker-end="url(#head)" />
+            <path d="M760,137 L760,151" marker-end="url(#head)" />
+            <path d="M816,137 L816,151" marker-end="url(#head)" />
+        </g>
+        <path d="M432,173 L462,173" fill="none" stroke="#2f6b4f" stroke-width="1.6" stroke-linecap="round" marker-end="url(#head)" />
+    </svg>
+
+    <div class="note span" style="top:6px;">both panels use one row scale, so the right piles stay flat</div>
+
+    <div class="zone" style="left:24px; top:40px; width:400px; height:300px;"></div>
+    <div class="zone" style="left:476px; top:40px; width:400px; height:300px;"></div>
+    <div class="zone" style="left:24px; top:360px; width:852px; height:84px;"></div>
+
+    <div class="pill" style="left:40px; top:28px;"><span class="tag">the first sweeps</span></div>
+    <div class="pill" style="left:492px; top:28px;"><span class="tag">every later run</span></div>
+    <div class="pill" style="left:40px; top:348px;"><span class="tag">the outcome</span></div>
+
+    <img class="hicon" src="icons/line/key.svg" alt="" style="left:40px; top:60px;" />
+    <div class="title" style="left:74px; top:66px;">one account</div>
+    <div class="hnote" style="left:40px; top:90px;">159 rows at 10 VU, 241 at 20, 415 at 100</div>
+
+    <img class="mark" src="icons/line/users.svg" alt="" style="left:75px; top:119px;" />
+    <img class="mark" src="icons/line/users.svg" alt="" style="left:131px; top:119px;" />
+    <img class="mark" src="icons/line/users.svg" alt="" style="left:187px; top:119px;" />
+    <img class="mark" src="icons/line/users.svg" alt="" style="left:243px; top:119px;" />
+    <img class="mark" src="icons/line/users.svg" alt="" style="left:299px; top:119px;" />
+    <img class="mark" src="icons/line/users.svg" alt="" style="left:355px; top:119px;" />
+
+    <div class="acc" style="left:201px; top:153px; width:46px; height:40px;">
+        <img src="icons/line/database.svg" alt="" />
+        <span class="lbl">account</span>
+    </div>
+
+    <div class="base" style="left:40px; top:281px; width:368px;"></div>
+    <div class="pile amb" style="left:204px; top:209px; height:72px;"></div>
+
+    <div class="note" style="left:40px; top:297px;">every read scans that one owner's rows</div>
+    <div class="note" style="left:40px; top:311px;">cleanup has a single owner to delete</div>
+
+    <img class="hicon" src="icons/line/key.svg" alt="" style="left:492px; top:60px;" />
+    <div class="title" style="left:526px; top:66px;">one account each</div>
+    <div class="hnote" style="left:492px; top:90px;">15.7 rows per account at 55 VU, 11.7 at 100</div>
+
+    <img class="mark" src="icons/line/users.svg" alt="" style="left:527px; top:119px;" />
+    <img class="mark" src="icons/line/users.svg" alt="" style="left:583px; top:119px;" />
+    <img class="mark" src="icons/line/users.svg" alt="" style="left:639px; top:119px;" />
+    <img class="mark" src="icons/line/users.svg" alt="" style="left:695px; top:119px;" />
+    <img class="mark" src="icons/line/users.svg" alt="" style="left:751px; top:119px;" />
+    <img class="mark" src="icons/line/users.svg" alt="" style="left:807px; top:119px;" />
+
+    <div class="acc" style="left:513px; top:153px; width:46px; height:40px;">
+        <img src="icons/line/database.svg" alt="" />
+        <span class="lbl">account</span>
+    </div>
+    <div class="acc" style="left:569px; top:153px; width:46px; height:40px;">
+        <img src="icons/line/database.svg" alt="" />
+        <span class="lbl">account</span>
+    </div>
+    <div class="acc" style="left:625px; top:153px; width:46px; height:40px;">
+        <img src="icons/line/database.svg" alt="" />
+        <span class="lbl">account</span>
+    </div>
+    <div class="acc" style="left:681px; top:153px; width:46px; height:40px;">
+        <img src="icons/line/database.svg" alt="" />
+        <span class="lbl">account</span>
+    </div>
+    <div class="acc" style="left:737px; top:153px; width:46px; height:40px;">
+        <img src="icons/line/database.svg" alt="" />
+        <span class="lbl">account</span>
+    </div>
+    <div class="acc" style="left:793px; top:153px; width:46px; height:40px;">
+        <img src="icons/line/database.svg" alt="" />
+        <span class="lbl">account</span>
+    </div>
+
+    <div class="base" style="left:492px; top:281px; width:368px;"></div>
+    <div class="pile acc" style="left:516px; top:277px; height:2.7px;"></div>
+    <div class="pile acc" style="left:572px; top:277px; height:2.7px;"></div>
+    <div class="pile acc" style="left:628px; top:277px; height:2.7px;"></div>
+    <div class="pile acc" style="left:684px; top:277px; height:2.7px;"></div>
+    <div class="pile acc" style="left:740px; top:277px; height:2.7px;"></div>
+    <div class="pile acc" style="left:796px; top:277px; height:2.7px;"></div>
+
+    <div class="note" style="left:492px; top:297px;">every read scans one virtual user's rows</div>
+    <div class="note" style="left:492px; top:311px;">cleanup deletes every account</div>
+
+    <div class="rule" style="left:305px; top:376px; height:40px;"></div>
+    <div class="rule" style="left:595px; top:376px; height:40px;"></div>
+
+    <div class="stat" style="left:40px; top:376px;"><span class="stv pass">100</span><span class="stk">virtual users passed</span></div>
+    <div class="sts" style="left:40px; top:412px; width:240px;">per-VU identity, the shared account failed</div>
+
+    <div class="stat" style="left:330px; top:376px;"><span class="stv pass">175</span><span class="stk">reached</span><span class="stv short">187</span><span class="stk">first fail</span></div>
+    <div class="sts" style="left:330px; top:412px; width:240px;">on the ladder</div>
+
+    <div class="stat" style="left:620px; top:376px;"><span class="stv short">175</span><span class="stk">unproven</span></div>
+    <div class="sts" style="left:620px; top:412px; width:240px;">one confirmation window failed</div>
+</div>
+</body>
+</html>

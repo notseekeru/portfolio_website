@@ -57,6 +57,7 @@ render sre-config.html 840,700 sre-config.png
 render sre-tools.html 840,640 sre-tools.png
 render sre-port.html 940,650 sre-port.png
 render sre-vu.html 840,734 sre-vu.png
+render sre-identity.html 900,440 sre-identity.png
 render shipping-floor.html 840,428 shipping-floor.png
 render shipping-runner-order.html 840,470 shipping-runner-order.png
 render shipping-rail-path.html 840,480 shipping-rail-path.png
