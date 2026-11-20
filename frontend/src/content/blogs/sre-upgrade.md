@@ -249,6 +249,20 @@ The boundary after each change, in the order the runs happened.
 
 55 is the SLO boundary and not the ceiling of the app or the machine. The app keeps serving past it, because machines do not care about your gates, they answer the request. It just stops being acceptable by my own definition of acceptable. And the pool is not out of the story. In this workload it stopped being the wall, and if the boundary moves again the pool becomes the wall again.
 
+## The Harness Change
+
+| Setting             | The run in this record            | Current harness                               |
+| ------------------- | --------------------------------- | --------------------------------------------- |
+| Ladder measurement  | 3 min                             | 2 min                                         |
+| Confirmation        | 3 runs of 5 min, repeated 3 times | two 5 min windows, both must pass             |
+| Failed confirmation | Search below, up to 3 times       | Abort; boundary unproven                      |
+| Search resolution   | 25 VU floor                       | 5 VU floor                                    |
+| Floor window        | none                              | 2 min of `/health` at 70 rps before the smoke |
+
+![Paper diagram of the current harness in three zones. The run-up is a floor of 2 minutes of /health at 70 rps, then a 10 VU smoke for 10 seconds, and a failed smoke aborts. The climb starts at 100 VUs and doubles behind a 2 minute measurement window and four gates, p95 under 1s, p99 under 5s, errors under 1%, correctness passing. A pass doubles the VUs. A failure drops to a binary search down to a 5 VU floor, and the highest pass is confirmed in two 5 minute windows that both must pass. A failed confirmation aborts with the boundary unproven, a pass reads the boundary off the CSV and Grafana, then the window closes and cleanup runs. The amber strip names the settings that moved. The floor was added at 2 minutes of /health at 70 rps, the ladder window went from 3 minutes to 2, the confirmation from three windows to two, a failed confirmation aborts instead of returning to the search, and the search floor went from 25 VUs to 5.](/sre-harness.png)
+
+I changed the measurement window to two minutes and the confirmation to two five minute runs because the sweep was taking too much of my time, and I'm fine losing some of that data. The shorter windows spend less Neon compute too, and that mattered because the full sweep was paused near the free tier limit. Fewer samples make p95 and p99 noisier, and two runs are weaker proof than three of three, but at my scale I took that trade.
+
 ## Batching
 
 To keep track of what I was actually doing when I cut queries, I made my own four layers of batching. They sit at different points between the client and the database, and naming them told me which one a slow route was paying for.
@@ -264,38 +278,9 @@ Request batching is one request where several used to go out. Aggregate queries 
 
 Parallel requests are a separate technique and I would not file them under batching. Two calls run at the same time, and it is not one call carrying both. Nothing about the count goes down, the full network tax is paid for both, and they just stop waiting in line.
 
-## The Harness Change
+## What the Batches Bought
 
-| Setting             | The run in this record            | Current harness                               |
-| ------------------- | --------------------------------- | --------------------------------------------- |
-| Ladder measurement  | 3 min                             | 2 min                                         |
-| Confirmation        | 3 runs of 5 min, repeated 3 times | two 5 min windows, both must pass             |
-| Failed confirmation | Search below, up to 3 times       | Abort; boundary unproven                      |
-| Search resolution   | 25 VU floor                       | 5 VU floor                                    |
-| Floor window        | none                              | 2 min of `/health` at 70 rps before the smoke |
-
-![Paper diagram of the current harness in three zones. The run-up is a floor of 2 minutes of /health at 70 rps, then a 10 VU smoke for 10 seconds, and a failed smoke aborts. The climb starts at 100 VUs and doubles behind a 2 minute measurement window and four gates, p95 under 1s, p99 under 5s, errors under 1%, correctness passing. A pass doubles the VUs. A failure drops to a binary search down to a 5 VU floor, and the highest pass is confirmed in two 5 minute windows that both must pass. A failed confirmation aborts with the boundary unproven, a pass reads the boundary off the CSV and Grafana, then the window closes and cleanup runs. The amber strip names the settings that moved. The floor was added at 2 minutes of /health at 70 rps, the ladder window went from 3 minutes to 2, the confirmation from three windows to two, a failed confirmation aborts instead of returning to the search, and the search floor went from 25 VUs to 5.](/sre-harness.png)
-
-I changed the measurement window to two minutes and the confirmation to two five minute runs because the sweep was taking too much of my time, and I'm fine losing some of that data. The shorter windows spend less Neon compute too, and that mattered because the full sweep was paused near the free tier limit. Fewer samples make p95 and p99 noisier, and two runs are weaker proof than three of three, but at my scale I took that trade.
-
-## The Batched Build
-
-| At 100 VUs        | Pre-batching, pool 40 | Batched build | Round-trip build |
-| ----------------- | --------------------- | ------------- | ---------------- |
-| p50               | 498ms                 | 494ms         | 586ms            |
-| p95               | 1.64s                 | 1.87s         | 1.76s            |
-| p99               | 3.43s                 | 3.78s         | 3.04s            |
-| max               | 59.0s                 | 6.45s         | 4.17s            |
-| rps               | 66.7                  | 62.8          | 68.5             |
-| errors            | 0.16%                 | 0             | 0                |
-| verdict           | fail (p95, checks)    | fail (p95)    | fail (p95)       |
-| queries/req       | n/r                   | 2.43          | 1.89             |
-| wait p50          | 209ms                 | 123ms         | 180ms            |
-| wait p95          | 838ms                 | 570ms         | 742ms            |
-| query mean        | 163ms                 | 150ms         | 212ms            |
-| query p95         | 433ms                 | 462ms         | 649ms            |
-| CPU (of 4)        | 0.52                  | 0.47          | 0.59             |
-| memory (of 256Mi) | 56%                   | 62%           | 65%              |
+![Paper chart of the three builds at 100 virtual users, pre-batching at pool 40, the batched build and the round-trip build, with five slope charts above nine value rows. In build order the p50 is 498ms, 494ms and 586ms, the p95 is 1.64s, 1.87s and 1.76s, the p99 is 3.43s, 3.78s and 3.04s, the max is 59.0s, 6.45s and 4.17s, throughput is 66.7, 62.8 and 68.5 requests a second, and errors are 0.16%, 0 and 0. Wait p50 runs 209ms, 123ms and 180ms, wait p95 runs 838ms, 570ms and 742ms, the query mean runs 163ms, 150ms and 212ms, query p95 runs 433ms, 462ms and 649ms, CPU of 4 cores runs 0.52, 0.47 and 0.59, and memory of 256Mi runs 56%, 62% and 65%. They're all marked as failures. The first failed on p95 and on the checks, and the other two failed on p95. Queries per request was not recorded for the first build, so that chart draws two points and the other two values are 2.43 and 1.89. Each of the five slope charts is its own scale, so compare direction and not size, and the columns are the three runs in build order, not elapsed time.](/sre-batches.png)
 
 ### The batched build
 
