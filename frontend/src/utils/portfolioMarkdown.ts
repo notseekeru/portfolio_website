@@ -61,7 +61,7 @@ export async function buildPortfolioMarkdown(): Promise<string> {
 
     const sectionIf = (titleRow: string, content: string) => (content.trim() ? `\n\n# ${titleRow}\n\n${content.trim()}\n` : "");
 
-    const architecture = ["One map covering the Pi 5 homelab and the sesume stack on AWS.", "", "![Infrastructure map](/infra-stack.png)"].join("\n");
+    const architecture = ["One map covering the Pi 5 homelab and the AWS stack.", "", "![Infrastructure map](/infra-stack.png)"].join("\n");
 
     const sections = [note, intro, sectionIf("Education", edu), sectionIf("Projects", projectsSection(projects)), sectionIf("Architecture", architecture), sectionIf("Latest Blog Posts", await latestBlogsSection(LATEST_BLOG_CAP))];
 
