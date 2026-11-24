@@ -47,7 +47,7 @@ Prod variants use `make prod-up`, `make prod-build`, `make prod-down`.
 ## CI/CD
 
 - **CI** (`ci-pipeline.yml`): lint, typecheck, build on every push/PR to `main`; `npm audit` runs informational only (js deps are compiled away at build and are not shipped in the image).
-- **CD** (`cd-pipeline.yml`): on successful CI on `main` → build + multi-arch image (`linux/amd64`, `linux/arm64`), Trivy 0.74 image scan (the single gating scan, targeting the actual shipping artifact), smoke test, push to GHCR, then kustomize the image tag in the GitOps repo to trigger deploy.
+- **CD** (`cd-pipeline.yml`): on successful CI on `main` → build + multi-arch image (`linux/amd64`, `linux/arm64`), Trivy image scan (the single gating scan, targeting the actual shipping artifact), smoke test, push to GHCR, then kustomize the image tag in the GitOps repo to trigger deploy.
 - **Renovate** (`renovate.json`): weekly updates for npm and Docker dependencies.
 
 ## Deployment Architecture
