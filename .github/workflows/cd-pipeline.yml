@@ -71,6 +71,8 @@ jobs:
           push: false
           tags: ${{ env.IMAGE }}:${{ github.sha }}
           cache-from: type=gha
+          # Never cache prod: its apt upgrade must re-resolve Debian security packages each run.
+          no-cache-filters: prod
 
       - name: Scan image with Trivy
         run: |
@@ -113,6 +115,7 @@ jobs:
             ${{ env.IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          no-cache-filters: prod
 
       - name: Cleanup
         if: always()
