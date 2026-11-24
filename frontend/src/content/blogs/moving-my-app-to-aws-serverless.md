@@ -17,7 +17,7 @@ Earlier this year I built a 3-tier stack. An ALB in front of an ASG, a private R
 
 ![The August three-tier stack: a browser resolves Cloudflare DNS to an ALB with an HTTPS listener and an ACM certificate, forwards to an ASG of one to three t4g.micro nginx instances, then to a private RDS PostgreSQL instance. A separate static path goes from the browser to CloudFront to a private S3 bucket through origin access control.](/aws-three-tier-legacy.png)
 
-The problem was not that it failed. It was that two app instances behind an ALB, plus a CDN, plus a certificate, is a lot of infrastructure to keep alive for one app. It was a rehearsal, not a system I would run, so I stopped treating it like one. I so ditched it, didn't really feel proud of it mostly since it was hand-crafted with AI prose during the process held control most of it.
+The problem was not that it failed. It was that two app instances behind an ALB, plus a CDN, plus a certificate, is a lot of infrastructure to keep alive for one app. It was a rehearsal, not a system I would run, so I stopped treating it like one. so I ditched it, didn't really feel proud of it mostly since it was hand-crafted with AI prose during the process held control most of it.
 
 Now I just noticed that, the design it gave me was kinda terrible and so discarded it since it didn't fit what I wanted which was something like a event-driven serverless architecture. And so I set the plan in motion it to design it myself, assesing tradeoffs and optimization, and just really honing in why that service fits into my stack that I run.
 
@@ -57,7 +57,7 @@ So the comparison stopped being close. One t4g.micro is $0.0106 an hour, about $
 
 No NAT gateway, no ALB, no CloudFront, no ACM, so the fixed cost is one EC2 instance and the Lambdas bill for what they use.
 
-But ofcourse there is a tradeoff. A reboot is an outage for ingress and outbound traffic, nothing fails over because nothing can, and the probe had to live outside the VPC, because its whole job is noticing that the edge is the broken part and it cannot do that from inside the network the edge carries.
+But of course there is a tradeoff. A reboot is an outage for ingress and outbound traffic, nothing fails over because nothing can, and the probe had to live outside the VPC, because its whole job is noticing that the edge is the broken part and it cannot do that from inside the network the edge carries.
 
 But here is the thing about a lambda, it only runs when something calls it, so it cannot keep a tunnel open, it cannot listen on a port, and it cannot be the next hop in a route table, which means the way into this stack needs a process that stays alive the whole time. That is the hybrid part, one box that never sleeps at the edge and then the event-driven functions behind it doing the actual work.
 
@@ -73,7 +73,7 @@ So rebuild is my failover. The stack is in Terraform end to end, so and recovery
 
 Multi-region is the same argument one level up. A second region is a second copy of the database, the images, the parameters and a tunnel pointed somewhere else, and none of it gets exercised until I start needing.
 
-And beside, if I wanted I could just turn on some few buttons to turn on multi-az and failovers and boom, I can now write to my resume that seemingly "Architected Multi-az failover full stack application system" like that is something you don't even manage because you're on aws.
+And besides, if I wanted I could just turn on some few buttons to turn on multi-az and failovers and boom, I can now write to my resume that seemingly "Architected Multi-az failover full stack application system" like that is something you don't even manage because you're on aws.
 
 ![Paper map of the single-AZ stack: Cloudflare tunnels to one t4g.micro edge in us-east-1a running cloudflared, nginx and NAT, and ingress and egress land on that same box. RDS Postgres with multi_az = false sits in the same AZ, and a spare private subnet in us-east-1b shares the one route table whose default route points at the edge. On the side, the failover bill: multi-AZ RDS, a second edge and a load balancer to steer, against Terraform re-applied from snapshots, recovery time over uptime.](/aws-single-az.png)
 

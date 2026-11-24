@@ -30,7 +30,7 @@ This started from three questions. How do I even benchmark an application, what 
 
 I set the pass bar for this architecture and you can use whatever you want. Latency depends on the language and the framework, so the bar is per app and not per machine. A Rust backend and a NodeJS backend aren't comparable runs.
 
-I am not an SRE and I have no professional experience, so keep that in mind. I cannot confirm that what I did is right, not even for my own spec and my own methodology. I present this as documentation of a learning process with verified numbers.
+I have no professional experience, so keep that in mind. I present this as documentation of a learning process with verified numbers.
 
 Correctness is the half I would not drop. Latency says nothing about whether an interview actually finished, so every iteration walks a session end to end. The run gets created, the opener streams, the transcript holds one reply per user turn, the run closes cleanly, and the graded review comes back. A fast reply with a dead stream is a failed request.
 
