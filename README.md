@@ -1,6 +1,6 @@
 # Portfolio Website
 
-[![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
+[![License](https://img.shields.io/badge/license-AGPL--3.0-lightgrey)](LICENSE)
 [![CI](https://github.com/notseekeru/portfolio_website/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/notseekeru/portfolio_website/actions)
 [![CD](https://github.com/notseekeru/portfolio_website/actions/workflows/cd-pipeline.yml/badge.svg)](https://github.com/notseekeru/portfolio_website/actions)
 
@@ -125,3 +125,7 @@ VS Code: add under `mcp` in `.vscode/mcp.json` / workspace settings.
 ├── compose*.yml       # docker compose dev/prod overlays
 └── html-css-parser.py # tooling helper
 ```
+
+## License
+
+AGPL-3.0. See [LICENSE](LICENSE).
