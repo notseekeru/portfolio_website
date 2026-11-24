@@ -48,7 +48,7 @@ const personalData: PersonalData = {
     instagram: "https://www.instagram.com/notseekeru/",
     x: "https://x.com/notseekeru",
     threads: "https://www.threads.com/@notseekeru",
-    bio: "2nd Year Computer Engineering undergraduate who learns by building. I Scope my focus on auditing architectural alignment, security, scalability, and isolation with AI delegating syntax and boilerplate to agents. Then I calculate and weigh friction, scope, value, financial risk of my tool and architecture. I judge decisions/approaches based on my present reasoning, feedback and understanding. Currently seeking opportunities where I can contribute and keep growing.",
+    bio: "2nd Year Computer Engineering undergraduate who learns by building. I Scope my focus on auditing architectural alignment, security, scalability, and isolation. Highly capablable AI fluency, delagating code to agents. I calculate and weigh friction, scope, value, financial risk of my tool and architecture. I judge decisions/approaches based on my present reasoning, feedback and understanding. Currently seeking opportunities where I can contribute and keep growing.",
     profilePicture: "/profile4.png",
     education: [
         {
@@ -101,7 +101,7 @@ const personalData: PersonalData = {
         {
             title: "Infrastructure as Code — Ansible Automation & Idempotency",
             description:
-                "Transitioned to IaC with modular Ansible roles for security hardening, user management, and Dockerization across RPi5 and cloud nodes. Implemented Ansible Vault for secrets, achieved 100% molecule-tested idempotency, enforced automated CI/CD linting via GitHub Actions, and built self-healing infrastructure using declarative state patterns.",
+                "Transitioned to IaC with modular Ansible roles for security hardening, user management, and Dockerization across RPi5 and cloud nodes. Implemented Ansible Vault for secrets, achieved molecule-tested idempotency, enforced automated CI/CD linting via GitHub Actions, and built self-healing infrastructure using declarative state patterns.",
             techStack: ["Ansible", "Molecule", "Ansible Vault", "GitHub Actions", "Docker"],
             favorite: true,
             video: "/project4.webm",
@@ -152,7 +152,7 @@ const personalData: PersonalData = {
         {
             title: "Centralized Secrets Management with Infisical Cloud + CLI",
             description:
-                "Migrated from fragmented secret storage (Ansible Vault, .tfvars, .env) to a single source of truth using Infisical Cloud. Designed source-of-truth and consumer folder structure with dynamic secret references, then extended it into per-environment inheritance: a staging environment that inherits prod's values as per-key references while overriding only the five that must differ (database, identity and payment keys). Integrated with Terraform via infisical run for injection into apply, and added plan-time guards in both directions that refuse the other environment's database endpoint, because an inherited value would otherwise point staging's migrations at the production database. Also can be applied to various projects such as Ansible, Docker, and Node.js apps via the Infisical CLI.",
+                "Migrated from fragmented secret storage (Ansible Vault, .tfvars, .env) to a single source of truth using Infisical Cloud. Designed source-of-truth and consumer folder structure with dynamic secret references, then extended it into per-environment inheritance: a staging environment that inherits prod's values as per-key references while overriding only the five that must differ (database, identity and payment keys). Integrated with Terraform via infisical run for injection into apply, and added plan-time guards in both directions that refuse the other environment's database endpoint, because an inherited value would otherwise point staging's migrations at the production database.",
             techStack: ["Infisical", "Terraform", "Ansible"],
             image: "/project9.png",
             icon: "FaLock",
@@ -160,7 +160,7 @@ const personalData: PersonalData = {
         {
             title: "AWS Serverless on One Box",
             description:
-                "Moved a real app onto AWS serverless and Event Driven Design to learn how it works. One t4g.micro runs nginx, the Cloudflare tunnel and the NAT, four Lambdas run the app and the jobs behind a Function URL, background work goes through SQS with a dead letter queue, and secrets moved from Secrets Manager and KMS to SSM SecureString with no automatic rotation. No ALB, no NAT gateway, no CloudFront and no ACM, so the fixed cost is one EC2 box handle ingress and egress bounds. Also frontend pulls from S3.",
+                "Moved a real app onto AWS serverless and Event Driven Design to learn how it works. One t4g.micro runs nginx, the Cloudflare tunnel and the NAT, four Lambdas run the app and the jobs behind a Function URL, background work goes through SQS with a dead letter queue, and secrets moved from Secrets Manager and KMS to SSM SecureString with no automatic rotation. Also frontend pulls from S3.",
             techStack: ["Terraform", "AWS", "Lambda", "SQS", "SSM", "RDS", "Cloudflare", "GitHub Actions", "Infisical"],
             favorite: true,
             status: "live",
@@ -171,7 +171,7 @@ const personalData: PersonalData = {
         {
             title: "Product — Maxterview AI Interview Simulator",
             description:
-                "Shipped an AI interview simulator end to end: Hono on Node behind a React/Vite SPA where a candidate creates an interview, answers over SSE, and gets a graded review with an annotation per answer, ten scored dimensions, a verdict and tips. Split the feedback into a grader that reads the transcript and writes prose plus a cheap formatter that emits constrained JSON, so the dimensions stay gradable without the interviewer grading itself. Shipped voice as I/O around the turn the app already had instead of a vendor realtime session: Cloudflare Workers AI Whisper for answers and Aura-1 for replies, cached per line and metered inside the free daily neuron allocation. One replica on a Pi 5 under k3s and ArgoCD, with a PreSync migration Job and Trivy-scanned images pinned by tag in a gitops repo, Neon on its direct host, and a load sweep that held 650 virtual users there before p95 broke at 700, model stubbed, with pool size and read size as the ceiling. Telemetry leaves the pod as pino JSON, OTLP metrics and traces through one Alloy receiver into Grafana Cloud, the trace id in every log line and no telemetry write credential in the app. Payments are one subscriptions row, one resolve_tier and PayMongo behind a single module.",
+                "Shipped an AI interview simulator built with Hono on Node behind a React/Vite SPA where a candidate creates an interview, answers over SSE. Split the feedback into a grader that reads the transcript and writes prose plus a cheap formatter that emits constrained JSON. Telemetry leaves the pod as pino JSON, OTLP metrics and traces through one Alloy receiver into Grafana Cloud, the trace id in every log line and no telemetry write credential in the app. Payments are one subscriptions row, one resolve_tier and PayMongo behind a single module.",
             techStack: ["Node.js", "Hono", "React", "TypeScript", "PostgreSQL", "Neon", "Kubernetes", "ArgoCD", "Terraform", "Cloudflare", "PayMongo"],
             favorite: true,
             video: "/maxterview.mp4",
