@@ -1,0 +1,271 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+        --wash: #edf2e9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 900px;
+        height: 578px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    .lead { position: absolute; font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; }
+    .pill {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        white-space: nowrap;
+        z-index: 3;
+    }
+    .pill .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); }
+    .pill .sub { font-size: 11px; color: var(--muted); }
+    .zone { position: absolute; border: 1.5px dashed rgba(27, 24, 18, 0.24); border-radius: 12px; z-index: 0; }
+    .card {
+        position: absolute;
+        width: 152px;
+        height: 160px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 1;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .card.good { background: var(--wash); border-color: rgba(47, 107, 79, 0.38); }
+    .ico { position: absolute; width: 26px; height: 26px; z-index: 3; }
+    .cname {
+        position: absolute;
+        width: 98px;
+        font-size: 11.5px;
+        font-weight: 600;
+        line-height: 1.18;
+        letter-spacing: -0.01em;
+        z-index: 3;
+    }
+    .plot { position: absolute; z-index: 2; }
+    .plot .ln { fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .plot circle { fill: var(--ink); stroke: var(--panel); stroke-width: 1.4; }
+    .plot.good .ln { stroke: var(--accent); }
+    .plot.good circle { fill: var(--accent); stroke: var(--wash); }
+    .hair { position: absolute; height: 1px; background: rgba(27, 24, 18, 0.09); z-index: 3; }
+    .val {
+        position: absolute;
+        transform: translateX(-50%);
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        line-height: 13px;
+        white-space: nowrap;
+        color: var(--ink);
+        z-index: 3;
+    }
+    .val.mute { color: var(--muted); }
+    .bcol {
+        position: absolute;
+        width: 110px;
+        text-align: right;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        line-height: 14px;
+        color: var(--muted);
+    }
+    .mname { position: absolute; font-size: 11.5px; line-height: 14px; white-space: nowrap; }
+    .mname .unit {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+        margin-left: 6px;
+    }
+    .bval {
+        position: absolute;
+        width: 110px;
+        text-align: right;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 11px;
+        line-height: 14px;
+        color: var(--ink);
+    }
+    .mark { position: absolute; width: 12px; height: 12px; z-index: 3; }
+    .mark::before, .mark::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 5.25px;
+        width: 12px;
+        height: 1.5px;
+        background: var(--amber);
+    }
+    .mark::before { transform: rotate(45deg); }
+    .mark::after { transform: rotate(-45deg); }
+    .foot { position: absolute; font-size: 12px; color: var(--muted); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <div class="lead" style="left:40px; top:18px;">the wait fell, the query rose, and the percentiles barely moved</div>
+    <div class="pill" style="right:40px; top:14px;"><span class="tag">100 virtual users, three builds</span></div>
+
+    <div class="zone" style="left:40px; top:56px; width:820px; height:188px;"></div>
+    <div class="pill" style="left:56px; top:44px;"><span class="tag">what moved</span><span class="sub">five metrics</span></div>
+
+    <div class="card good" style="left:50px; top:72px;"></div>
+    <img class="ico" src="icons/line/refresh-cw.svg" alt="" style="left:60px; top:82px;" />
+    <div class="cname" style="left:94px; top:83px;">queries per request</div>
+    <svg class="plot good" style="left:50px; top:72px;" width="152" height="160" viewBox="0 0 152 160">
+        <polyline class="ln" points="76,61.2 128,126.8" />
+        <circle cx="76" cy="61.2" r="3" />
+        <circle cx="128" cy="126.8" r="3" />
+    </svg>
+    <div class="hair" style="left:64px; top:208px; width:124px;"></div>
+    <div class="val mute" style="left:74px; top:212px;">n/r</div>
+    <div class="val" style="left:126px; top:212px;">2.43</div>
+    <div class="val" style="left:178px; top:212px;">1.89</div>
+
+    <div class="card good" style="left:212px; top:72px;"></div>
+    <img class="ico" src="icons/line/users.svg" alt="" style="left:222px; top:82px;" />
+    <div class="cname" style="left:256px; top:88px;">wait p95</div>
+    <svg class="plot good" style="left:212px; top:72px;" width="152" height="160" viewBox="0 0 152 160">
+        <polyline class="ln" points="24,61.2 76,126.8 128,84.7" />
+        <circle cx="24" cy="61.2" r="3" />
+        <circle cx="76" cy="126.8" r="3" />
+        <circle cx="128" cy="84.7" r="3" />
+    </svg>
+    <div class="hair" style="left:226px; top:208px; width:124px;"></div>
+    <div class="val" style="left:236px; top:212px;">838ms</div>
+    <div class="val" style="left:288px; top:212px;">570ms</div>
+    <div class="val" style="left:340px; top:212px;">742ms</div>
+
+    <div class="card" style="left:374px; top:72px;"></div>
+    <img class="ico" src="icons/line/database.svg" alt="" style="left:384px; top:82px;" />
+    <div class="cname" style="left:418px; top:88px;">query p95</div>
+    <svg class="plot" style="left:374px; top:72px;" width="152" height="160" viewBox="0 0 152 160">
+        <polyline class="ln" points="24,126.8 76,118.0 128,61.2" />
+        <circle cx="24" cy="126.8" r="3" />
+        <circle cx="76" cy="118.0" r="3" />
+        <circle cx="128" cy="61.2" r="3" />
+    </svg>
+    <div class="hair" style="left:388px; top:208px; width:124px;"></div>
+    <div class="val" style="left:398px; top:212px;">433ms</div>
+    <div class="val" style="left:450px; top:212px;">462ms</div>
+    <div class="val" style="left:502px; top:212px;">649ms</div>
+
+    <div class="card" style="left:536px; top:72px;"></div>
+    <img class="ico" src="icons/line/gauge.svg" alt="" style="left:546px; top:82px;" />
+    <div class="cname" style="left:580px; top:88px;">request p95</div>
+    <svg class="plot" style="left:536px; top:72px;" width="152" height="160" viewBox="0 0 152 160">
+        <polyline class="ln" points="24,126.8 76,61.2 128,92.6" />
+        <circle cx="24" cy="126.8" r="3" />
+        <circle cx="76" cy="61.2" r="3" />
+        <circle cx="128" cy="92.6" r="3" />
+    </svg>
+    <div class="hair" style="left:550px; top:208px; width:124px;"></div>
+    <div class="val" style="left:560px; top:212px;">1.64s</div>
+    <div class="val" style="left:612px; top:212px;">1.87s</div>
+    <div class="val" style="left:664px; top:212px;">1.76s</div>
+
+    <div class="card good" style="left:698px; top:72px;"></div>
+    <img class="ico" src="icons/line/flag.svg" alt="" style="left:708px; top:82px;" />
+    <div class="cname" style="left:742px; top:88px;">max</div>
+    <svg class="plot good" style="left:698px; top:72px;" width="152" height="160" viewBox="0 0 152 160">
+        <polyline class="ln" points="24,61.2 76,124.0 128,126.8" />
+        <circle cx="24" cy="61.2" r="3" />
+        <circle cx="76" cy="124.0" r="3" />
+        <circle cx="128" cy="126.8" r="3" />
+    </svg>
+    <div class="hair" style="left:712px; top:208px; width:124px;"></div>
+    <div class="val" style="left:722px; top:212px;">59.0s</div>
+    <div class="val" style="left:774px; top:212px;">6.45s</div>
+    <div class="val" style="left:826px; top:212px;">4.17s</div>
+
+    <div class="foot" style="left:40px; top:252px;">Each chart is its own scale, so compare direction, not size. Columns run in build order, not elapsed time.</div>
+
+    <div class="zone" style="left:40px; top:290px; width:820px; height:224px;"></div>
+    <div class="pill" style="left:56px; top:278px;"><span class="tag">what barely moved</span><span class="sub">nine values</span></div>
+
+    <div class="bcol" style="left:390px; top:306px;">pre-batch</div>
+    <div class="bcol" style="left:560px; top:306px;">batched</div>
+    <div class="bcol" style="left:730px; top:306px;">round trip</div>
+    <div class="hair" style="left:68px; top:322px; width:772px;"></div>
+
+    <div class="mname" style="left:68px; top:328px;">p50<span class="unit">ms</span></div>
+    <div class="bval" style="left:390px; top:328px;">498ms</div>
+    <div class="bval" style="left:560px; top:328px;">494ms</div>
+    <div class="bval" style="left:730px; top:328px;">586ms</div>
+    <div class="hair" style="left:68px; top:345px; width:772px;"></div>
+
+    <div class="mname" style="left:68px; top:348px;">p99<span class="unit">s</span></div>
+    <div class="bval" style="left:390px; top:348px;">3.43s</div>
+    <div class="bval" style="left:560px; top:348px;">3.78s</div>
+    <div class="bval" style="left:730px; top:348px;">3.04s</div>
+    <div class="hair" style="left:68px; top:365px; width:772px;"></div>
+
+    <div class="mname" style="left:68px; top:368px;">wait p50<span class="unit">ms</span></div>
+    <div class="bval" style="left:390px; top:368px;">209ms</div>
+    <div class="bval" style="left:560px; top:368px;">123ms</div>
+    <div class="bval" style="left:730px; top:368px;">180ms</div>
+    <div class="hair" style="left:68px; top:385px; width:772px;"></div>
+
+    <div class="mname" style="left:68px; top:388px;">query mean<span class="unit">ms</span></div>
+    <div class="bval" style="left:390px; top:388px;">163ms</div>
+    <div class="bval" style="left:560px; top:388px;">150ms</div>
+    <div class="bval" style="left:730px; top:388px;">212ms</div>
+    <div class="hair" style="left:68px; top:405px; width:772px;"></div>
+
+    <div class="mname" style="left:68px; top:408px;">throughput<span class="unit">rps</span></div>
+    <div class="bval" style="left:390px; top:408px;">66.7</div>
+    <div class="bval" style="left:560px; top:408px;">62.8</div>
+    <div class="bval" style="left:730px; top:408px;">68.5</div>
+    <div class="hair" style="left:68px; top:425px; width:772px;"></div>
+
+    <div class="mname" style="left:68px; top:428px;">errors</div>
+    <div class="bval" style="left:390px; top:428px;">0.16%</div>
+    <div class="bval" style="left:560px; top:428px;">0</div>
+    <div class="bval" style="left:730px; top:428px;">0</div>
+    <div class="hair" style="left:68px; top:445px; width:772px;"></div>
+
+    <div class="mname" style="left:68px; top:448px;">cpu<span class="unit">of 4 cores</span></div>
+    <div class="bval" style="left:390px; top:448px;">0.52</div>
+    <div class="bval" style="left:560px; top:448px;">0.47</div>
+    <div class="bval" style="left:730px; top:448px;">0.59</div>
+    <div class="hair" style="left:68px; top:465px; width:772px;"></div>
+
+    <div class="mname" style="left:68px; top:468px;">memory<span class="unit">of 256Mi</span></div>
+    <div class="bval" style="left:390px; top:468px;">56%</div>
+    <div class="bval" style="left:560px; top:468px;">62%</div>
+    <div class="bval" style="left:730px; top:468px;">65%</div>
+    <div class="hair" style="left:68px; top:485px; width:772px;"></div>
+
+    <div class="mname" style="left:68px; top:488px;">verdict</div>
+    <div class="mark" style="left:478px; top:490px;"></div>
+    <div class="mark" style="left:648px; top:490px;"></div>
+    <div class="mark" style="left:818px; top:490px;"></div>
+
+    <div class="foot" style="left:40px; top:528px;">Queries per request was not recorded for the pre-batching build, so that chart draws two points.</div>
+    <div class="foot" style="left:40px; top:548px;">All three builds failed on p95, so every column carries the same mark.</div>
+</div>
+</body>
+</html>

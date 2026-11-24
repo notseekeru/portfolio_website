@@ -20,7 +20,7 @@
     #canvas {
         position: relative;
         width: 900px;
-        height: 460px;
+        height: 580px;
         overflow: hidden;
         background-color: var(--paper);
         background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
@@ -44,11 +44,45 @@
     .step .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
     .step .sub { margin-top: 4px; font-size: 11.5px; color: var(--muted); line-height: 1.35; }
     .step img.ic, .note img.ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; }
+    .step.fail { border-left: 3px solid var(--amber); }
+    .label {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+        z-index: 3;
+        white-space: nowrap;
+    }
+    .zone {
+        position: absolute;
+        border: 1.5px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 12px;
+        z-index: 0;
+    }
+    .zone-label {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        z-index: 3;
+    }
+    .zone-label img { width: 14px; height: 14px; flex: none; }
+    .zone-label .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); }
+    .zone-label .sub { font-size: 11px; color: var(--muted); }
 </style>
 </head>
 <body>
 <div id="canvas">
-    <svg id="wires" viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg">
+    <div class="zone" style="left:24px; top:40px; width:852px; height:150px;"></div>
+    <div class="zone-label" style="left:40px; top:28px;"><img src="icons/brands/github.svg" alt="" /><span class="tag">GitHub Actions</span><span class="sub">on a push to main</span></div>
+    <div class="zone" style="left:236px; top:260px; width:640px; height:150px;"></div>
+    <div class="zone-label" style="left:252px; top:248px;"><img src="icons/brands/raspberrypi.svg" alt="" /><span class="tag">Pi 5</span><span class="sub">k3s, the cluster</span></div>
+    <svg id="wires" viewBox="0 0 900 580" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
@@ -62,6 +96,7 @@
             <path d="M670,338 H650" marker-end="url(#arrow)" />
             <path d="M460,338 H440" marker-end="url(#arrow)" />
             <path d="M250,338 H230" marker-end="url(#arrow)" />
+            <path d="M555,386 V424" marker-end="url(#arrow)" />
         </g>
     </svg>
 
@@ -100,6 +135,13 @@
         <div class="title">PreSync Job</div>
         <div class="sub">yoyo migrations from the app image</div>
     </div>
+
+    <div class="step fail" style="left:460px; top:428px; width:190px; height:96px;">
+        <img class="ic" src="icons/line/ban.svg" alt="" />
+        <div class="title">Sync stops</div>
+        <div class="sub">pods do not roll</div>
+    </div>
+    <div class="label" style="left:572px; top:390px;">migration fails</div>
 
     <div class="step" style="left:250px; top:290px; width:190px; height:96px;">
         <img class="ic" src="icons/line/box.svg" alt="" />

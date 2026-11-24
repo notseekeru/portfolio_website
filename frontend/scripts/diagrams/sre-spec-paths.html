@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 840px;
+        height: 520px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    #wires { position: absolute; inset: 0; z-index: 1; }
+    .zone {
+        position: absolute;
+        border: 1.5px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 12px;
+        z-index: 0;
+    }
+    .zone-label {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        z-index: 3;
+        white-space: nowrap;
+    }
+    .zone-label .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); }
+    .zone-label .sub { font-size: 11px; color: var(--muted); }
+    .node {
+        position: absolute;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 12px 14px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .node img { width: 26px; height: 26px; flex: none; }
+    .node .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .node .sub { margin-top: 3px; font-size: 12px; color: var(--muted); line-height: 1.3; }
+    .node.pick { border-left: 3px solid var(--accent); }
+    .node.refused { border-left: 3px solid var(--amber); }
+    .note {
+        position: absolute;
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--muted);
+        z-index: 3;
+    }
+    .caption {
+        position: absolute;
+        font-size: 11px;
+        line-height: 1.45;
+        color: var(--muted);
+        z-index: 3;
+    }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <svg id="wires" viewBox="0 0 840 520" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
+            </marker>
+            <marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="#9a5b12" />
+            </marker>
+        </defs>
+
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.8" stroke-linecap="round" opacity="0.9">
+            <path d="M188,157 H212" marker-end="url(#arrow)" />
+            <path d="M350,157 H374" marker-end="url(#arrow)" />
+            <path d="M522,157 H546" marker-end="url(#arrow)" />
+            <path d="M661,194 V206" marker-end="url(#arrow)" />
+        </g>
+
+        <g fill="none" stroke="#9a5b12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 4" opacity="0.75">
+            <path d="M170,120 V82 H661 V118" marker-end="url(#arrow-amber)" />
+            <path d="M90,120 V76" />
+            <path d="M162,332 L116,196" marker-end="url(#arrow-amber)" />
+            <path d="M420,332 L548,176" marker-end="url(#arrow-amber)" />
+            <path d="M678,332 L661,288" marker-end="url(#arrow-amber)" />
+        </g>
+    </svg>
+
+    <div class="zone" style="left:24px; top:24px; width:792px; height:268px;"></div>
+    <div class="zone-label" style="left:46px; top:12px;"><span class="tag">the path</span><span class="sub">as run, k6 to the pod</span></div>
+
+    <div class="node pick" style="left:44px; top:120px; width:144px; height:74px;">
+        <img src="icons/brands/k6.svg" alt="" />
+        <div>
+            <div class="title">k6</div>
+            <div class="sub">on the laptop</div>
+        </div>
+    </div>
+    <div class="node pick" style="left:214px; top:120px; width:136px; height:74px;">
+        <img src="icons/brands/tailscale.svg" alt="" />
+        <div>
+            <div class="title">Tailscale</div>
+            <div class="sub">the tailnet</div>
+        </div>
+    </div>
+    <div class="node pick" style="left:376px; top:120px; width:146px; height:74px;">
+        <img src="icons/line/workflow.svg" alt="" />
+        <div>
+            <div class="title">NodePort</div>
+            <div class="sub">30090</div>
+        </div>
+    </div>
+    <div class="node pick" style="left:548px; top:120px; width:226px; height:74px;">
+        <img src="icons/brands/kubernetes-pod.svg" alt="" />
+        <div>
+            <div class="title">maxterview pod</div>
+            <div class="sub">on a Pi 5, k3s</div>
+        </div>
+    </div>
+    <div class="node" style="left:548px; top:208px; width:226px; height:80px;">
+        <img src="icons/brands/neon.svg" alt="" />
+        <div>
+            <div class="title">Neon Postgres</div>
+            <div class="sub">direct host, not -pooler<br />TLS, another region</div>
+        </div>
+    </div>
+
+    <div class="zone-label" style="left:44px; top:50px; width:282px;"><span class="tag">localhost</span><span class="sub">the app alone, no network, no deploy</span></div>
+    <div class="zone-label" style="left:336px; top:70px; width:130px;"><span class="tag">Cloudflare edge</span></div>
+    <div class="caption" style="left:202px; top:214px; width:250px;">
+        the edge would add edge latency and bot fight mode to the number. free plan: bot fight mode reads a spike as a DDoS, and the only lever, an IP Access rule, disables it zone-wide.
+    </div>
+
+    <div class="zone" style="left:24px; top:320px; width:792px; height:124px;"></div>
+    <div class="zone-label" style="left:46px; top:308px;"><span class="tag">refused</span><span class="sub">pinned to the point they would corrupt</span></div>
+
+    <div class="node refused" style="left:44px; top:332px; width:236px; height:96px;">
+        <img src="icons/line/split.svg" alt="" />
+        <div>
+            <div class="title">a wrong endpoint</div>
+            <div class="sub">contaminates the rows the next window measures</div>
+        </div>
+    </div>
+    <div class="node refused" style="left:302px; top:332px; width:236px; height:96px;">
+        <img src="icons/line/ban.svg" alt="" />
+        <div>
+            <div class="title">the real model</div>
+            <div class="sub">NvidiaNIM, Workers AI: it spends credit, the ceiling becomes a vendor quota</div>
+        </div>
+    </div>
+    <div class="node refused" style="left:560px; top:332px; width:236px; height:96px;">
+        <img src="icons/line/x.svg" alt="" />
+        <div>
+            <div class="title">a seed script</div>
+            <div class="sub">writes the rows the test then measures</div>
+        </div>
+    </div>
+
+    <div class="note" style="left:44px; top:456px; width:772px;">
+        The capacity path ends in the pod. The edge is a separate run and is not in these numbers.
+    </div>
+</div>
+</body>
+</html>

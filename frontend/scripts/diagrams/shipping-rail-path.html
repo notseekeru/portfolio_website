@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 840px;
+        height: 480px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    #wires { position: absolute; inset: 0; z-index: 1; }
+    .zone {
+        position: absolute;
+        border: 1.5px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 12px;
+        z-index: 0;
+    }
+    .zone-label {
+        position: absolute;
+        left: 46px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        z-index: 3;
+    }
+    .zone-label .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); }
+    .zone-label .sub { font-size: 11px; color: var(--muted); }
+    .node {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 6px;
+        padding: 12px 14px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .node .head { display: flex; gap: 10px; align-items: center; }
+    .node img { width: 26px; height: 26px; flex: none; }
+    .node .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .node .sub { font-size: 11.5px; color: var(--muted); line-height: 1.35; }
+    .node.pick { border-left: 3px solid var(--accent); }
+    .node.refused { border-left: 3px solid var(--amber); }
+    .note {
+        position: absolute;
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--muted);
+        z-index: 3;
+    }
+    .mono { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <svg id="wires" viewBox="0 0 840 480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
+            </marker>
+        </defs>
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+            <path d="M260,96 H320" marker-end="url(#arrow)" />
+            <path d="M540,96 H600" marker-end="url(#arrow)" />
+        </g>
+    </svg>
+
+    <div class="zone-label" style="left:44px; top:12px;"><span class="tag">provider</span><span class="sub">three screens</span></div>
+    <div class="node refused" style="left:44px; top:40px; width:216px; height:112px;">
+        <div class="head">
+            <div>
+                <div class="title">Stripe</div>
+                <div class="sub">not available to a PH individual</div>
+            </div>
+        </div>
+        <div class="mono">fees I would not absorb</div>
+    </div>
+    <div class="node" style="left:324px; top:40px; width:216px; height:112px;">
+        <div class="head">
+            <div>
+                <div class="title">Xendit</div>
+                <div class="sub">researched, then passed over</div>
+            </div>
+        </div>
+        <div class="mono">the seam moved instead</div>
+    </div>
+    <div class="node pick" style="left:604px; top:40px; width:216px; height:112px;">
+        <div class="head">
+            <div>
+                <div class="title">PayMongo</div>
+                <div class="sub">verified, live mode</div>
+            </div>
+        </div>
+        <div class="mono">the rail that shipped</div>
+    </div>
+
+    <div class="zone" style="left:24px; top:184px; width:792px; height:104px;"></div>
+    <div class="zone-label" style="left:46px; top:172px;"><span class="tag">gates</span><span class="sub">on this account</span></div>
+    <div class="node" style="left:44px; top:212px; width:236px; height:56px;">
+        <div class="title">Subscriptions</div>
+        <div class="sub">support-enabled, not self-serve</div>
+    </div>
+    <div class="node" style="left:302px; top:212px; width:236px; height:56px;">
+        <div class="title">Card Vaulting</div>
+        <div class="sub">support-enabled, not self-serve</div>
+    </div>
+    <div class="node" style="left:560px; top:212px; width:236px; height:56px;">
+        <div class="title">plan creation</div>
+        <div class="sub">403 on this account</div>
+    </div>
+
+    <div class="zone" style="left:24px; top:320px; width:792px; height:136px;"></div>
+    <div class="zone-label" style="left:46px; top:308px;"><span class="tag">live methods</span><span class="sub">what the app asks for</span></div>
+    <div class="node refused" style="left:44px; top:348px; width:368px; height:84px;">
+        <div class="head">
+            <div>
+                <div class="title">paymaya, card</div>
+                <div class="sub">refused without a registered business type</div>
+            </div>
+        </div>
+        <div class="mono">asked for, could not enable</div>
+    </div>
+    <div class="node pick" style="left:444px; top:348px; width:352px; height:84px;">
+        <div class="head">
+            <div>
+                <div class="title">InstaPay QR, e-wallet</div>
+                <div class="sub">the rail that took 99 pesos</div>
+            </div>
+        </div>
+        <div class="mono">signed webhook, row, paid</div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -3,6 +3,9 @@ name: CD
 on:
   push:
     branches: [main]
+    paths:
+      - ".github/**"
+      - "frontend/**"
   workflow_dispatch:
 
 permissions:
@@ -68,6 +71,7 @@ jobs:
           push: false
           tags: ${{ env.IMAGE }}:${{ github.sha }}
           cache-from: type=gha
+          no-cache-filters: prod
 
       - name: Scan image with Trivy
         run: |
@@ -110,6 +114,7 @@ jobs:
             ${{ env.IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          no-cache-filters: prod
 
       - name: Cleanup
         if: always()

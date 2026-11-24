@@ -1,0 +1,315 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 840px;
+        height: 734px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    #wires { position: absolute; inset: 0; z-index: 4; }
+
+    .zone {
+        position: absolute;
+        border: 1.5px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 12px;
+    }
+    .pill {
+        position: absolute;
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        white-space: nowrap;
+        z-index: 6;
+    }
+    .pill .tag {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+    }
+    .pill.in { position: static; height: 22px; margin-top: 8px; }
+
+    .card {
+        position: absolute;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px 14px;
+        z-index: 2;
+    }
+    .hdr { display: flex; align-items: center; gap: 10px; min-height: 26px; }
+    .hdr img { width: 26px; height: 26px; flex: none; }
+    .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        height: 20px;
+        padding: 0 7px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: rgba(47, 107, 79, 0.07);
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        font-weight: 500;
+        color: var(--ink);
+        white-space: nowrap;
+    }
+    .badge.end { margin-left: auto; }
+    .badge.amber {
+        margin-left: auto;
+        color: var(--amber);
+        border-color: rgba(154, 91, 18, 0.4);
+        background: rgba(154, 91, 18, 0.08);
+    }
+    .badge.amber + .badge { margin-left: 0; }
+
+    .gauge { display: flex; align-items: center; gap: 10px; margin-top: 8px; height: 16px; }
+    .dotrun { display: flex; gap: 2px; }
+    .dotrun i { width: 6px; height: 6px; border-radius: 2px; background: rgba(27, 24, 18, 0.14); }
+    .dotrun i.on { background: var(--accent); }
+    .gtext {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+    }
+    .gtext b { font-weight: 400; color: var(--ink); }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 8px;
+        background: rgba(47, 107, 79, 0.08);
+        border: 1px solid rgba(47, 107, 79, 0.3);
+        border-radius: 99px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+        white-space: nowrap;
+    }
+    .chiprow { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .chiprow.first { margin-top: 0; }
+
+    .ttl {
+        position: absolute;
+        left: 40px;
+        top: 14px;
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+    }
+    .totals {
+        position: absolute;
+        right: 40px;
+        top: 12px;
+        display: flex;
+        gap: 26px;
+    }
+    .t .tv {
+        display: block;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1;
+    }
+    .t .tk { display: block; margin-top: 5px; font-size: 10.5px; font-weight: 500; color: var(--muted); line-height: 1; white-space: nowrap; }
+
+    .grp { position: absolute; width: 252px; }
+    .ct { font-size: 12.5px; font-weight: 600; letter-spacing: -0.01em; }
+    .track {
+        display: flex;
+        height: 22px;
+        margin-top: 5px;
+        border: 1px solid rgba(27, 24, 18, 0.12);
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .seg {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--paper);
+    }
+    .seg.read { background: var(--accent); }
+    .seg.write { background: var(--ink); }
+    .seg.either { background: var(--amber); }
+    .axis {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 4px;
+        padding-top: 2px;
+        border-top: 1px solid var(--line);
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+    }
+    .legend { margin-top: 4px; }
+    .li {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 13px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+        white-space: nowrap;
+    }
+    .li i { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+    .s-read { background: var(--accent); }
+    .s-write { background: var(--ink); }
+    .s-either { background: var(--amber); }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <svg id="wires" viewBox="0 0 840 734" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
+            </marker>
+        </defs>
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+            <path d="M408,131 H448" marker-end="url(#arrow)" />
+            <path d="M632,174 V190" marker-end="url(#arrow)" />
+            <path d="M448,244 H408" marker-end="url(#arrow)" />
+            <path d="M224,300 V314" marker-end="url(#arrow)" />
+            <path d="M408,357 H448" marker-end="url(#arrow)" />
+        </g>
+    </svg>
+
+    <div class="ttl">what one virtual user does</div>
+    <div class="totals">
+        <div class="t"><span class="tv">28</span><span class="tk">requests</span></div>
+        <div class="t"><span class="tv">1</span><span class="tk">interview</span></div>
+        <div class="t"><span class="tv">~20 s</span><span class="tk">wall clock</span></div>
+        <div class="t"><span class="tv">60+</span><span class="tk">req/s &#183; 125 q/s at 100 VUs</span></div>
+    </div>
+
+    <div class="zone" style="left:24px; top:72px; width:792px; height:342px;"></div>
+    <div class="pill" style="left:46px; top:60px;"><span class="tag">the run, in order</span></div>
+
+    <div class="card" style="left:44px; top:90px; width:360px; height:82px;">
+        <div class="hdr"><img src="icons/line/file-text.svg" alt="" /><div class="title">create</div><span class="badge end">1 row</span></div>
+        <div class="pill in"><span class="tag">POST /api/interviews</span></div>
+    </div>
+
+    <div class="card" style="left:452px; top:90px; width:360px; height:82px;">
+        <div class="hdr"><img src="icons/line/play.svg" alt="" /><div class="title">start</div><span class="badge end">1 update</span></div>
+        <div class="pill in"><span class="tag">POST /interviews/{id}/start</span></div>
+    </div>
+
+    <div class="card" style="left:452px; top:192px; width:360px; height:82px;">
+        <div class="hdr"><img src="icons/line/message-square.svg" alt="" /><div class="title">opener</div><span class="badge end">2 stmts</span></div>
+        <div class="pill in"><span class="tag">POST /interviews/{id}/chat/opening</span></div>
+    </div>
+
+    <div class="card" style="left:44px; top:192px; width:360px; height:106px;">
+        <div class="hdr"><img src="icons/line/refresh-cw.svg" alt="" /><div class="title">turns</div><span class="badge amber">4 in prod</span><span class="badge">3 stmts per turn</span></div>
+        <div class="pill in"><span class="tag">POST /interviews/{id}/chat/send</span></div>
+        <div class="gauge">
+            <span class="dotrun"><i></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+            <span class="gtext"><b>2&#8211;8</b> turns</span>
+            <span class="gtext"><b>1&#8211;3 s</b> think</span>
+        </div>
+    </div>
+
+    <div class="card" style="left:44px; top:316px; width:360px; height:82px;">
+        <div class="hdr"><img src="icons/line/flag.svg" alt="" /><div class="title">finish</div><span class="badge end">11 stmts</span></div>
+        <div class="pill in"><span class="tag">POST /interviews/{id}/finish</span></div>
+    </div>
+
+    <div class="card" style="left:452px; top:316px; width:360px; height:82px;">
+        <div class="hdr"><img src="icons/line/search.svg" alt="" /><div class="title">read back</div><span class="badge end">2 stmts</span></div>
+        <div class="pill in"><span class="tag">GET /interviews/{id}/feedback</span></div>
+    </div>
+
+    <div class="chiprow first" style="position:absolute; left:44px; top:426px;">
+        <span class="chip">one identity for cleanup</span>
+        <span class="chip">model stubbed, voice off</span>
+    </div>
+
+    <div class="zone" style="left:24px; top:474px; width:492px; height:236px;"></div>
+    <div class="pill" style="left:46px; top:462px;"><span class="tag">the rest of the surface</span></div>
+
+    <div class="card" style="left:44px; top:486px; width:452px; height:206px;">
+        <span class="badge">14 endpoints</span>
+        <div class="chiprow" style="margin-top:8px;">
+            <span class="chip">GET /interviews</span>
+            <span class="chip">GET /stats/analytics</span>
+            <span class="chip">GET /stats/dashboard</span>
+            <span class="chip">GET /billing/usage</span>
+            <span class="chip">GET /templates</span>
+            <span class="chip">GET /resumes</span>
+            <span class="chip">GET /settings/llm</span>
+            <span class="chip">GET /voice</span>
+            <span class="chip">GET /interviews/{id}/offer</span>
+            <span class="chip">POST /interviews/{id}/archive</span>
+            <span class="chip">DELETE /interviews/{id}/archive</span>
+            <span class="chip">POST /resumes</span>
+            <span class="chip">POST /templates</span>
+            <span class="chip">POST /client-errors</span>
+        </div>
+    </div>
+
+    <div class="zone" style="left:528px; top:474px; width:288px; height:236px;"></div>
+    <div class="pill" style="left:550px; top:462px;"><span class="tag">counts, whole run</span></div>
+
+    <div class="grp" style="left:552px; top:494px;">
+        <div class="ct">HTTP over the run</div>
+        <div class="track">
+            <div class="seg read" style="width:45.68%;">46%</div>
+            <div class="seg write" style="width:54.32%;">54%</div>
+        </div>
+        <div class="axis"><span>0</span><span>13,635 requests</span></div>
+        <div class="legend">
+            <div class="li"><i class="s-read"></i>read (GET) 6,230</div>
+            <div class="li"><i class="s-write"></i>write (POST, DELETE) 7,405</div>
+        </div>
+    </div>
+
+    <div class="grp" style="left:552px; top:598px;">
+        <div class="ct">SQL over the run</div>
+        <div class="track">
+            <div class="seg read" style="width:54.51%;">55%</div>
+            <div class="seg write" style="width:40.55%;">41%</div>
+            <div class="seg either" style="width:4.94%;"></div>
+        </div>
+        <div class="axis"><span>0</span><span>31,572 queries</span></div>
+        <div class="legend">
+            <div class="li"><i class="s-read"></i>read (SELECT) 17,210</div>
+            <div class="li"><i class="s-write"></i>write (INSERT, UPDATE, DELETE) 12,804</div>
+            <div class="li"><i class="s-either"></i>either (WITH) 1,558 &#183; 5%</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

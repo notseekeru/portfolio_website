@@ -1,6 +1,6 @@
 # Portfolio Website
 
-[![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
+[![License](https://img.shields.io/badge/license-AGPL--3.0-lightgrey)](LICENSE)
 [![CI](https://github.com/notseekeru/portfolio_website/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/notseekeru/portfolio_website/actions)
 [![CD](https://github.com/notseekeru/portfolio_website/actions/workflows/cd-pipeline.yml/badge.svg)](https://github.com/notseekeru/portfolio_website/actions)
 
@@ -47,8 +47,8 @@ Prod variants use `make prod-up`, `make prod-build`, `make prod-down`.
 ## CI/CD
 
 - **CI** (`ci-pipeline.yml`): lint, typecheck, build on every push/PR to `main`; `npm audit` runs informational only (js deps are compiled away at build and are not shipped in the image).
-- **CD** (`cd-pipeline.yml`): on successful CI on `main` → build + multi-arch image (`linux/amd64`, `linux/arm64`), Trivy 0.74 image scan (the single gating scan, targeting the actual shipping artifact), smoke test, push to GHCR, then kustomize the image tag in the GitOps repo to trigger deploy.
-- **Dependabot** (`dependabot.yml`): weekly updates for npm and Docker dependencies.
+- **CD** (`cd-pipeline.yml`): on successful CI on `main` → build + multi-arch image (`linux/amd64`, `linux/arm64`), Trivy image scan (the single gating scan, targeting the actual shipping artifact), smoke test, push to GHCR, then kustomize the image tag in the GitOps repo to trigger deploy.
+- **Renovate** (`renovate.json`): weekly updates for npm and Docker dependencies.
 
 ## Deployment Architecture
 
@@ -122,6 +122,9 @@ VS Code: add under `mcp` in `.vscode/mcp.json` / workspace settings.
 ├── scripts/           # port-claimer.sh
 ├── .github/workflows/ # CI + CD pipelines
 ├── Makefile           # compose wrapper (dev/prod)
-├── compose*.yml       # docker compose dev/prod overlays
-└── html-css-parser.py # tooling helper
+└── compose*.yml       # docker compose dev/prod overlays
 ```
+
+## License
+
+AGPL-3.0. See [LICENSE](LICENSE).

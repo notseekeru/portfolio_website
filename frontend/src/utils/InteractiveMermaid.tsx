@@ -200,9 +200,9 @@ export default function InteractiveMermaid({ chart }: InteractiveMermaidProps) {
     const toggleFullscreen = () => setIsFullscreen(!isFullscreen);
 
     const viewer = (
-        <div className="relative flex items-center justify-center w-full h-full [&>svg]:max-w-none [&>svg]:h-auto md:[&>svg]:w-full md:[&>svg]:h-full">
+        <div className="relative flex items-center justify-center w-full h-full">
             {/* biome-ignore lint/security/noDangerouslySetInnerHtml: mermaid renders raw SVG */}
-            <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: svgContent }} role="img" aria-label="Diagram preview" />
+            <div className="w-full h-full flex items-center justify-center [&>svg]:max-w-none [&>svg]:w-full [&>svg]:h-full" dangerouslySetInnerHTML={{ __html: svgContent }} role="img" aria-label="Diagram preview" />
         </div>
     );
 

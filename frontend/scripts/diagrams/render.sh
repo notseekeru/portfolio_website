@@ -34,16 +34,31 @@ render() {
     printf '%s\n' "wrote public/$3"
 }
 
+render infra.html 1600,1300 infra-stack.png
 render serverless-flow.html 900,900 aws-serverless-flow.png
 render three-tier-legacy.html 720,620 aws-three-tier-legacy.png
 render cost-comparison.html 900,430 aws-cost-comparison.png
-render sre-sweep.html 840,650 sre-sweep-flow.png
-render sre-stack.html 840,856 sre-sweep-stack.png
-render sre-pool.html 900,380 sre-pool-tradeoff.png
-render sre-boundary.html 900,384 sre-boundary-ladder.png
+render sre-sweep.html 840,724 sre-sweep-flow.png
+render sre-harness.html 840,630 sre-harness.png
+render sre-stack.html 840,880 sre-sweep-stack.png
+render sre-pool.html 900,504 sre-pool-tradeoff.png
+render sre-boundary.html 900,528 sre-boundary-ladder.png
+render sre-batches.html 900,578 sre-batches.png
 render cloud-automation.html 900,890 cloud-automation-stack.png
 render digging-the-wire.html 900,560 digging-the-wire.png
 render payment-rail.html 800,720 shipping-payment-rail.png
-render deploy-pipeline.html 900,460 shipping-deploy-pipeline.png
-render log-pipeline.html 760,720 shipping-log-pipeline.png
+render deploy-pipeline.html 900,580 shipping-deploy-pipeline.png
+render log-pipeline.html 760,710 shipping-log-pipeline.png
 render voice-path.html 900,760 shipping-voice-path.png
+render aws-single-az.html 840,600 aws-single-az.png
+render sre-then-now.html 840,400 sre-then-now.png
+render sre-spec-paths.html 840,520 sre-spec-paths.png
+render sre-config.html 840,700 sre-config.png
+render sre-tools.html 840,640 sre-tools.png
+render sre-port.html 940,650 sre-port.png
+render sre-vu.html 840,734 sre-vu.png
+render sre-identity.html 900,440 sre-identity.png
+render shipping-floor.html 840,428 shipping-floor.png
+render shipping-runner-order.html 840,470 shipping-runner-order.png
+render shipping-rail-path.html 840,480 shipping-rail-path.png
+render shipping-deleted.html 840,256 shipping-deleted.png

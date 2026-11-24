@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 840px;
+        height: 470px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    .zone {
+        position: absolute;
+        border: 1.5px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 12px;
+        z-index: 0;
+    }
+    .zone-label {
+        position: absolute;
+        left: 46px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        z-index: 3;
+    }
+    .zone-label .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); }
+    .zone-label .sub { font-size: 11px; color: var(--muted); }
+    .node {
+        position: absolute;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 11px 12px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .node img { width: 26px; height: 26px; flex: none; }
+    .node .title { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .node .sub { margin-top: 3px; font-size: 11.5px; color: var(--muted); line-height: 1.3; }
+    .step {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 12px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+    }
+    .step .num {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        flex: none;
+        width: 16px;
+    }
+    .step .title { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .step .sub { margin-top: 3px; font-size: 11.5px; color: var(--muted); line-height: 1.3; }
+    .step.pick { border-left: 3px solid var(--accent); }
+    .note {
+        position: absolute;
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--muted);
+        z-index: 3;
+    }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <div class="zone" style="left:24px; top:24px; width:400px; height:332px;"></div>
+    <div class="zone-label" style="left:46px; top:12px;"><span class="tag">MCP</span><span class="sub">three servers</span></div>
+    <div class="node" style="left:44px; top:56px; width:360px; height:84px;">
+        <img src="icons/line/box.svg" alt="" />
+        <div>
+            <div class="title">Playwright browser</div>
+            <div class="sub">nixpkgs through the flake, its own browser path</div>
+        </div>
+    </div>
+    <div class="node" style="left:44px; top:156px; width:360px; height:84px;">
+        <img src="icons/brands/neon.svg" alt="" />
+        <div>
+            <div class="title">Neon HTTP</div>
+            <div class="sub">API key read from .env at connect</div>
+        </div>
+    </div>
+    <div class="node" style="left:44px; top:256px; width:360px; height:84px;">
+        <img src="icons/brands/grafana.svg" alt="" />
+        <div>
+            <div class="title">Grafana</div>
+            <div class="sub">container image, transport forced to stdio</div>
+        </div>
+    </div>
+
+    <div class="zone" style="left:444px; top:24px; width:372px; height:420px;"></div>
+    <div class="zone-label" style="left:466px; top:12px;"><span class="tag">decision order</span><span class="sub">written down</span></div>
+    <div class="step pick" style="left:464px; top:60px; width:332px; height:76px;">
+        <span class="num">01</span>
+        <div>
+            <div class="title">real browser, a11y tree</div>
+            <div class="sub">a verdict, the default</div>
+        </div>
+    </div>
+    <div class="step" style="left:464px; top:148px; width:332px; height:76px;">
+        <span class="num">02</span>
+        <div>
+            <div class="title">canned runner, as-is</div>
+            <div class="sub">its PASS/FAIL line, nothing else</div>
+        </div>
+    </div>
+    <div class="step" style="left:464px; top:236px; width:332px; height:76px;">
+        <span class="num">03</span>
+        <div>
+            <div class="title">a failing runner</div>
+            <div class="sub">a dead end, not a task</div>
+        </div>
+    </div>
+    <div class="step" style="left:464px; top:324px; width:332px; height:76px;">
+        <span class="num">04</span>
+        <div>
+            <div class="title">editing a runner</div>
+            <div class="sub">an explicit ask, never assumed</div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

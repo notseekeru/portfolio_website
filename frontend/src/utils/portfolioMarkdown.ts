@@ -1,6 +1,5 @@
 import personalData, { type ProjectItem } from "../data/personalData";
 import { loadBlogs, type BlogPost } from "./blogLoader";
-import { infrastructureChart } from "./infrastructureChart";
 
 export const LATEST_BLOG_CAP = 4;
 
@@ -62,7 +61,9 @@ export async function buildPortfolioMarkdown(): Promise<string> {
 
     const sectionIf = (titleRow: string, content: string) => (content.trim() ? `\n\n# ${titleRow}\n\n${content.trim()}\n` : "");
 
-    const sections = [note, intro, sectionIf("Education", edu), sectionIf("Projects", projectsSection(projects)), sectionIf("Architecture", ["```mermaid", infrastructureChart, "```"].join("\n")), sectionIf("Latest Blog Posts", await latestBlogsSection(LATEST_BLOG_CAP))];
+    const architecture = ["One map covering the Pi 5 homelab and the AWS stack.", "", "![Infrastructure map](/infra-stack.png)"].join("\n");
+
+    const sections = [note, intro, sectionIf("Education", edu), sectionIf("Projects", projectsSection(projects)), sectionIf("Architecture", architecture), sectionIf("Latest Blog Posts", await latestBlogsSection(LATEST_BLOG_CAP))];
 
     sections.push("", "---", "", `_Generated from https://portfolio.seekeru.tech — full portfolio, ${new Date().toISOString().slice(0, 10)}._`, "");
 

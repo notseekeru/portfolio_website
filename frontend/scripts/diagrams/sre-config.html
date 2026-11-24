@@ -1,0 +1,302 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 840px;
+        height: 700px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    #wires { position: absolute; inset: 0; z-index: 4; }
+
+    .zone {
+        position: absolute;
+        border: 1.5px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 12px;
+    }
+    .pill, .sw {
+        position: absolute;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        white-space: nowrap;
+        z-index: 5;
+    }
+    .pill { height: 24px; gap: 7px; }
+    .pill .tag {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+    }
+    .pill .psub { font-size: 11.5px; font-weight: 500; color: var(--muted); }
+    .pill.muted {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+        z-index: 6;
+    }
+
+    .card {
+        position: absolute;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px;
+    }
+    .card-inner {
+        position: absolute;
+        background: #f7f2e5;
+        border: 1px solid rgba(27, 24, 18, 0.18);
+        border-radius: 7px;
+        padding: 14px;
+    }
+    .card-pod {
+        position: absolute;
+        background: var(--panel);
+        border: 1px solid rgba(27, 24, 18, 0.1);
+        border-radius: 7px;
+        padding: 16px;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.05);
+    }
+    .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .sub { margin-top: 4px; font-size: 11.5px; font-weight: 500; color: var(--muted); line-height: 1.35; }
+    .hdr { display: flex; align-items: flex-start; gap: 10px; }
+    .hdr img { width: 26px; height: 26px; flex: none; margin-top: -4px; }
+
+    .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        height: 30px;
+        border-bottom: 1px solid rgba(27, 24, 18, 0.1);
+    }
+    .row.last { border-bottom: none; }
+    .row .k {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+        white-space: nowrap;
+    }
+    .row .v { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 8px;
+        background: rgba(47, 107, 79, 0.08);
+        border: 1px solid rgba(47, 107, 79, 0.3);
+        border-radius: 99px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+        white-space: nowrap;
+    }
+    .chip.gate { color: var(--muted); background: var(--paper); border-color: var(--line); }
+
+    .sw {
+        width: 208px;
+        height: 28px;
+        justify-content: space-between;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+    }
+    .sw .n { color: var(--ink); }
+    .sw .x { color: var(--muted); }
+
+    .cap {
+        position: absolute;
+        font-size: 11.5px;
+        font-weight: 500;
+        color: var(--muted);
+        z-index: 5;
+    }
+    .note {
+        position: absolute;
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--muted);
+        z-index: 5;
+    }
+    .xr {
+        position: absolute;
+        width: 304px;
+        height: 56px;
+        opacity: 0.55;
+        z-index: 3;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+    }
+    .xr .k {
+        position: absolute;
+        left: 34px;
+        top: 8px;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--ink);
+    }
+    .xr .ni { position: absolute; left: 10px; top: 7px; width: 16px; height: 16px; }
+    .xr .v {
+        position: absolute;
+        right: 38px;
+        top: 8px;
+        font-size: 11.5px;
+        color: var(--muted);
+    }
+    .xr .n {
+        position: absolute;
+        left: 10px;
+        top: 30px;
+        font-size: 11.5px;
+        color: var(--muted);
+    }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <svg id="wires" viewBox="0 0 840 700" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
+            </marker>
+        </defs>
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M268,154 H304 V300 H371" marker-end="url(#arrow)" />
+            <path d="M573,300 H640 V130 H672" marker-end="url(#arrow)" />
+        </g>
+    </svg>
+
+    <div class="zone" style="left:24px; top:24px; width:268px; height:260px;"></div>
+    <div class="zone" style="left:316px; top:24px; width:308px; height:436px;"></div>
+    <div class="zone" style="left:648px; top:24px; width:168px; height:216px;"></div>
+    <div class="zone" style="left:24px; top:486px; width:792px; height:184px;"></div>
+
+    <div class="pill" style="left:46px; top:12px;"><span class="tag">load generator</span></div>
+    <div class="pill" style="left:338px; top:12px;"><span class="tag">the box under test</span></div>
+    <div class="pill" style="left:670px; top:12px;"><span class="tag">the database</span></div>
+    <div class="pill" style="left:46px; top:474px;"><span class="tag">the perf window</span><span class="psub">the overlay from gitops, this run only</span></div>
+
+    <div class="card" style="left:48px; top:48px; width:220px; height:212px;">
+        <div class="hdr">
+            <img src="icons/line/laptop.svg" alt="" />
+            <div><div class="title">the laptop</div></div>
+        </div>
+        <span class="chip" style="position:absolute; right:16px; top:14px;"><img src="icons/brands/k6.svg" alt="" style="width:16px; height:16px; margin-right:6px;" />k6</span>
+        <span class="chip gate" style="margin-top:6px;">p95 &lt;1s p99 &lt;5s errors &lt;1%</span>
+        <div class="row" style="margin-top:6px;"><span class="k">cpu</span><span class="v">Intel i7-10610U</span></div>
+        <div class="row"><span class="k">cores</span><span class="v">4 cores / 8 threads</span></div>
+        <div class="row"><span class="k">power</span><span class="v">15 W</span></div>
+        <div class="row last"><span class="k">ram</span><span class="v">16 GB</span></div>
+    </div>
+
+    <div class="card" style="left:340px; top:48px; width:260px; height:388px;">
+        <div class="hdr">
+            <img src="icons/brands/raspberrypi.svg" alt="" />
+            <div>
+                <div class="title">Raspberry Pi 5</div>
+                <div class="sub">8 GB, four Cortex-A76 cores</div>
+            </div>
+        </div>
+        <div class="card-inner" style="left:15px; top:58px; width:230px; height:312px;">
+            <div class="hdr">
+                <img src="icons/brands/kubernetes.svg" alt="" />
+                <div>
+                    <div class="title">k3s</div>
+                    <div class="sub">single replica, no autoscaler</div>
+                </div>
+            </div>
+            <div class="card-pod" style="left:14px; top:56px; width:202px; height:240px;">
+                <div class="hdr">
+                    <img src="icons/brands/kubernetes-pod.svg" alt="" />
+                    <div><div class="title">maxterview pod</div></div>
+                </div>
+                <div class="row" style="margin-top:4px;"><span class="k">replicas</span><span class="v">1</span></div>
+                <div class="row"><span class="k">HPA</span><span class="v">none</span></div>
+                <div class="row"><span class="k">KEDA</span><span class="v">none</span></div>
+                <div class="row"><span class="k">memory limit</span><span class="v">256Mi</span></div>
+                <div class="row"><span class="k">OTLP</span><span class="v">in-cluster Alloy receiver</span></div>
+                <div class="row last"><span class="k">worker</span><span class="v">1 uvicorn worker</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="left:672px; top:48px; width:120px; height:168px;">
+        <div class="hdr">
+            <img src="icons/brands/neon.svg" alt="" />
+            <div>
+                <div class="title">Neon</div>
+                <div class="sub">Postgres</div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:6px;"><span class="k">host</span><span class="v">direct</span></div>
+        <div class="row"><span class="k">pooler</span><span class="v">no</span></div>
+        <div class="row last"><span class="k">tls</span><span class="v">required</span></div>
+    </div>
+
+    <div class="pill muted" style="left:202px; top:304px;">NodePort 30090</div>
+    <div class="pill muted" style="left:604px; top:304px;">TLS, direct host</div>
+
+    <div class="cap" style="left:40px; top:506px;">on the measured path</div>
+    <div class="sw" style="left:40px; top:528px;"><span class="n">LLM_BASE_URL</span><span class="x">unset (stub)</span></div>
+    <div class="sw" style="left:254px; top:528px;"><span class="n">RATE_LIMIT</span><span class="x">off</span></div>
+    <div class="sw" style="left:40px; top:564px;"><span class="n">CLERK_ENABLED</span><span class="x">false</span></div>
+    <div class="sw" style="left:254px; top:564px;"><span class="n">APP_ENV</span><span class="x">test</span></div>
+
+    <div class="cap" style="left:496px; top:506px;">set in the overlay, off this path</div>
+    <div class="xr" style="left:496px; top:528px;">
+        <img class="ni" src="icons/brands/nginx.svg" alt="" />
+        <span class="k">limit-rps</span>
+        <span class="v">1000000</span>
+        <span class="n">normal life 30 rps</span>
+    </div>
+    <div class="xr" style="left:496px; top:590px;">
+        <img class="ni" src="icons/brands/nginx.svg" alt="" />
+        <span class="k">limit-burst</span>
+        <span class="v">1000000</span>
+        <span class="n">normal life 20 burst</span>
+    </div>
+    <svg style="position:absolute; left:0; top:0; width:840px; height:700px; z-index:4; pointer-events:none;" viewBox="0 0 840 700">
+        <g stroke="#1b1812" stroke-width="1.5" stroke-linecap="round" opacity="0.55">
+            <path d="M530,543 H597" />
+            <g transform="rotate(-7 779 543)">
+                <path d="M769,536 L789,550" />
+                <path d="M789,536 L769,550" />
+            </g>
+            <path d="M530,605 H609" />
+            <g transform="rotate(-7 779 605)">
+                <path d="M769,598 L789,612" />
+                <path d="M789,598 L769,612" />
+            </g>
+        </g>
+    </svg>
+
+    <div class="note" style="left:496px; top:650px;">nginx never sees this traffic.</div>
+</div>
+</body>
+</html>

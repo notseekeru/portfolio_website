@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 840px;
+        height: 256px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    .label {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+        z-index: 3;
+        white-space: nowrap;
+    }
+    .node {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 14px 12px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .node .head { display: flex; align-items: center; gap: 10px; }
+    .node img { width: 26px; height: 26px; flex: none; }
+    .node .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+    .node .sub { font-size: 12px; color: var(--muted); line-height: 1.3; }
+    .rows { display: flex; flex-direction: column; gap: 6px; margin-top: 2px; }
+    .row { display: flex; justify-content: space-between; gap: 8px; }
+    .row .k, .row .v {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        line-height: 1.5;
+    }
+    .row .k { color: var(--muted); }
+    .row .v { color: var(--ink); text-align: right; }
+    .row .v.good { color: var(--accent); }
+</style>
+</head>
+<body>
+<div id="canvas">
+    <div class="label" style="left:30px; top:26px;">three deletions, and what each one left behind</div>
+
+    <div class="node" style="left:30px; top:54px; width:250px; height:176px;">
+        <div class="head">
+            <img src="icons/line/box.svg" alt="" />
+            <div class="title">Staging</div>
+        </div>
+        <div class="sub">a second environment</div>
+        <div class="rows">
+            <div class="row"><span class="k">what it cost</span><span class="v">about 30 secrets</span></div>
+            <div class="row"><span class="k">why it went</span><span class="v">no users, no team</span></div>
+            <div class="row"><span class="k">left behind</span><span class="v good">ADR 0003</span></div>
+        </div>
+    </div>
+
+    <div class="node" style="left:295px; top:54px; width:250px; height:176px;">
+        <div class="head">
+            <img src="icons/line/ban.svg" alt="" />
+            <div class="title">Sentry</div>
+        </div>
+        <div class="sub">the error feed</div>
+        <div class="rows">
+            <div class="row"><span class="k">what it cost</span><span class="v">146 kB gz</span></div>
+            <div class="row"><span class="k">why it went</span><span class="v">no sourcemaps</span></div>
+            <div class="row"><span class="k">left behind</span><span class="v good">the beacon</span></div>
+        </div>
+    </div>
+
+    <div class="node" style="left:560px; top:54px; width:250px; height:176px;">
+        <div class="head">
+            <img src="icons/line/mic.svg" alt="" />
+            <div class="title">Browser speech</div>
+        </div>
+        <div class="sub">the fallback voice</div>
+        <div class="rows">
+            <div class="row"><span class="k">what it cost</span><span class="v">a generic voice</span></div>
+            <div class="row"><span class="k">why it went</span><span class="v">voice is the product</span></div>
+            <div class="row"><span class="k">left behind</span><span class="v good">Whisper and Aura</span></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -20,7 +20,7 @@
     #canvas {
         position: relative;
         width: 900px;
-        height: 380px;
+        height: 504px;
         overflow: hidden;
         background-color: var(--paper);
         background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
@@ -28,101 +28,132 @@
         font-family: Inter, "DejaVu Sans", sans-serif;
         color: var(--ink);
     }
-    .head, .lane {
-        position: absolute;
-        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
-        font-size: 11px;
-        color: var(--muted);
-        z-index: 3;
-        white-space: nowrap;
-    }
+    .lead { position: absolute; font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; }
     .pname {
         position: absolute;
         font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
-        font-size: 13px;
+        font-size: 12.5px;
         color: var(--ink);
-        z-index: 3;
+        white-space: nowrap;
     }
     .pill {
         position: absolute;
+        display: inline-flex;
+        align-items: center;
         height: 20px;
         padding: 0 9px;
-        border: 1px solid;
+        border: 1px solid var(--line);
         border-radius: 99px;
+        background: var(--paper);
         font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
-        font-size: 11px;
-        line-height: 18px;
-        z-index: 3;
+        font-size: 10.5px;
         white-space: nowrap;
     }
     .pill.pass { color: var(--accent); border-color: rgba(47, 107, 79, 0.45); background: #edf2e9; }
     .pill.fail { color: var(--amber); border-color: rgba(154, 91, 18, 0.4); background: #f7eddd; }
-    .bar {
-        position: absolute;
-        height: 24px;
-        border-radius: 3px;
-        display: flex;
-        align-items: center;
-        padding-left: 10px;
-        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
-        font-size: 11.5px;
-        z-index: 2;
-    }
-    .bar.ink { background: var(--ink); color: var(--paper); }
-    .bar.green { background: var(--accent); color: var(--paper); }
-    .meta {
+    .pill.key { gap: 7px; height: 24px; padding: 0 10px; color: var(--ink); }
+    .bar { position: absolute; height: 12px; border-radius: 2px; z-index: 2; }
+    .bar.wait { background: var(--amber); }
+    .bar.query { background: var(--accent); }
+    .num, .axl, .unit, .foot {
         position: absolute;
         font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
-        font-size: 12px;
-        color: var(--muted);
-        z-index: 3;
+        font-size: 10.5px;
         white-space: nowrap;
     }
-    .rule {
-        position: absolute;
-        left: 40px;
-        width: 820px;
-        height: 1px;
-        background: rgba(27, 24, 18, 0.18);
-        z-index: 1;
-    }
-    .note { position: absolute; z-index: 3; }
-    .note .lead { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
-    .note .tail { margin-top: 6px; font-size: 12px; color: var(--muted); }
+    .num { color: var(--ink); }
+    .axl, .unit { color: var(--muted); }
+    .axl { transform: translateX(-50%); }
+    .tick { position: absolute; width: 0; height: 42px; border-left: 1px dashed rgba(27, 24, 18, 0.5); z-index: 1; }
+    .gate { position: absolute; width: 0; height: 344px; border-left: 1.5px dashed rgba(27, 24, 18, 0.42); z-index: 1; }
+    .axis { position: absolute; height: 1px; background: rgba(27, 24, 18, 0.2); }
+    .tickmark { position: absolute; width: 1px; height: 5px; background: rgba(27, 24, 18, 0.3); }
+    .sw { width: 14px; height: 8px; border-radius: 2px; }
+    .sw.wait { background: var(--amber); }
+    .sw.query { background: var(--accent); }
+    .sw.req { width: 0; height: 13px; border-left: 1.5px dashed var(--ink); border-radius: 0; }
+    .foot { font-size: 12px; color: var(--muted); font-family: Inter, "DejaVu Sans", sans-serif; }
 </style>
 </head>
 <body>
 <div id="canvas">
-    <div class="lane" style="left:40px; top:26px;">pool capacity · connections ÷ mean query time</div>
-    <div class="head" style="left:40px; top:58px;">pool</div>
-    <div class="head" style="left:120px; top:58px;">measured</div>
-    <div class="head" style="left:240px; top:58px;">queries a second</div>
+    <div class="lead" style="left:40px; top:16px;">the wait grows, then the query does</div>
 
-    <div class="pname" style="left:40px; top:84px;">20</div>
-    <div class="pill fail" style="left:120px; top:82px;">55 VUs · fail</div>
-    <div class="bar ink" style="left:240px; top:80px; width:197px;">172</div>
-    <div class="meta" style="left:240px; top:112px;">p95 1.096s · 50.0 rps · wait 170ms · query 112ms · mem 50%</div>
+    <div class="pill key" style="left:551px; top:12px;"><span class="sw wait"></span><span>wait p95</span></div>
+    <div class="pill key" style="left:650px; top:12px;"><span class="sw query"></span><span>query p95</span></div>
+    <div class="pill key" style="left:756px; top:12px;"><span class="sw req"></span><span>request p95</span></div>
 
-    <div class="pname" style="left:40px; top:140px;">40</div>
-    <div class="pill pass" style="left:120px; top:138px;">55 VUs · pass</div>
-    <div class="bar green" style="left:240px; top:136px; width:280px;">245</div>
-    <div class="meta" style="left:240px; top:168px;">p95 832ms · 70.3 rps · wait 5ms · query 150ms · mem 52%</div>
+    <div class="pill key" style="left:396px; top:44px;">the gate · request p95 under 1s</div>
+    <div class="gate" style="left:509px; top:70px;"></div>
+    <div class="pname" style="left:40px; top:87px;">pool 20</div>
+    <div class="pill fail" style="left:40px; top:108px;">55 VUs · fail</div>
+    <div class="tick" style="left:540.2px; top:88px;"></div>
+    <div class="bar wait" style="left:200px; top:92px; width:152.2px;"></div>
+    <div class="bar query" style="left:200px; top:110px; width:85.6px;"></div>
+    <div class="num" style="left:358.2px; top:91px;">491</div>
+    <div class="num" style="left:291.6px; top:109px;">276</div>
+    <div class="num" style="left:547.0px; top:105px;">1100</div>
 
-    <div class="pname" style="left:40px; top:196px;">40</div>
-    <div class="pill fail" style="left:120px; top:194px;">100 VUs · fail</div>
-    <div class="bar green" style="left:240px; top:192px; width:280px;">245</div>
-    <div class="meta" style="left:240px; top:224px;">p95 1.64s · 66.7 rps · wait 209ms · query 163ms · mem 56%</div>
+    <div class="pname" style="left:40px; top:141px;">pool 20</div>
+    <div class="pill fail" style="left:40px; top:162px;">100 VUs · fail</div>
+    <div class="tick" style="left:788.2px; top:142px;"></div>
+    <div class="bar wait" style="left:200px; top:146px; width:406.1px;"></div>
+    <div class="bar query" style="left:200px; top:164px; width:111.6px;"></div>
+    <div class="num" style="left:612.1px; top:145px;">1310</div>
+    <div class="num" style="left:317.6px; top:163px;">360</div>
+    <div class="num" style="left:795.0px; top:159px;">1900</div>
 
-    <div class="pname" style="left:40px; top:252px;">80</div>
-    <div class="pill fail" style="left:120px; top:250px;">100 VUs · fail</div>
-    <div class="bar ink" style="left:240px; top:248px; width:369px;">323</div>
-    <div class="meta" style="left:240px; top:280px;">p95 1.87s · 75.0 rps · wait 6ms · query 248ms · mem 74%</div>
+    <div class="pname" style="left:40px; top:195px;">pool 40</div>
+    <div class="pill pass" style="left:40px; top:216px;">55 VUs · pass</div>
+    <div class="tick" style="left:457.1px; top:196px;"></div>
+    <div class="bar wait" style="left:200px; top:200px; width:3.1px;"></div>
+    <div class="bar query" style="left:200px; top:218px; width:139.8px;"></div>
+    <div class="num" style="left:209.1px; top:199px;">10</div>
+    <div class="num" style="left:345.8px; top:217px;">451</div>
+    <div class="num" style="left:463.9px; top:213px;">832</div>
 
-    <div class="rule" style="top:308px;"></div>
-    <div class="note" style="left:40px; top:326px;">
-        <div class="lead">each doubling buys less: +43%, then +32%</div>
-        <div class="tail">Forty ships. The pod's memory is what caps the pool, and Neon's compute is what inflates as it grows.</div>
-    </div>
+    <div class="pname" style="left:40px; top:249px;">pool 40</div>
+    <div class="pill fail" style="left:40px; top:270px;">100 VUs · fail</div>
+    <div class="tick" style="left:707.6px; top:250px;"></div>
+    <div class="bar wait" style="left:200px; top:254px; width:259.8px;"></div>
+    <div class="bar query" style="left:200px; top:272px; width:134.2px;"></div>
+    <div class="num" style="left:465.8px; top:253px;">838</div>
+    <div class="num" style="left:340.2px; top:271px;">433</div>
+    <div class="num" style="left:714.4px; top:267px;">1640</div>
+
+    <div class="pname" style="left:40px; top:303px;">pool 80</div>
+    <div class="pill pass" style="left:40px; top:324px;">55 VUs · pass</div>
+    <div class="tick" style="left:453.4px; top:304px;"></div>
+    <div class="bar wait" style="left:200px; top:308px; width:3.1px;"></div>
+    <div class="bar query" style="left:200px; top:326px; width:104.2px;"></div>
+    <div class="num" style="left:209.1px; top:307px;">10</div>
+    <div class="num" style="left:310.2px; top:325px;">336</div>
+    <div class="num" style="left:460.2px; top:321px;">820</div>
+
+    <div class="pname" style="left:40px; top:357px;">pool 80</div>
+    <div class="pill fail" style="left:40px; top:378px;">100 VUs · fail</div>
+    <div class="tick" style="left:778.9px; top:358px;"></div>
+    <div class="bar wait" style="left:200px; top:362px; width:50.2px;"></div>
+    <div class="bar query" style="left:200px; top:380px; width:247.1px;"></div>
+    <div class="num" style="left:256.2px; top:361px;">162</div>
+    <div class="num" style="left:453.1px; top:379px;">797</div>
+    <div class="num" style="left:785.7px; top:375px;">1870</div>
+
+    <div class="tickmark" style="left:200.0px; top:418px;"></div>
+    <div class="axl" style="left:200.0px; top:428px;">0</div>
+    <div class="tickmark" style="left:355.0px; top:418px;"></div>
+    <div class="axl" style="left:355.0px; top:428px;">500</div>
+    <div class="tickmark" style="left:510.0px; top:418px;"></div>
+    <div class="axl" style="left:510.0px; top:428px;">1000</div>
+    <div class="tickmark" style="left:665.0px; top:418px;"></div>
+    <div class="axl" style="left:665.0px; top:428px;">1500</div>
+    <div class="tickmark" style="left:820.0px; top:418px;"></div>
+    <div class="axl" style="left:820.0px; top:428px;">2000</div>
+
+    <div class="axis" style="left:200px; top:418px; width:620px;"></div>
+    <div class="unit" style="left:40px; top:442px;">milliseconds at p95</div>
+
+    <div class="foot" style="left:40px; top:470px;">The three figures are separate percentiles, not parts of a whole, so the bars do not add up to the request p95.</div>
 </div>
 </body>
 </html>

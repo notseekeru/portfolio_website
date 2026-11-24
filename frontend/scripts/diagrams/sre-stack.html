@@ -20,7 +20,7 @@
     #canvas {
         position: relative;
         width: 840px;
-        height: 856px;
+        height: 880px;
         overflow: hidden;
         background-color: var(--paper);
         background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
@@ -78,6 +78,20 @@
         padding: 14px 16px;
     }
     .node.tall .head { display: flex; gap: 10px; align-items: center; }
+    .node.stack {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        gap: 6px;
+        padding: 11px 12px;
+    }
+    .node.stack .head { display: flex; gap: 10px; align-items: center; }
+    .mono {
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+        line-height: 1.35;
+    }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; }
     .chip {
         display: inline-flex;
@@ -104,7 +118,7 @@
 </head>
 <body>
 <div id="canvas">
-    <svg id="wires" viewBox="0 0 840 856" xmlns="http://www.w3.org/2000/svg">
+    <svg id="wires" viewBox="0 0 840 880" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
@@ -125,8 +139,8 @@
             <path d="M304,400 H318" stroke="#9a5b12" stroke-dasharray="5 4" marker-end="url(#arrowamber)" />
         </g>
         <g fill="none" stroke="#6f6757" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.55">
-            <path d="M244,792 H318" marker-end="url(#arrowghost)" />
-            <path d="M524,792 H598" marker-end="url(#arrowghost)" />
+            <path d="M244,816 H318" marker-end="url(#arrowghost)" />
+            <path d="M524,816 H598" marker-end="url(#arrowghost)" />
         </g>
     </svg>
 
@@ -179,13 +193,13 @@
             <img src="icons/brands/fastapi.svg" alt="" />
             <div>
                 <div class="title">maxterview API</div>
-                <div class="sub">one Python container</div>
+                <div class="sub">1 worker, 1 replica</div>
             </div>
         </div>
         <div class="chips">
             <span class="chip">1 replica</span>
             <span class="chip">256Mi limit</span>
-            <span class="chip hot">pool 40</span>
+            <span class="chip hot">pool 10 → 40</span>
             <span class="chip">model stubbed</span>
         </div>
     </div>
@@ -219,44 +233,47 @@
         </div>
     </div>
 
-    <div class="zone" style="top:612px; height:104px;"></div>
+    <div class="zone" style="top:612px; height:128px;"></div>
     <div class="zone-label" style="top:600px;"><img src="icons/brands/neon.svg" alt="" /><span class="tag">Database</span><span class="sub">Neon</span></div>
-    <div class="node" style="left:44px; top:634px; width:340px; height:60px;">
-        <img src="icons/brands/postgresql.svg" alt="" />
-        <div>
-            <div class="title">Neon Postgres</div>
-            <div class="sub">the prod branch, another region</div>
+    <div class="node stack" style="left:44px; top:634px; width:340px; height:84px;">
+        <div class="head">
+            <img src="icons/brands/postgresql.svg" alt="" />
+            <div>
+                <div class="title">Neon Postgres</div>
+                <div class="sub">the prod branch, another region</div>
+            </div>
         </div>
+        <div class="mono">direct host, not the pooler · 0.25 to 1 CU</div>
     </div>
-    <div class="node" style="left:404px; top:634px; width:200px; height:60px;">
+    <div class="node" style="left:404px; top:634px; width:200px; height:84px;">
         <img src="icons/line/database-zap.svg" alt="" />
         <div>
             <div class="title">2 or 3 per request</div>
             <div class="sub">arrive as one burst</div>
         </div>
     </div>
-    <div class="node" style="left:624px; top:634px; width:172px; height:60px;">
+    <div class="node" style="left:624px; top:634px; width:172px; height:84px;">
         <div>
             <div class="title">37ms</div>
             <div class="sub">warm SELECT 1, in pod</div>
         </div>
     </div>
 
-    <div class="zone ghost" style="top:742px; height:90px;"></div>
-    <div class="zone-label" style="top:730px;"><svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="flex:none;"><path fill="#F38020" d="M16.5088 16.8447c.1475-.5068.0908-.9707-.1553-1.3154-.2246-.3164-.6045-.499-1.0615-.5205l-8.6592-.1123a.1559.1559 0 0 1-.1333-.0713c-.0283-.042-.0351-.0986-.021-.1553.0278-.084.1123-.1484.2036-.1562l8.7359-.1123c1.0351-.0489 2.1601-.8868 2.5537-1.9136l.499-1.3013c.0215-.0561.0293-.1128.0147-.16-.5591-2.5342-2.8184-4.3798-5.4971-4.3798-2.4805 0-4.5996 1.5864-5.3525 3.7647-.4888-.3633-1.1074-.5591-1.7676-.4893-1.1855.1191-2.1382 1.0791-2.25 2.2656-.0303.3174-.0078.624.0644.9121C3.0518 9.0396 1.5 10.7778 1.5 12.8745c0 .1826.0146.3652.0439.5449a.2266.2266 0 0 0 .2246.1904h15.0547c.1069 0 .1987-.0718.2246-.1758l.0596-.2295c.0752-.2578.0449-.5049-.0752-.6836-.2148-.3164-.5801-.499-1.0371-.5205l-5.3516-.1123a.166.166 0 0 1-.1333-.2246c.0278-.084.1123-.1484.2036-.1562l5.4287-.1123c.6226-.0293 1.2832-.5605 1.5171-1.2012l.2944-.7695c.0147-.042.0147-.084.0074-.1191-.0215-.0772-.0928-.1338-.1738-.1338Z"/></svg><span class="tag">Edge</span><span class="sub">not measured</span></div>
-    <div class="node ghost" style="left:44px; top:764px; width:200px; height:56px;">
+    <div class="zone ghost" style="top:766px; height:90px;"></div>
+    <div class="zone-label" style="top:754px;"><svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="flex:none;"><path fill="#F38020" d="M16.5088 16.8447c.1475-.5068.0908-.9707-.1553-1.3154-.2246-.3164-.6045-.499-1.0615-.5205l-8.6592-.1123a.1559.1559 0 0 1-.1333-.0713c-.0283-.042-.0351-.0986-.021-.1553.0278-.084.1123-.1484.2036-.1562l8.7359-.1123c1.0351-.0489 2.1601-.8868 2.5537-1.9136l.499-1.3013c.0215-.0561.0293-.1128.0147-.16-.5591-2.5342-2.8184-4.3798-5.4971-4.3798-2.4805 0-4.5996 1.5864-5.3525 3.7647-.4888-.3633-1.1074-.5591-1.7676-.4893-1.1855.1191-2.1382 1.0791-2.25 2.2656-.0303.3174-.0078.624.0644.9121C3.0518 9.0396 1.5 10.7778 1.5 12.8745c0 .1826.0146.3652.0439.5449a.2266.2266 0 0 0 .2246.1904h15.0547c.1069 0 .1987-.0718.2246-.1758l.0596-.2295c.0752-.2578.0449-.5049-.0752-.6836-.2148-.3164-.5801-.499-1.0371-.5205l-5.3516-.1123a.166.166 0 0 1-.1333-.2246c.0278-.084.1123-.1484.2036-.1562l5.4287-.1123c.6226-.0293 1.2832-.5605 1.5171-1.2012l.2944-.7695c.0147-.042.0147-.084.0074-.1191-.0215-.0772-.0928-.1338-.1738-.1338Z"/></svg><span class="tag">Edge</span><span class="sub">not measured</span></div>
+    <div class="node ghost" style="left:44px; top:788px; width:200px; height:56px;">
         <div>
             <div class="title">Cloudflare</div>
             <div class="sub">real users enter here</div>
         </div>
     </div>
-    <div class="node ghost" style="left:324px; top:764px; width:200px; height:56px;">
+    <div class="node ghost" style="left:324px; top:788px; width:200px; height:56px;">
         <div>
             <div class="title">tunnel</div>
             <div class="sub">cloudflared</div>
         </div>
     </div>
-    <div class="node ghost" style="left:604px; top:764px; width:200px; height:56px;">
+    <div class="node ghost" style="left:604px; top:788px; width:200px; height:56px;">
         <div>
             <div class="title">ingress NGINX</div>
             <div class="sub">the next sweep</div>

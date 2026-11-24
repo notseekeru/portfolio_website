@@ -1,51 +1,15 @@
-import { useEffect, useRef } from "react";
 import * as m from "motion/react-m";
-import InteractiveMermaid from "../utils/InteractiveMermaid";
-import { useInView } from "../hooks/useInView";
-import { infrastructureChart } from "../utils/infrastructureChart";
 import { fade, maskRise, slideIn, stagger, revealViewport } from "../utils/reveal";
 
-const DRAW_MS = 900;
-const DRAW_STEP_MS = 4;
+const SOURCE = "/infra-stack.png?v=6";
+
+const ALT =
+    "Infrastructure map. Homelab: a Cloudflare tunnel reaches cloudflared and ingress-nginx on a Raspberry Pi 5 running k3s, where ArgoCD syncs the portfolio and maxterview pods. Maxterview uses Neon, Clerk and NVIDIA NIM, and Grafana Alloy ships logs to Grafana Cloud, which alerts Slack. AWS: a second Cloudflare tunnel reaches one EC2 edge box serving the S3 build and proxying /api to a Lambda API, which writes to private RDS and queues work on SQS for a worker Lambda; the queue dead-letters after three failures, CloudWatch and Budgets alert SNS, and GitHub Actions deploys through an OIDC role to ECR and S3.";
 
 export default function InfrastructureDiagram() {
-    const { ref: chartRef, inView: chartInView } = useInView();
-    const drawn = useRef(false);
-
-    // Mermaid renders the SVG asynchronously, so paths are polled for; the attempt bound keeps a failed render from spinning forever.
-    // biome-ignore lint/correctness/useExhaustiveDependencies: chartInView is the only restart trigger; chartRef is a stable ref read once per run.
-    useEffect(() => {
-        const host = chartRef.current;
-        if (!host || !chartInView || drawn.current) return;
-
-        let frame = 0;
-        let attempts = 0;
-        const start = () => {
-            const shapes = host.querySelectorAll<SVGGeometryElement>("svg path, svg line, svg polyline, svg rect, svg circle, svg ellipse");
-            if (!shapes.length) {
-                if (++attempts < 300) frame = requestAnimationFrame(start);
-                return;
-            }
-            drawn.current = true;
-            shapes.forEach((shape, i) => {
-                const length = shape.getTotalLength?.() ?? 0;
-                if (!length) return;
-                shape.style.strokeDasharray = `${length}`;
-                shape.animate([{ strokeDashoffset: length }, { strokeDashoffset: 0 }], {
-                    duration: DRAW_MS,
-                    delay: i * DRAW_STEP_MS,
-                    easing: "ease-in-out",
-                    fill: "forwards",
-                });
-            });
-        };
-        start();
-        return () => cancelAnimationFrame(frame);
-    }, [chartInView]);
-
     return (
         <div className="max-w-shell mx-auto px-6 sm:px-8 lg:px-12">
-            <m.div variants={stagger(0.07)} initial="hidden" whileInView="show" viewport={revealViewport} className="mb-16">
+            <m.div variants={stagger(0.07)} initial="hidden" whileInView="show" viewport={revealViewport} className="mb-12">
                 <m.span variants={slideIn} className="font-mono text-xs tracking-widest text-accent">
                     ARCHITECTURE
                 </m.span>
@@ -53,14 +17,21 @@ export default function InfrastructureDiagram() {
                     Infrastructure
                 </m.h1>
                 <m.p variants={fade} className="text-muted max-w-lg">
-                    End-to-end homelab breakdown — edge to a Raspberry Pi 5.
+                    One map: the Pi 5 homelab on k3s and the sesume stack on AWS.
                 </m.p>
             </m.div>
 
-            <m.div ref={chartRef} variants={fade} initial="hidden" whileInView="show" viewport={revealViewport}>
-                <div className="flex flex-col h-[750px]">
-                    <InteractiveMermaid chart={infrastructureChart} />
-                </div>
+            <m.div variants={fade} initial="hidden" whileInView="show" viewport={revealViewport}>
+                <figure>
+                    <a href={SOURCE} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-lg border border-border">
+                        <img src={SOURCE} alt={ALT} width={1600} height={1300} className="block w-full h-auto" />
+                    </a>
+                    <figcaption className="mt-4 flex justify-end">
+                        <a href={SOURCE} target="_blank" rel="noreferrer" className="font-mono text-xs text-muted hover:text-bone transition-colors">
+                            Open full size
+                        </a>
+                    </figcaption>
+                </figure>
             </m.div>
         </div>
     );

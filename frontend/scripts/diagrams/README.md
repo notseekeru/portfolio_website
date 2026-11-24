@@ -74,6 +74,8 @@ The general glyphs (`Client.png`, `Email.png`) stay dark line art because they a
 
 Fetch a brand or line mark from `https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/<slug>.svg` or `https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/<slug>.svg`, set `fill` for a brand or `stroke` for a line icon, and save it under `icons/brands/` or `icons/line/`. The semantic stroke lives in the SVG, not the page CSS.
 
+Default to the technology's own mark. Any node, row or card naming a technology takes that technology's brand mark from `icons/brands`, in its own colour, never painted black or faded. A line glyph from `icons/line` is for concepts rather than products, so a worker count, a process or a hand-written component gets a glyph, and a technology with a mark in simple-icons gets that mark fetched into `icons/brands` rather than a substitute. Never invent a logo. Where no mark exists (uvicorn, structlog, yoyo-migrations, asyncpg, postgres.js, limits), the row keeps the mark of what it acts on or runs inside, and both sides of that row use the same kind of mark so no row mixes a brand with a glyph. A figure naming a product in its header carries that product's mark, not a neighbouring one, so a Typescript backend takes the Typescript mark and not the node one.
+
 ## Fonts and color
 
 Inter and JetBrains Mono, the same families the site loads, plus DejaVu fallbacks. Paper is the background, ink the text, muted the secondary lines, accent the edge or replacement, amber the scheduled path. The values are CSS variables at the top of each page. They are diagram-local, not site tokens; the site palette owns its own values.

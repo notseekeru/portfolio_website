@@ -92,16 +92,6 @@ No more symlink spaghetti. Every dotfile is version-controlled alongside my syst
 
 I even ditched tmux-resurrect and continuum. Instead of saving and restoring sessions, I wrote scripts using tmux-init to declare sessions upfront. My dev environment is defined in config, not recovered from a save file.
 
-## MangoWM and the Linux TikTok Hype
-
-I tried MangoWM. Linux TikTok hypes it. It's lean, it's minimal, the scrolling window manager concept sounds interesting on paper.
-
-In practice, it's a hybrid tiling and scrolling window manager. Windows don't stay fixed, they scroll off-screen when they don't fit. Muscle memory from every other WM breaks instantly. Your terminal is "somewhere in the scroll buffer." Your browser might be three scrolls away.
-
-It's not static tiling. I need static tiling. I need to know that my terminal is in workspace 1, split 50/50 with my file manager, every single time. MangoWM can't give me that. Hyprland can.
-
-The lean argument doesn't matter to me. Hyprland is more complex, yes, but also more capable. MangoWM's tradeoff, simplicity for predictability, isn't worth it. I'll take the bloat if windows stay where I put them.
-
 ## The Declarative Dividend
 
 After the migration, something shifted. I stopped thinking of my system as something I maintain and started thinking of it as something I compile.
@@ -110,19 +100,17 @@ When something breaks, I change the config and rebuild. If it breaks something e
 
 New machine? Copy the Flake, run `nixos-rebuild`, walk away.
 
-Project environments? direnv + nix-direnv. `cd` into a project, the shell loads the exact Nix environment. No `nix-shell`. The environment just _is_.
+Project environments? direnv + flakes. `cd` into a project, the shell loads the exact Nix environment. No `nix-shell`. The environment just _is_.
 
-This is the declarative dividend. I don't maintain my system anymore. I _design_ it.
+This is the declarative investment. I don't maintain my system anymore. I _design_ it.
 
 ---
 
 # Conclusion
 
-NixOS exceeded my expectations. Not because it's perfect, it's not. Documentation is sparse, error messages are cryptic, the learning curve is a vertical cliff. But the core promise holds: you declare your entire OS, and it is that system. No drift. No "I fixed that once on a Tuesday and can't remember how."
+NixOS exceeded my expectations.
 
 The declarative mindset isn't just about NixOS. It's about treating infrastructure, even personal infrastructure, as code. Desired state, not manual steps. Blueprints, not recipes. Compilation, not maintenance.
-
-Not going back to imperative.
 
 ---
 

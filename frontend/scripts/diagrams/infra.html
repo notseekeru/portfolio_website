@@ -1,0 +1,550 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+    :root {
+        --paper: #f3eee2;
+        --panel: #fbf8ee;
+        --line: #d5cbb6;
+        --ink: #1b1812;
+        --muted: #6f6757;
+        --accent: #2f6b4f;
+        --amber: #9a5b12;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    #canvas {
+        position: relative;
+        width: 1600px;
+        height: 1300px;
+        overflow: hidden;
+        background-color: var(--paper);
+        background-image: radial-gradient(circle, rgba(27, 24, 18, 0.11) 1px, transparent 1.3px);
+        background-size: 24px 24px;
+        font-family: Inter, "DejaVu Sans", sans-serif;
+        color: var(--ink);
+    }
+    #wires { position: absolute; inset: 0; z-index: 1; }
+    .zone {
+        position: absolute;
+        border: 1.5px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 12px;
+        z-index: 0;
+    }
+    .subzone {
+        position: absolute;
+        border: 1px dashed rgba(27, 24, 18, 0.24);
+        border-radius: 10px;
+        z-index: 0;
+    }
+    .zone-label {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 24px;
+        padding: 0 10px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        z-index: 3;
+    }
+    .zone-label img { width: 14px; height: 14px; object-fit: contain; }
+    .zone-label .tag { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 10.5px; color: var(--ink); }
+    .zone-label .sub { font-size: 11px; color: var(--muted); }
+    .row-label {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 11.5px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink);
+        z-index: 3;
+    }
+    .node {
+        position: absolute;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 11px 12px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        z-index: 2;
+        box-shadow: 0 1px 0 rgba(27, 24, 18, 0.04);
+    }
+    .node img { width: 26px; height: 26px; flex: none; object-fit: contain; }
+    .node .title { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+    .node .title.cmd { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 14px; font-weight: 500; }
+    .node .sub { margin-top: 3px; font-size: 12px; color: var(--muted); line-height: 1.3; }
+    .node.tight { padding: 9px 10px; gap: 8px; }
+    .node.tight img { width: 22px; height: 22px; }
+    .node.tight .title { font-size: 13px; }
+    .node.tight .sub { margin-top: 2px; font-size: 11px; }
+    .label {
+        position: absolute;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+        font-size: 10.5px;
+        color: var(--muted);
+        z-index: 3;
+        white-space: nowrap;
+    }
+</style>
+<body>
+<div id="canvas">
+    <svg id="wires" viewBox="0 0 1600 1300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="#2f6b4f" />
+            </marker>
+            <marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="#9a5b12" />
+            </marker>
+        </defs>
+        <g fill="none" stroke="#2f6b4f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+            <path d="M288,84 H316" marker-end="url(#arrow)" />
+            <path d="M172,252 V268" marker-end="url(#arrow)" />
+            <path d="M172,332 V348" marker-end="url(#arrow)" />
+            <path d="M288,372 H302 V300 H316" marker-end="url(#arrow)" />
+            <path d="M288,412 H308 V394 H316" marker-end="url(#arrow)" />
+            <path d="M172,564 V580" marker-end="url(#arrow)" />
+            <path d="M316,540 H302 V618 H288" marker-end="url(#arrow)" />
+            <path d="M420,564 V580" marker-end="url(#arrow)" />
+            <path d="M524,84 H570 V716 H700 V780" marker-end="url(#arrow)" />
+            <path d="M570,200 H860 V288" marker-end="url(#arrow)" />
+            <path d="M932,328 H944" marker-end="url(#arrow)" />
+            <path d="M1016,368 V398" />
+            <path d="M730,398 H1146" />
+            <path d="M730,398 V414" marker-end="url(#arrow)" />
+            <path d="M938,398 V414" marker-end="url(#arrow)" />
+            <path d="M1146,398 V414" marker-end="url(#arrow)" />
+            <path d="M834,398 V550" marker-end="url(#arrow)" />
+            <path d="M1244,340 H1310 V260 H1364" marker-end="url(#arrow)" />
+            <path d="M1456,292 V312" marker-end="url(#arrow)" />
+            <path d="M1364,428 H1346 V440 H1244" marker-end="url(#arrow)" />
+            <path d="M1364,512 H1334 V456 H1244" marker-end="url(#arrow)" />
+            <path d="M1364,596 H1322 V472 H1244" marker-end="url(#arrow)" />
+            <path d="M486,1160 H516 V1252 H1290 V620 H1364" marker-end="url(#arrow)" />
+            <path d="M1364,78 H1300 V208 H1264" marker-end="url(#arrow)" />
+            <path d="M1364,138 H1300" />
+            <path d="M1048,756 H1024 V800 H966" marker-end="url(#arrow)" />
+            <path d="M1090,876 V836 H966" marker-end="url(#arrow)" />
+            <path d="M486,960 H534" marker-end="url(#arrow)" />
+            <path d="M486,1064 H520 V1016 H534" marker-end="url(#arrow)" />
+            <path d="M486,976 H510 V1080 H534" marker-end="url(#arrow)" />
+            <path d="M534,1090 H496 V1168 H486" marker-end="url(#arrow)" />
+            <path d="M744,1108 V1136" marker-end="url(#arrow)" />
+            <path d="M1298,1016 V1028" marker-end="url(#arrow)" />
+            <path d="M1278,1060 H1318" marker-end="url(#arrow)" />
+            <path d="M1278,1212 H1318" marker-end="url(#arrow)" />
+        </g>
+        <g fill="none" stroke="#9a5b12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" stroke-dasharray="5 4">
+            <path d="M524,214 H704 V288" marker-end="url(#arrow-amber)" />
+            <path d="M524,600 H556 V168 H1100 V176" marker-end="url(#arrow-amber)" />
+            <path d="M110,440 V446 H544 V696 H1200 V724" marker-end="url(#arrow-amber)" />
+            <path d="M140,440 V460 H532 V704 H1032 V832 H1048" marker-end="url(#arrow-amber)" />
+        </g>
+    </svg>
+
+    <div class="zone" style="left:28px; top:28px; width:524px; height:104px;"></div>
+    <div class="zone-label" style="left:44px; top:16px;"><img src="icons/brands/cloudflare.svg" alt="" /><span class="tag">Internet</span><span class="sub">public entry</span></div>
+
+    <div class="zone" style="left:28px; top:148px; width:524px; height:304px;"></div>
+    <div class="zone-label" style="left:44px; top:136px;"><img src="icons/brands/github.svg" alt="" /><span class="tag">GitHub</span><span class="sub">CI/CD</span></div>
+
+    <div class="zone" style="left:28px; top:476px; width:524px; height:196px;"></div>
+    <div class="zone-label" style="left:44px; top:464px;"><img src="icons/brands/terraform.svg" alt="" /><span class="tag">Control plane</span><span class="sub">Infisical to apply</span></div>
+
+    <div class="zone" style="left:1340px; top:28px; width:232px; height:152px;"></div>
+    <div class="zone-label" style="left:1356px; top:16px;"><img src="icons/brands/tailscale.svg" alt="" /><span class="tag">Tailscale</span><span class="sub">mesh</span></div>
+
+    <div class="zone" style="left:596px; top:148px; width:684px; height:524px;"></div>
+    <div class="zone-label" style="left:612px; top:136px;"><img src="icons/brands/raspberrypi.svg" alt="" /><span class="tag">Raspberry Pi 5</span><span class="sub">single node</span></div>
+
+    <div class="zone" style="left:612px; top:264px; width:652px; height:388px;"></div>
+    <div class="zone-label" style="left:628px; top:252px;"><img src="icons/brands/kubernetes.svg" alt="" /><span class="tag">k3s</span><span class="sub">single node</span></div>
+
+    <div class="zone" style="left:1340px; top:200px; width:232px; height:452px;"></div>
+    <div class="zone-label" style="left:1356px; top:188px;"><img src="icons/line/cloud.svg" alt="" /><span class="tag">External</span><span class="sub">managed</span></div>
+
+    <div class="subzone" style="left:624px; top:400px; width:628px; height:104px;"></div>
+    <div class="subzone" style="left:624px; top:536px; width:628px; height:104px;"></div>
+    <div class="row-label" style="left:624px; top:380px;">ns maxterview</div>
+    <div class="row-label" style="left:624px; top:516px;">ns portfolio</div>
+
+    <div class="zone" style="left:28px; top:692px; width:1544px; height:580px;"></div>
+    <div class="zone-label" style="left:44px; top:680px;"><img src="icons/VPC.png" alt="" /><span class="tag">AWS</span><span class="sub">ap-southeast-1</span></div>
+
+    <div class="zone" style="left:56px; top:724px; width:950px; height:520px;"></div>
+    <div class="zone-label" style="left:72px; top:712px;"><img src="icons/VPC.png" alt="" /><span class="tag">VPC</span><span class="sub">10.0.0.0/16</span></div>
+
+    <div class="subzone" style="left:84px; top:772px; width:894px; height:96px;"></div>
+    <div class="row-label" style="left:84px; top:752px;">public subnet</div>
+
+    <div class="subzone" style="left:84px; top:912px; width:894px; height:304px;"></div>
+    <div class="row-label" style="left:84px; top:892px;">private subnets</div>
+
+    <div class="node" style="left:56px; top:52px; width:232px; height:64px;">
+        <img src="icons/line/users.svg" alt="" />
+        <div>
+            <div class="title">Users</div>
+            <div class="sub">browser</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:316px; top:52px; width:208px; height:64px;">
+        <img src="icons/brands/cloudflare.svg" alt="" />
+        <div>
+            <div class="title">Cloudflare</div>
+            <div class="sub">DNS, TLS, tunnel</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:56px; top:176px; width:232px; height:76px;">
+        <img src="icons/brands/github.svg" alt="" />
+        <div>
+            <div class="title">App repos</div>
+            <div class="sub">portfolio, maxterview, sesume</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:316px; top:176px; width:208px; height:76px;">
+        <img src="icons/brands/github.svg" alt="" />
+        <div>
+            <div class="title">gitops repo</div>
+            <div class="sub">Kustomize manifests</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:56px; top:268px; width:232px; height:64px;">
+        <img src="icons/brands/github.svg" alt="" />
+        <div>
+            <div class="title">CI</div>
+            <div class="sub">lint, typecheck, test, build</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:316px; top:268px; width:208px; height:64px;">
+        <img src="icons/brands/github.svg" alt="" />
+        <div>
+            <div class="title">Promote</div>
+            <div class="sub">set image tags, commit, push</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:56px; top:348px; width:232px; height:92px;">
+        <img src="icons/brands/github.svg" alt="" />
+        <div>
+            <div class="title">CD</div>
+            <div class="sub">build, Trivy, smoke; apps to GHCR, sesume OIDC to ECR and S3</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:316px; top:348px; width:208px; height:92px;">
+        <img src="icons/brands/github.svg" alt="" />
+        <div>
+            <div class="title">GHCR</div>
+            <div class="sub">multi-arch image, pruned</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:56px; top:500px; width:232px; height:64px;">
+        <img src="icons/brands/infisical.png" alt="" />
+        <div>
+            <div class="title">Infisical</div>
+            <div class="sub">secrets</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:316px; top:500px; width:208px; height:64px;">
+        <img src="icons/line/workflow.svg" alt="" />
+        <div>
+            <div class="title cmd">make apply</div>
+            <div class="sub">operator</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:56px; top:580px; width:232px; height:76px;">
+        <img src="icons/brands/terraform.svg" alt="" />
+        <div>
+            <div class="title">Terraform</div>
+            <div class="sub">k3s, cloudflare, aws modules; R2 state</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:316px; top:580px; width:208px; height:76px;">
+        <img src="icons/brands/ansible.svg" alt="" />
+        <div>
+            <div class="title">Ansible</div>
+            <div class="sub">site.yml, static inventory</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:1364px; top:52px; width:184px; height:52px;">
+        <img src="icons/line/pc.svg" alt="" />
+        <div>
+            <div class="title">MainPC</div>
+            <div class="sub">SSH key</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:1364px; top:112px; width:184px; height:52px;">
+        <img src="icons/line/laptop.svg" alt="" />
+        <div>
+            <div class="title">Laptop</div>
+            <div class="sub">SSH key</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:944px; top:176px; width:320px; height:72px;">
+        <img src="icons/line/lock.svg" alt="" />
+        <div>
+            <div class="title">Host hardening</div>
+            <div class="sub">key-only SSH, no root, :22 on Tailscale only, UFW, fail2ban</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:632px; top:288px; width:144px; height:80px;">
+        <img src="icons/brands/argo.svg" alt="" />
+        <div>
+            <div class="title">ArgoCD</div>
+            <div class="sub">app-of-apps, sync + self-heal</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:788px; top:288px; width:144px; height:80px;">
+        <img src="icons/brands/cloudflare.svg" alt="" />
+        <div>
+            <div class="title">cloudflared</div>
+            <div class="sub">tunnel connector</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:944px; top:288px; width:144px; height:80px;">
+        <img src="icons/brands/nginx.svg" alt="" />
+        <div>
+            <div class="title">ingress-nginx</div>
+            <div class="sub">Helm release</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1100px; top:288px; width:144px; height:80px;">
+        <img src="icons/brands/grafana.svg" alt="" />
+        <div>
+            <div class="title">Grafana Alloy</div>
+            <div class="sub">OTLP + logs</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:632px; top:414px; width:196px; height:80px;">
+        <img src="icons/brands/kubernetes-pod.svg" alt="" />
+        <div>
+            <div class="title">maxterview frontend</div>
+            <div class="sub">React/Vite</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:840px; top:414px; width:196px; height:80px;">
+        <img src="icons/line/database-zap.svg" alt="" />
+        <div>
+            <div class="title">migration Job</div>
+            <div class="sub">PreSync, owner DSN</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1048px; top:414px; width:196px; height:80px;">
+        <img src="icons/brands/kubernetes-pod.svg" alt="" />
+        <div>
+            <div class="title">maxterview backend</div>
+            <div class="sub">FastAPI</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:632px; top:550px; width:612px; height:80px;">
+        <img src="icons/brands/kubernetes-pod.svg" alt="" />
+        <div>
+            <div class="title">portfolio frontend</div>
+            <div class="sub">static build</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1364px; top:228px; width:184px; height:64px;">
+        <img src="icons/brands/grafana.svg" alt="" />
+        <div>
+            <div class="title">Grafana Cloud</div>
+            <div class="sub">Loki, alerting</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1364px; top:312px; width:184px; height:64px;">
+        <img src="icons/brands/slack.svg" alt="" />
+        <div>
+            <div class="title">Slack</div>
+            <div class="sub">alerts</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1364px; top:396px; width:184px; height:64px;">
+        <img src="icons/brands/neon.svg" alt="" />
+        <div>
+            <div class="title">Neon Postgres</div>
+            <div class="sub">maxterview</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1364px; top:480px; width:184px; height:64px;">
+        <img src="icons/brands/clerk.svg" alt="" />
+        <div>
+            <div class="title">Clerk</div>
+            <div class="sub">auth</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1364px; top:564px; width:184px; height:64px;">
+        <img src="icons/brands/nvidia.svg" alt="" />
+        <div>
+            <div class="title">NVIDIA NIM</div>
+            <div class="sub">maxterview + worker</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:96px; top:780px; width:870px; height:64px;">
+        <img src="icons/EC2.png" alt="" />
+        <div>
+            <div class="title">EC2 t4g.micro + Elastic IP</div>
+            <div class="sub">cloudflared, nginx, nft NAT. No public inbound port, Session Manager shell.</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:96px; top:928px; width:390px; height:64px;">
+        <img src="icons/Lambda.png" alt="" />
+        <div>
+            <div class="title">api Lambda</div>
+            <div class="sub">Function URL</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:96px; top:1032px; width:390px; height:64px;">
+        <img src="icons/Lambda.png" alt="" />
+        <div>
+            <div class="title">migrate Lambda</div>
+            <div class="sub">schema changes</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:96px; top:1136px; width:390px; height:64px;">
+        <img src="icons/Lambda.png" alt="" />
+        <div>
+            <div class="title">worker Lambda</div>
+            <div class="sub">SQS consumer</div>
+        </div>
+    </div>
+
+    <div class="node" style="left:534px; top:932px; width:420px; height:88px;">
+        <img src="icons/RDS.png" alt="" />
+        <div>
+            <div class="title">RDS Postgres</div>
+            <div class="sub">private, encrypted, deletion protection, one-day backups</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:534px; top:1044px; width:420px; height:64px;">
+        <img src="icons/SQS.png" alt="" />
+        <div>
+            <div class="title">SQS review</div>
+            <div class="sub">30m visibility</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:534px; top:1136px; width:420px; height:64px;">
+        <img src="icons/SQS.png" alt="" />
+        <div>
+            <div class="title">SQS DLQ</div>
+            <div class="sub">after 3 receives</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1048px; top:724px; width:500px; height:64px;">
+        <img src="icons/S3.png" alt="" />
+        <div>
+            <div class="title">S3 dist bucket</div>
+            <div class="sub">frontend, sync at boot + 5m</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1048px; top:800px; width:500px; height:64px;">
+        <img src="icons/ECR.png" alt="" />
+        <div>
+            <div class="title">ECR</div>
+            <div class="sub">sesume_backend_lambda, last 10</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1048px; top:876px; width:500px; height:64px;">
+        <img src="icons/SSM.png" alt="" />
+        <div>
+            <div class="title">SSM SecureString</div>
+            <div class="sub">/sesume/*: DB, auth, tokens, LLM keys</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1048px; top:952px; width:500px; height:64px;">
+        <img src="icons/CloudWatch.png" alt="" />
+        <div>
+            <div class="title">CloudWatch + Budgets</div>
+            <div class="sub">Lambda errors, DLQ depth, EC2 status, credit cap</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1048px; top:1028px; width:230px; height:64px;">
+        <img src="icons/SNS.png" alt="" />
+        <div>
+            <div class="title">SNS topic</div>
+            <div class="sub">email alerts</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1318px; top:1028px; width:230px; height:64px;">
+        <img src="icons/brands/gmail.svg" alt="" />
+        <div>
+            <div class="title">Gmail</div>
+            <div class="sub">SNS</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1048px; top:1104px; width:500px; height:64px;">
+        <img src="icons/line/lock.svg" alt="" />
+        <div>
+            <div class="title">IAM sesume-cd</div>
+            <div class="sub">OIDC, no keys</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1048px; top:1180px; width:230px; height:64px;">
+        <img src="icons/EventBridge.png" alt="" />
+        <div>
+            <div class="title">EventBridge</div>
+            <div class="sub">rate 5m</div>
+        </div>
+    </div>
+
+    <div class="node tight" style="left:1318px; top:1180px; width:230px; height:64px;">
+        <img src="icons/Lambda.png" alt="" />
+        <div>
+            <div class="title">probe Lambda</div>
+            <div class="sub">outside VPC</div>
+        </div>
+    </div>
+
+    <div class="label" style="left:1108px; top:150px;">hardens host</div>
+    <div class="label" style="left:1284px; top:190px;">SSH</div>
+    <div class="label" style="left:1324px; top:308px;">OTLP</div>
+    <div class="label" style="left:898px; top:760px;">s3 sync</div>
+</div>
+</body>
+</html>

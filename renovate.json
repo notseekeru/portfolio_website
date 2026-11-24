@@ -9,8 +9,7 @@
     "schedule:weekly"
   ],
   "lockFileMaintenance": {
-    "enabled": true,
-    "description": "Renovate proposes no update for unbounded >= floors, so the lock otherwise moves only when a human edits pyproject.toml."
+    "enabled": true
   },
   "labels": ["dependencies", "renovate"],
   "prConcurrentLimit": 5,
@@ -34,10 +33,6 @@
     {
       "matchManagers": ["npm"],
       "groupName": "frontend npm dependencies"
-    },
-    {
-      "matchManagers": ["uv", "pep621"],
-      "groupName": "backend python dependencies"
     },
     {
       "matchManagers": ["dockerfile"],
