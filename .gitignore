@@ -7,3 +7,4 @@ dist/
 .vercel/
 .playwright-mcp/
 result
+RESUME.*
