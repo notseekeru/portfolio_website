@@ -101,7 +101,7 @@ const personalData: PersonalData = {
         {
             title: "Infrastructure as Code — Ansible Automation & Idempotency",
             description:
-                "Transitioned to IaC with modular Ansible roles for security hardening, user management, and Dockerization across RPi5 and cloud nodes. Implemented Ansible Vault for secrets, achieved molecule-tested idempotency, enforced automated CI/CD linting via GitHub Actions, and built self-healing infrastructure using declarative state patterns.",
+                "Transitioned to IaC with modular Ansible roles for security hardening, user management, and Dockerization across RPi5 and cloud nodes. Implemented Ansible Vault for secrets, achieved molecule-tested idempotency, enforced automated CI/CD linting via GitHub Actions.",
             techStack: ["Ansible", "Molecule", "Ansible Vault", "GitHub Actions", "Docker"],
             favorite: true,
             video: "/project4.webm",
@@ -152,7 +152,7 @@ const personalData: PersonalData = {
         {
             title: "Centralized Secrets Management with Infisical Cloud + CLI",
             description:
-                "Migrated from fragmented secret storage (Ansible Vault, .tfvars, .env) to a single source of truth using Infisical Cloud. Designed source-of-truth and consumer folder structure with dynamic secret references, then extended it into per-environment inheritance: a staging environment that inherits prod's values as per-key references while overriding only the five that must differ (database, identity and payment keys). Integrated with Terraform via infisical run for injection into apply, and added plan-time guards in both directions that refuse the other environment's database endpoint, because an inherited value would otherwise point staging's migrations at the production database.",
+                "Migrated from fragmented secret storage (Ansible Vault, .tfvars, .env) to a single source of truth using Infisical Cloud. Designed source-of-truth and consumer folder structure with dynamic secret references, and integrated it with Terraform via infisical run for injection into apply.",
             techStack: ["Infisical", "Terraform", "Ansible"],
             image: "/project9.png",
             icon: "FaLock",
