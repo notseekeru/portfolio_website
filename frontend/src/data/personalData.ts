@@ -100,8 +100,7 @@ const personalData: PersonalData = {
         },
         {
             title: "Infrastructure as Code — Ansible Automation & Idempotency",
-            description:
-                "Transitioned to IaC with modular Ansible roles for security hardening, user management, and Dockerization across RPi5 and cloud nodes. Implemented Ansible Vault for secrets, achieved molecule-tested idempotency, enforced automated CI/CD linting via GitHub Actions.",
+            description: "Transitioned to IaC with modular Ansible roles for security hardening, user management, and Dockerization across RPi5 and cloud nodes. Implemented Ansible Vault for secrets, achieved molecule-tested idempotency, enforced automated CI/CD linting via GitHub Actions.",
             techStack: ["Ansible", "Molecule", "Ansible Vault", "GitHub Actions", "Docker"],
             favorite: true,
             video: "/project4.webm",
@@ -151,8 +150,7 @@ const personalData: PersonalData = {
         },
         {
             title: "Centralized Secrets Management with Infisical Cloud + CLI",
-            description:
-                "Migrated from fragmented secret storage (Ansible Vault, .tfvars, .env) to a single source of truth using Infisical Cloud. Designed source-of-truth and consumer folder structure with dynamic secret references, and integrated it with Terraform via infisical run for injection into apply.",
+            description: "Migrated from fragmented secret storage (Ansible Vault, .tfvars, .env) to a single source of truth using Infisical Cloud. Designed source-of-truth and consumer folder structure with dynamic secret references, and integrated it with Terraform via infisical run for injection into apply.",
             techStack: ["Infisical", "Terraform", "Ansible"],
             image: "/project9.png",
             icon: "FaLock",
